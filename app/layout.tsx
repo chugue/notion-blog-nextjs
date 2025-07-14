@@ -31,8 +31,7 @@ export default function RootLayout({
           {/* Header 영역 */}
           <Header />
           {/* Main 영역 */}
-          {children}
-
+          <main className="flex-1">{children}</main>
           {/* Footer 영역 */}
           <Footer />
         </div>
