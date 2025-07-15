@@ -1,9 +1,54 @@
-import { Post } from '@/types/blog';
+import { Post, TagFilterItem } from '@/types/blog';
 import { Client } from '@notionhq/client';
+import type {
+  PageObjectResponse,
+  UserObjectResponse,
+} from '@notionhq/client/build/src/api-endpoints';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
+
+export const getTagList = async (posts: Post[]): Promise<TagFilterItem[]> => {
+  const tagCounts = posts
+    .flatMap((post) => post.tags || [])
+    .reduce((acc, tag) => {
+      acc.set(tag, (acc.get(tag) || 0) + 1);
+      return acc;
+    }, new Map<string, number>());
+
+  const totalPosts = posts.length;
+
+  const tagList: TagFilterItem[] = [
+    {
+      id: 'all',
+      name: '전체',
+      count: totalPosts,
+    },
+    ...Array.from(tagCounts.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([tagName, count]) => ({
+        id: tagName.toLowerCase().replace(/\s+/g, '-'),
+        name: tagName,
+        count,
+      })),
+  ];
+
+  return tagList;
+};
+
+const getCoverImage = (cover: PageObjectResponse['cover'] | null) => {
+  if (!cover) return '';
+
+  switch (cover.type) {
+    case 'external':
+      return cover.external.url;
+    case 'file':
+      return cover.file.url;
+    default:
+      return '';
+  }
+};
 
 export const getPublishedPost = async (): Promise<Post[]> => {
   const response = await notion.databases.query({
@@ -16,7 +61,7 @@ export const getPublishedPost = async (): Promise<Post[]> => {
     },
     sorts: [
       {
-        property: 'Modified Date',
+        property: 'Date',
         direction: 'descending',
       },
     ],
@@ -42,7 +87,7 @@ export const getPublishedPost = async (): Promise<Post[]> => {
       ) || [];
 
     // Author 추출 (people 타입이지만 Post 타입에서는 string으로 정의됨)
-    const author = (properties.Author as { people?: { name: string }[] })?.people?.[0]?.name || '';
+    const author = (properties.Author as UserObjectResponse)?.name || '';
 
     // Date 추출
     const date = (properties.Date as { date?: { start: string } })?.date?.start || '';
@@ -57,12 +102,7 @@ export const getPublishedPost = async (): Promise<Post[]> => {
       '';
 
     // Cover Image 추출
-    const coverImage =
-      (page as { cover?: { external?: { url: string }; file?: { url: string } } }).cover?.external
-        ?.url ||
-      (page as { cover?: { external?: { url: string }; file?: { url: string } } }).cover?.file
-        ?.url ||
-      '';
+    const coverImage = getCoverImage((page as PageObjectResponse).cover) || '';
 
     return {
       id: (page as { id: string }).id,

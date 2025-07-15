@@ -8,20 +8,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import TagSection from './_components/TagSection';
-import { TagFilterItem } from '@/types/blog';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
 import Link from 'next/link';
-import { getPublishedPost } from '@/lib/notion';
-
-const mockTags: TagFilterItem[] = [
-  { id: '1', name: '전체', count: 20 },
-  { id: '2', name: 'HTML', count: 10 },
-  { id: '3', name: 'CSS', count: 5 },
-  { id: '4', name: 'JavaScript', count: 3 },
-  { id: '5', name: 'React', count: 3 },
-  { id: '6', name: 'Next.js', count: 3 },
-];
+import { getPublishedPost, getTagList } from '@/lib/notion';
 
 const socialLinks = [
   {
@@ -83,13 +73,14 @@ const contactItems = [
 
 export default async function Home() {
   const posts = await getPublishedPost();
+  const tags = await getTagList(posts);
 
   return (
     <div className="container py-8">
       <div className="grid grid-cols-[200px_1fr_220px] gap-6">
         {/* 좌측 사이드바 */}
         <aside>
-          <TagSection tags={mockTags} />
+          <TagSection tags={tags} />
         </aside>
 
         <div className="space-y-8">
