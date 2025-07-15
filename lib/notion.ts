@@ -9,7 +9,9 @@ export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
-export const getTagList = async (posts: Post[]): Promise<TagFilterItem[]> => {
+export const getTagList = async (): Promise<TagFilterItem[]> => {
+  const posts = await getPublishedPost();
+
   const tagCounts = posts
     .flatMap((post) => post.tags || [])
     .reduce((acc, tag) => {
@@ -50,15 +52,33 @@ const getCoverImage = (cover: PageObjectResponse['cover'] | null) => {
   }
 };
 
-export const getPublishedPost = async (): Promise<Post[]> => {
+export const getPublishedPost = async (tag?: string): Promise<Post[]> => {
+  const baseFilter = {
+    property: 'Status',
+    select: {
+      equals: 'Published',
+    },
+  };
+
+  // 👈 태그 필터가 있는 경우 compound filter 구성
+  const filter =
+    tag && tag !== '전체'
+      ? {
+          and: [
+            baseFilter,
+            {
+              property: 'Tags',
+              multi_select: {
+                contains: tag,
+              },
+            },
+          ],
+        }
+      : baseFilter;
+
   const response = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID!,
-    filter: {
-      property: 'Status',
-      select: {
-        equals: 'Published',
-      },
-    },
+    filter,
     sorts: [
       {
         property: 'Date',
@@ -67,7 +87,6 @@ export const getPublishedPost = async (): Promise<Post[]> => {
     ],
   });
 
-  // NotionAPI 응답을 Post 타입으로 변환
   const posts: Post[] = response.results.map((page) => {
     const properties = (page as { properties: Record<string, unknown> }).properties;
 

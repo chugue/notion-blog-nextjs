@@ -71,22 +71,36 @@ const contactItems = [
   },
 ];
 
-export default async function Home() {
-  const posts = await getPublishedPost();
-  const tags = await getTagList(posts);
+interface HomeProps {
+  searchParams: {
+    tag?: string;
+  };
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const selectedTag = searchParams.tag || '전체';
+
+  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag), getTagList()]);
+
+  const filteredPosts =
+    selectedTag && selectedTag !== '전체'
+      ? posts.filter((post) => post.tags?.includes(selectedTag))
+      : posts;
 
   return (
     <div className="container py-8">
       <div className="grid grid-cols-[200px_1fr_220px] gap-6">
         {/* 좌측 사이드바 */}
         <aside>
-          <TagSection tags={tags} />
+          <TagSection tags={tags} selectedTag={selectedTag} />
         </aside>
 
         <div className="space-y-8">
           {/* 섹션 제목 */}
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold tracking-tight">블로그 목록</h2>
+            <h2 className="text-3xl font-bold tracking-tight">
+              {selectedTag ? `${selectedTag} 관련 포스트` : '블로그 목록'}
+            </h2>
             <Select defaultValue="latest">
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 방식 선택" />
@@ -100,15 +114,19 @@ export default async function Home() {
 
           {/* 블로그 카드 그리드 */}
           <div className="grid gap-4">
-            {posts.length > 0 ? (
-              posts.map((post) => (
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.slug}`}>
                   <PostCard post={post} />
                 </Link>
               ))
             ) : (
               <div className="py-12 text-center">
-                <p className="text-muted-foreground text-lg">아직 발행된 포스트가 없습니다.</p>
+                <p className="text-muted-foreground text-lg">
+                  {selectedTag
+                    ? `'${selectedTag}' 태그에 해당하는 포스트가 없습니다.`
+                    : '아직 발행된 포스트가 없습니다.'}
+                </p>
               </div>
             )}
           </div>
