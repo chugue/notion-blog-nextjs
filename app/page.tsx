@@ -8,12 +8,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import TagSection from './_components/TagSection';
-import { NotionTag } from '@/types/notion';
+import { TagFilterItem } from '@/types/blog';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
 import Link from 'next/link';
+import { getPublishedPost } from '@/lib/notion';
 
-const mockTags: NotionTag[] = [
+const mockTags: TagFilterItem[] = [
   { id: '1', name: '전체', count: 20 },
   { id: '2', name: 'HTML', count: 10 },
   { id: '3', name: 'CSS', count: 5 },
@@ -80,34 +81,9 @@ const contactItems = [
   },
 ];
 
-const mockPosts = [
-  {
-    id: '1',
-    title: 'Next.js 13으로 블로그 만들기',
-    description: 'Next.js 13과 Notion API를 활용하여 개인 블로그를 만드는 방법을 알아봅니다.',
-    coverImage: 'https://picsum.photos/800/400',
-    tags: [
-      { id: '1', name: 'Next.js', count: 1 },
-      { id: '2', name: 'React', count: 1 },
-    ],
-    authors: '짐코딩',
-    date: '2024-02-01',
-  },
-  {
-    id: '2',
-    title: 'TypeScript 기초 다지기',
-    description: 'TypeScript의 기본 문법과 실전에서 자주 사용되는 패턴들을 살펴봅니다.',
-    coverImage: 'https://picsum.photos/800/401',
-    tags: [
-      { id: '3', name: 'TypeScript', count: 1 },
-      { id: '4', name: 'JavaScript', count: 1 },
-    ],
-    authors: '짐코딩',
-    date: '2024-01-15',
-  },
-];
+export default async function Home() {
+  const posts = await getPublishedPost();
 
-export default function Home() {
   return (
     <div className="container py-8">
       <div className="grid grid-cols-[200px_1fr_220px] gap-6">
@@ -115,6 +91,7 @@ export default function Home() {
         <aside>
           <TagSection tags={mockTags} />
         </aside>
+
         <div className="space-y-8">
           {/* 섹션 제목 */}
           <div className="flex items-center justify-between">
@@ -132,14 +109,20 @@ export default function Home() {
 
           {/* 블로그 카드 그리드 */}
           <div className="grid gap-4">
-            {/* 블로그 카드 반복 */}
-            {mockPosts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.id}`}>
-                <PostCard post={post} />
-              </Link>
-            ))}
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <Link key={post.id} href={`/blog/${post.slug}`}>
+                  <PostCard post={post} />
+                </Link>
+              ))
+            ) : (
+              <div className="py-12 text-center">
+                <p className="text-muted-foreground text-lg">아직 발행된 포스트가 없습니다.</p>
+              </div>
+            )}
           </div>
         </div>
+
         {/* 우측 사이드바 */}
         <aside className="flex flex-col gap-6">
           <ProfileSection socialLinks={socialLinks} />
