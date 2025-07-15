@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface TagSectionProps {
   tags: TagFilterItem[];
-  selectedTag?: string; // 👈 선택된 태그 prop 추가
+  selectedTag?: string;
 }
 
 const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
@@ -28,8 +28,8 @@ const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
                   className={cn(
                     'flex items-center justify-between rounded-md px-4 py-1.5 transition-colors',
                     isSelected
-                      ? 'bg-primary/10 text-primary font-medium' // 👈 선택된 태그 스타일
-                      : 'hover:bg-muted-foreground/10 text-muted-foreground' // 👈 기본 태그 스타일
+                      ? 'bg-primary/10 text-primary font-medium'
+                      : 'hover:bg-muted-foreground/10 text-muted-foreground'
                   )}
                 >
                   <span>{tag.name}</span>

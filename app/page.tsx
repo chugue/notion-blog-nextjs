@@ -11,7 +11,7 @@ import TagSection from './_components/TagSection';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
 import Link from 'next/link';
-import { getPublishedPost, getTagList } from '@/lib/notion';
+import { getPublishedPost } from '@/lib/notion';
 
 const socialLinks = [
   {
@@ -72,15 +72,16 @@ const contactItems = [
 ];
 
 interface HomeProps {
-  searchParams: {
+  searchParams: Promise<{
     tag?: string;
-  };
+  }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const selectedTag = searchParams.tag || '전체';
+  const { tag } = await searchParams;
+  const selectedTag = tag || '전체';
 
-  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag), getTagList()]);
+  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag), getTags()]);
 
   const filteredPosts =
     selectedTag && selectedTag !== '전체'
@@ -89,9 +90,9 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-[200px_1fr_220px] gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px] xl:grid-cols-[200px_1fr_220px]">
         {/* 좌측 사이드바 */}
-        <aside>
+        <aside className="hidden xl:block">
           <TagSection tags={tags} selectedTag={selectedTag} />
         </aside>
 

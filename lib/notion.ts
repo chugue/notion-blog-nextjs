@@ -1,84 +1,115 @@
-import { Post, TagFilterItem } from '@/types/blog';
 import { Client } from '@notionhq/client';
+import type { Post, TagFilterItem } from '@/types/blog';
 import type {
   PageObjectResponse,
-  UserObjectResponse,
+  PartialUserObjectResponse,
+  PersonUserObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
-export const getTagList = async (): Promise<TagFilterItem[]> => {
-  const posts = await getPublishedPost();
+function getPostMetadata(page: PageObjectResponse): Post {
+  const { properties } = page;
 
-  const tagCounts = posts
-    .flatMap((post) => post.tags || [])
-    .reduce((acc, tag) => {
-      acc.set(tag, (acc.get(tag) || 0) + 1);
-      return acc;
-    }, new Map<string, number>());
+  const getCoverImage = (cover: PageObjectResponse['cover']) => {
+    if (!cover) return '';
 
-  const totalPosts = posts.length;
+    switch (cover.type) {
+      case 'external':
+        return cover.external.url;
+      case 'file':
+        return cover.file.url;
+      default:
+        return '';
+    }
+  };
 
-  const tagList: TagFilterItem[] = [
-    {
-      id: 'all',
-      name: '전체',
-      count: totalPosts,
+  console.log('properties', properties.Author?.people[0] as PartialUserObjectResponse);
+
+  return {
+    id: page.id,
+    title: properties.Title.type === 'title' ? (properties.Title.title[0]?.plain_text ?? '') : '',
+    description:
+      properties.Description.type === 'rich_text'
+        ? (properties.Description.rich_text[0]?.plain_text ?? '')
+        : '',
+    coverImage: getCoverImage(page.cover),
+    tags:
+      properties.Tags.type === 'multi_select'
+        ? properties.Tags.multi_select.map((tag) => tag.name)
+        : [],
+    author:
+      properties.Author.type === 'people'
+        ? ((properties.Author.people[0] as PersonUserObjectResponse)?.name ?? '')
+        : '',
+    date: properties.Date.type === 'date' ? (properties.Date.date?.start ?? '') : '',
+    modifiedDate: page.last_edited_time,
+    slug:
+      properties.Slug.type === 'rich_text'
+        ? (properties.Slug.rich_text[0]?.plain_text ?? page.id)
+        : page.id,
+  };
+}
+
+export const getPostBySlug = async (
+  slug: string
+): Promise<{
+  markdown: string;
+  post: Post;
+}> => {
+  const response = await notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_ID!,
+    filter: {
+      and: [
+        {
+          property: 'Slug',
+          rich_text: {
+            equals: slug,
+          },
+        },
+        {
+          property: 'Status',
+          select: {
+            equals: 'Published',
+          },
+        },
+      ],
     },
-    ...Array.from(tagCounts.entries())
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([tagName, count]) => ({
-        id: tagName.toLowerCase().replace(/\s+/g, '-'),
-        name: tagName,
-        count,
-      })),
-  ];
+  });
 
-  return tagList;
-};
+  return {
+    markdown: '',
+    post: getPostMetadata(response.results[0] as PageObjectResponse),
+  };
 
-const getCoverImage = (cover: PageObjectResponse['cover'] | null) => {
-  if (!cover) return '';
-
-  switch (cover.type) {
-    case 'external':
-      return cover.external.url;
-    case 'file':
-      return cover.file.url;
-    default:
-      return '';
-  }
+  // return getPageMetadata(response);
 };
 
 export const getPublishedPost = async (tag?: string): Promise<Post[]> => {
-  const baseFilter = {
-    property: 'Status',
-    select: {
-      equals: 'Published',
-    },
-  };
-
-  // 👈 태그 필터가 있는 경우 compound filter 구성
-  const filter =
-    tag && tag !== '전체'
-      ? {
-          and: [
-            baseFilter,
-            {
-              property: 'Tags',
-              multi_select: {
-                contains: tag,
-              },
-            },
-          ],
-        }
-      : baseFilter;
-
   const response = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID!,
-    filter,
+    filter: {
+      and: [
+        {
+          property: 'Status',
+          select: {
+            equals: 'Published',
+          },
+        },
+        ...(tag && tag !== '전체'
+          ? [
+              {
+                property: 'Tags',
+                multi_select: {
+                  contains: tag,
+                },
+              },
+            ]
+          : []),
+      ],
+    },
     sorts: [
       {
         property: 'Date',
@@ -87,54 +118,42 @@ export const getPublishedPost = async (tag?: string): Promise<Post[]> => {
     ],
   });
 
-  const posts: Post[] = response.results.map((page) => {
-    const properties = (page as { properties: Record<string, unknown> }).properties;
+  return response.results
+    .filter((page): page is PageObjectResponse => 'properties' in page)
+    .map(getPostMetadata);
+};
 
-    // Title 추출
-    const title =
-      (properties.Title as { title?: { plain_text: string }[] })?.title?.[0]?.plain_text || '';
+export const getTags = async (): Promise<TagFilterItem[]> => {
+  const posts = await getPublishedPost();
 
-    // Description 추출
-    const description =
-      (properties.Description as { rich_text?: { plain_text: string }[] })?.rich_text?.[0]
-        ?.plain_text || '';
+  // 모든 태그를 추출하고 각 태그의 출현 횟수를 계산
+  const tagCount = posts.reduce(
+    (acc, post) => {
+      post.tags?.forEach((tag) => {
+        acc[tag] = (acc[tag] || 0) + 1;
+      });
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
-    // Tags 추출
-    const tags =
-      (properties.Tags as { multi_select?: { name: string }[] })?.multi_select?.map(
-        (tag) => tag.name
-      ) || [];
+  // TagFilterItem 형식으로 변환
+  const tags: TagFilterItem[] = Object.entries(tagCount).map(([name, count]) => ({
+    id: name,
+    name,
+    count,
+  }));
 
-    // Author 추출 (people 타입이지만 Post 타입에서는 string으로 정의됨)
-    const author = (properties.Author as UserObjectResponse)?.name || '';
-
-    // Date 추출
-    const date = (properties.Date as { date?: { start: string } })?.date?.start || '';
-
-    // Modified Date 추출
-    const modifiedDate =
-      (properties['Modified Date'] as { date?: { start: string } })?.date?.start || '';
-
-    // Slug 추출
-    const slug =
-      (properties.Slug as { rich_text?: { plain_text: string }[] })?.rich_text?.[0]?.plain_text ||
-      '';
-
-    // Cover Image 추출
-    const coverImage = getCoverImage((page as PageObjectResponse).cover) || '';
-
-    return {
-      id: (page as { id: string }).id,
-      title,
-      description: description || undefined,
-      coverImage: coverImage || undefined,
-      tags: tags.length > 0 ? tags : undefined,
-      author: author || undefined,
-      date: date || undefined,
-      modifiedDate: modifiedDate || undefined,
-      slug,
-    };
+  // "전체" 태그 추가
+  tags.unshift({
+    id: 'all',
+    name: '전체',
+    count: posts.length,
   });
 
-  return posts;
+  // 태그 이름 기준으로 정렬 ("전체" 태그는 항상 첫 번째에 위치하도록 제외)
+  const [allTag, ...restTags] = tags;
+  const sortedTags = restTags.sort((a, b) => a.name.localeCompare(b.name));
+
+  return [allTag, ...sortedTags];
 };
