@@ -3,9 +3,6 @@ import createMDX from '@next/mdx';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
 
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
-console.log('process.env.NODE_NAME', process.env.NODE_NAME);
-
 const nextConfig: NextConfig = {
   /* config options here */
   images: {

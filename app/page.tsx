@@ -1,17 +1,11 @@
 import { BookOpen, Github, HandshakeIcon, Instagram, Megaphone, Youtube } from 'lucide-react';
 import { PostCard } from '@/components/features/blog/PostCard';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import TagSection from './_components/TagSection';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
 import Link from 'next/link';
 import { getPublishedPost, getTags } from '@/lib/notion';
+import SortSelect from './_components/SortSelect';
 
 const socialLinks = [
   {
@@ -74,14 +68,16 @@ const contactItems = [
 interface HomeProps {
   searchParams: Promise<{
     tag?: string;
+    sort?: string;
   }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { tag } = await searchParams;
+  const { tag, sort } = await searchParams;
   const selectedTag = tag ?? '전체';
+  const selectedSort = sort ?? 'latest';
 
-  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag), getTags()]);
+  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag, selectedSort), getTags()]);
 
   const filteredPosts =
     selectedTag && selectedTag !== '전체'
@@ -102,23 +98,15 @@ export default async function Home({ searchParams }: HomeProps) {
             <h2 className="text-3xl font-bold tracking-tight">
               {selectedTag ? `${selectedTag} 관련 포스트` : '블로그 목록'}
             </h2>
-            <Select defaultValue="latest">
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 방식 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="latest">최신순</SelectItem>
-                <SelectItem value="oldest">오래된순</SelectItem>
-              </SelectContent>
-            </Select>
+            <SortSelect />
           </div>
 
           {/* 블로그 카드 그리드 */}
           <div className="grid gap-4">
             {filteredPosts.length > 0 ? (
-              filteredPosts.map((post) => (
+              filteredPosts.map((post, index) => (
                 <Link key={post.id} href={`/blog/${post.slug}`}>
-                  <PostCard post={post} />
+                  <PostCard post={post} isFirst={index === 0} />
                 </Link>
               ))
             ) : (
