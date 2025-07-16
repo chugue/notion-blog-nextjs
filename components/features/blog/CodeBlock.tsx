@@ -43,7 +43,7 @@ const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
         aria-label={isCopied ? '복사됨!' : '코드 복사'}
         onClick={handleCopyCode}
         className={cn(
-          'absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-md transition-all',
+          'top-2ㄴ absolute right-3 z-10 flex h-8 w-8 items-center justify-center rounded-md transition-all',
           'hover:bg-code-accent',
           'opacity-0 group-hover:opacity-100',
           'disabled:cursor-not-allowed',
