@@ -2,10 +2,13 @@ import { Client } from '@notionhq/client';
 import type { Post, TagFilterItem } from '@/types/blog';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionUser } from '@/types/notion';
+import { NotionToMarkdown } from 'notion-to-md';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
+
+export const n2m = new NotionToMarkdown({ notionClient: notion });
 
 function getPostMetadata(page: PageObjectResponse): Post {
   const { properties } = page;
@@ -73,13 +76,13 @@ export const getPostBySlug = async (
       ],
     },
   });
+  const mdBlocks = await n2m.pageToMarkdown(response.results[0].id);
+  const { parent } = n2m.toMarkdownString(mdBlocks);
 
   return {
-    markdown: '',
+    markdown: parent,
     post: getPostMetadata(response.results[0] as PageObjectResponse),
   };
-
-  // return getPageMetadata(response);
 };
 
 export const getPublishedPost = async (tag?: string): Promise<Post[]> => {
