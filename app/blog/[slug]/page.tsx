@@ -5,6 +5,7 @@ import { CalendarDays, User } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getPostBySlug } from '@/lib/notion';
+import { formatDate } from '@/lib/date';
 
 interface TableOfContentsItem {
   id: string;
@@ -125,9 +126,11 @@ export default async function BlogPost({ params }: BlogPostProps) {
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="space-y-2">
-              {post.tags?.map((tag) => (
-                <Badge key={tag}>{tag}</Badge>
-              ))}
+              <div className="flex gap-2">
+                {post.tags?.map((tag) => (
+                  <Badge key={tag}>{tag}</Badge>
+                ))}
+              </div>
               <h1 className="text-4xl font-bold">{post.title}</h1>
             </div>
 
@@ -139,7 +142,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
               </div>
               <div className="flex items-center gap-1">
                 <CalendarDays className="h-4 w-4" />
-                <span>{post.date}</span>
+                <span>{post.date ? formatDate(post.date) : ''}</span>
               </div>
               {/* <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />

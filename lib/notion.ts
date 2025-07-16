@@ -1,10 +1,7 @@
 import { Client } from '@notionhq/client';
 import type { Post, TagFilterItem } from '@/types/blog';
-import type {
-  PageObjectResponse,
-  PartialUserObjectResponse,
-  PersonUserObjectResponse,
-} from '@notionhq/client/build/src/api-endpoints';
+import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { NotionUser } from '@/types/notion';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -26,8 +23,6 @@ function getPostMetadata(page: PageObjectResponse): Post {
     }
   };
 
-  console.log('properties', properties.Author?.people[0] as PartialUserObjectResponse);
-
   return {
     id: page.id,
     title: properties.Title.type === 'title' ? (properties.Title.title[0]?.plain_text ?? '') : '',
@@ -42,7 +37,7 @@ function getPostMetadata(page: PageObjectResponse): Post {
         : [],
     author:
       properties.Author.type === 'people'
-        ? ((properties.Author.people[0] as PersonUserObjectResponse)?.name ?? '')
+        ? ((properties.Author.people[0] as NotionUser)?.name ?? '')
         : '',
     date: properties.Date.type === 'date' ? (properties.Date.date?.start ?? '') : '',
     modifiedDate: page.last_edited_time,

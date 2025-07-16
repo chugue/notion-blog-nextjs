@@ -11,7 +11,7 @@ import TagSection from './_components/TagSection';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
 import Link from 'next/link';
-import { getPublishedPost } from '@/lib/notion';
+import { getPublishedPost, getTags } from '@/lib/notion';
 
 const socialLinks = [
   {
@@ -79,7 +79,7 @@ interface HomeProps {
 
 export default async function Home({ searchParams }: HomeProps) {
   const { tag } = await searchParams;
-  const selectedTag = tag || '전체';
+  const selectedTag = tag ?? '전체';
 
   const [posts, tags] = await Promise.all([getPublishedPost(selectedTag), getTags()]);
 
