@@ -1,17 +1,25 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import localFont from 'next/font/local';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+// 👈 메이플스토리 폰트만 남기고 나머지 제거
+const maplestory = localFont({
+  src: [
+    {
+      path: '../public/font/Maplestory OTF Light.otf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../public/font/Maplestory OTF Bold.otf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-maplestory',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -26,13 +34,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${maplestory.variable} antialiased`} // 👈 메이플스토리만
+        suppressHydrationWarning={true}
+      >
         <div className="flex min-h-screen flex-col">
-          {/* Header 영역 */}
           <Header />
-          {/* Main 영역 */}
           <main className="flex-1">{children}</main>
-          {/* Footer 영역 */}
           <Footer />
         </div>
       </body>

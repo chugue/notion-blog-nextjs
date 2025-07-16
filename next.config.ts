@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next';
 import createMDX from '@next/mdx';
 import remarkGfm from 'remark-gfm';
+import rehypePrettyCode from 'rehype-pretty-code';
+import { transformerCopyButton } from '@rehype-pretty/transformers';
+import rehypeSanitize from 'rehype-sanitize';
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -15,6 +18,9 @@ const nextConfig: NextConfig = {
       {
         hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
       },
+      {
+        hostname: 'www.w3.org',
+      },
     ],
   },
   pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],
@@ -25,6 +31,7 @@ const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
     remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeSanitize],
   },
 });
 

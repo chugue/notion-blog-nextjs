@@ -6,8 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getPostBySlug } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import remarkGfm from 'remark-gfm';
+import { MDXContent } from '@/components/features/blog/MdxContent';
 
 interface TableOfContentsItem {
   id: string;
@@ -157,7 +156,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
           {/* 블로그 본문 */}
           <div className="prose prose-slate dark:prose-invert max-w-none">
-            <MDXRemote source={markdown} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
+            <MDXContent source={markdown} />
           </div>
 
           <Separator className="my-16" />
