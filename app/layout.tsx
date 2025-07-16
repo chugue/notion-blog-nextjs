@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
         className={`${maplestory.variable} antialiased`} // 👈 메이플스토리만
         suppressHydrationWarning={true}

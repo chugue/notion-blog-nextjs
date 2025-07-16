@@ -41,8 +41,8 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-code-accent: #161616;
-  --color-code-text: #e1e7ef;
+  --color-code-accent: #252738;
+  --color-code-text: #767887;
 
   --font-sans: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;

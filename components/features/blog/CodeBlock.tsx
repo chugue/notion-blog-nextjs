@@ -11,16 +11,14 @@ interface CodeBlockProps {
 
 const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
   const [isCopied, setIsCopied] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const preRef = useRef<HTMLPreElement>(null);
 
   const handleCopyCode = async () => {
     const code = preRef.current?.textContent;
 
-    if (!code || isLoading || isCopied) return;
+    if (!code || isCopied) return;
 
     try {
-      setIsLoading(true);
       await navigator.clipboard.writeText(code);
       setIsCopied(true);
 
@@ -29,8 +27,6 @@ const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
       }, 2000);
     } catch (error) {
       console.error('복사 실패:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -39,11 +35,11 @@ const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
       {/* 복사 버튼 */}
       <button
         type="button"
-        disabled={isCopied || isLoading}
+        disabled={isCopied}
         aria-label={isCopied ? '복사됨!' : '코드 복사'}
         onClick={handleCopyCode}
         className={cn(
-          'top-2ㄴ absolute right-3 z-10 flex h-8 w-8 items-center justify-center rounded-md transition-all',
+          'absolute top-2 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-md transition-all',
           'hover:bg-code-accent',
           'opacity-0 group-hover:opacity-100',
           'disabled:cursor-not-allowed',
@@ -51,7 +47,7 @@ const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
         )}
       >
         {isCopied ? (
-          <Check className="h-4 w-4 text-green-500" />
+          <Check className="h-4 w-4 text-green-400" />
         ) : (
           <Copy className="text-code-text h-4 w-4" />
         )}

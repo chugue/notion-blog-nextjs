@@ -7,103 +7,35 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import { getPostBySlug } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXContent } from '@/components/features/blog/MdxContent';
+import { compile } from '@mdx-js/mdx';
+import withSlugs from 'rehype-slug';
+import withToc from '@stefanprobst/rehype-extract-toc';
+import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
+import rehypeSanitize from 'rehype-sanitize';
 
-interface TableOfContentsItem {
-  id: string;
-  title: string;
-  items?: TableOfContentsItem[];
+interface TocEntry {
+  value: string;
+  depth: number;
+  id?: string;
+  children?: Array<TocEntry>;
 }
 
-const mockTableOfContents: TableOfContentsItem[] = [
-  {
-    id: 'intro',
-    title: '소개',
-    items: [],
-  },
-  {
-    id: 'getting-started',
-    title: '시작하기',
-    items: [
-      {
-        id: 'prerequisites',
-        title: '사전 준비사항',
-        items: [
-          {
-            id: 'node-installation',
-            title: 'Node.js 설치',
-          },
-          {
-            id: 'npm-setup',
-            title: 'NPM 설정',
-          },
-        ],
-      },
-      {
-        id: 'project-setup',
-        title: '프로젝트 설정',
-        items: [
-          {
-            id: 'create-project',
-            title: '프로젝트 생성',
-          },
-          {
-            id: 'folder-structure',
-            title: '폴더 구조',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'shadcn-ui-setup',
-    title: 'Shadcn UI 설정하기',
-    items: [
-      {
-        id: 'installation',
-        title: '설치 방법',
-        items: [
-          {
-            id: 'cli-installation',
-            title: 'CLI 도구 설치',
-          },
-          {
-            id: 'component-setup',
-            title: '컴포넌트 설정',
-          },
-        ],
-      },
-      {
-        id: 'configuration',
-        title: '환경 설정',
-        items: [
-          {
-            id: 'theme-setup',
-            title: '테마 설정',
-          },
-          {
-            id: 'typography',
-            title: '타이포그래피',
-          },
-        ],
-      },
-    ],
-  },
-];
+type Toc = Array<TocEntry>;
 
-function TableOfContentLink({ item }: { item: TableOfContentsItem }) {
+function TableOfContentsLink({ item }: { item: TocEntry }) {
   return (
     <div className="space-y-2">
       <Link
         key={item.id}
         href={`#${item.id}`}
-        className={`hover:text-foreground text-muted-foreground trasition-colors block font-medium`}
+        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
       >
-        {item.title}
+        {item.value}
       </Link>
-      {item.items && item.items.length > 0 && (
+      {item.children && item.children.length > 0 && (
         <div className="space-y-2 pl-4">
-          {item.items.map((subItem) => (
-            <TableOfContentLink key={subItem.id} item={subItem} />
+          {item.children.map((subItem) => (
+            <TableOfContentsLink key={subItem.id} item={subItem} />
           ))}
         </div>
       )}
@@ -119,15 +51,19 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params;
   const { markdown, post } = await getPostBySlug(slug);
 
+  const { data } = await compile(markdown, {
+    rehypePlugins: [withSlugs, rehypeSanitize, withToc, withTocExport],
+  });
+
   return (
     <div className="container py-12">
-      <div className="grid grid-cols-[240px_1fr_240px] gap-8">
-        <aside>{/* 추후 컨텐츠 추가 */}</aside>
-        <section>
+      <div className="grid grid-cols-[1fr] gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[200px_1fr_220px]">
+        <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
+        <section className="min-w-0">
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {post.tags?.map((tag) => (
                   <Badge key={tag}>{tag}</Badge>
                 ))}
@@ -155,7 +91,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <Separator className="my-8" />
 
           {/* 블로그 본문 */}
-          <div className="prose prose-slate dark:prose-invert max-w-none">
+          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
             <MDXContent source={markdown} />
           </div>
 
@@ -194,13 +130,13 @@ export default async function BlogPost({ params }: BlogPostProps) {
           </nav>
         </section>
 
-        <aside className="relative">
-          <div className="sticky top-[var(--sticky-top)]">
-            <div className="bg-muted/50 space-y-4 rounded-lg p-6 backdrop-blur-sm">
+        <aside className="hidden md:block">
+          <div className="sticky top-[var(--sticky-top)] border-l-2 border-black/50">
+            <div className="space-y-4 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>
               <nav className="space-y-3 text-sm">
-                {mockTableOfContents.map((item) => (
-                  <TableOfContentLink key={item.id} item={item} />
+                {data?.toc?.map((item) => (
+                  <TableOfContentsLink key={item.id} item={item} />
                 ))}
               </nav>
             </div>

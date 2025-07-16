@@ -3,6 +3,7 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import CodeBlock from './CodeBlock';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
 
 interface MDXContentProps {
   source: string;
@@ -23,7 +24,7 @@ export async function MDXContent({ source }: MDXContentProps) {
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm],
-          rehypePlugins: [rehypeSanitize, [rehypePrettyCode, codeBlockOptions]],
+          rehypePlugins: [rehypeSlug, rehypeSanitize, [rehypePrettyCode, codeBlockOptions]],
         },
       }}
       components={componentsConfig}
