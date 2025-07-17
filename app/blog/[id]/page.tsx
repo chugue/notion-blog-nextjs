@@ -2,8 +2,6 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getPostById } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXContent } from '@/components/features/blog/MdxContent';
@@ -12,6 +10,7 @@ import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
+import GiscusComments from '@/components/GiscusComments';
 
 interface TocEntry {
   value: string;
@@ -96,7 +95,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <Separator className="my-16" />
 
           {/* 이전/다음 포스트 네비게이션 */}
-          <nav className="grid grid-cols-2 gap-8">
+          {/* <nav className="grid grid-cols-2 gap-8">
             <Link href="/blog/previous-post">
               <Card className="group hover:bg-muted/50 transition-colors">
                 <CardHeader>
@@ -125,9 +124,11 @@ export default async function BlogPost({ params }: BlogPostProps) {
                 </CardHeader>
               </Card>
             </Link>
-          </nav>
+          </nav> */}
+          <GiscusComments />
         </section>
 
+        {/* 이전글 다음글 */}
         <aside className="hidden md:block">
           <div className="sticky top-[var(--sticky-top)] border-l-2 border-black/50">
             <div className="space-y-4 rounded-lg p-6 backdrop-blur-sm">
