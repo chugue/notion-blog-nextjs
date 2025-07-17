@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import React, { use } from 'react';
+import React, { use, useEffect } from 'react';
 import { PostCard } from './PostCard';
-import { Button } from '@/components/ui/button';
 import { GetPublishedPostResponse } from '@/lib/notion';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
+import { Loader2 } from 'lucide-react';
 
 interface PostListProps {
   postsPromise: Promise<GetPublishedPostResponse>;
@@ -15,6 +16,9 @@ interface PostListProps {
 const PostListSuspense = ({ postsPromise }: PostListProps) => {
   const searchParams = useSearchParams();
   const initialData = use(postsPromise);
+  const { ref, inView } = useInView({
+    threshold: 1,
+  });
 
   const tag = searchParams.get('tag') || '전체';
   const sort = searchParams.get('sort') || 'latest';
@@ -41,21 +45,27 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     return response.json();
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, error } = useInfiniteQuery(
+  const { data, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
     {
       queryKey: ['posts', tag, sort],
       queryFn: fetchPost,
-      initialPageParam: initialData.nextCursor,
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) => {
+        return lastPage.hasMore ? lastPage.nextCursor : undefined;
+      },
       initialData: {
         pages: [initialData],
         pageParams: [undefined],
       },
-      getNextPageParam: (lastPage) => {
-        return lastPage.hasMore ? lastPage.nextCursor : undefined;
-      },
-      staleTime: 5 * 60 * 1000,
     }
   );
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   // 에러 상태
   if (isError) {
@@ -72,9 +82,9 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
   // 모든 페이지의 포스트를 하나의 배열로 합치기
   const allPosts = data?.pages.flatMap((page) => page.posts) || [];
 
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  };
+  // const handleLoadMore = () => {
+  //   if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+  // };
 
   return (
     <div className="space-y-6">
@@ -96,8 +106,16 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
         )}
       </div>
 
+      {hasNextPage && !isFetchingNextPage && <div ref={ref} className="h-10"></div>}
+      {isFetchingNextPage && (
+        <div className="flex items-center justify-center gap-2 py-4">
+          <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+          <span className="text-muted-foreground text-sm">로딩 중...</span>
+        </div>
+      )}
+
       {/* 더보기 버튼 */}
-      {hasNextPage && (
+      {/* {hasNextPage && (
         <div>
           <Button
             variant="outline"
@@ -109,7 +127,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
             {isFetchingNextPage ? '로딩 중...' : '더보기'}
           </Button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
