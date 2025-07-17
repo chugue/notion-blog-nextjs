@@ -4,15 +4,15 @@ import { PostCard } from './PostCard';
 import { Post } from '@/types/blog';
 
 interface PostListProps {
-  filteredPosts: Post[];
+  posts: Post[];
   selectedTag: string;
 }
 
-const PostList = ({ filteredPosts, selectedTag }: PostListProps) => {
+const PostList = ({ posts, selectedTag }: PostListProps) => {
   return (
     <div className="grid gap-4">
-      {filteredPosts.length > 0 ? (
-        filteredPosts.map((post, index) => (
+      {posts.length > 0 ? (
+        posts.map((post, index) => (
           <Link key={post.id} href={`/blog/${post.slug}`}>
             <PostCard post={post} isFirst={index === 0} />
           </Link>

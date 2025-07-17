@@ -29,9 +29,11 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     if (tag && tag !== '전체') params.append('tag', tag);
     if (sort && sort !== 'latest') params.append('sort', sort);
     if (pageParam) params.append('startCursor', pageParam);
+
     params.append('pageSize', '2');
 
     const response = await fetch(`/api/posts?${params.toString()}`);
+
     if (!response.ok) {
       throw new Error('Failed to fetch posts');
     }

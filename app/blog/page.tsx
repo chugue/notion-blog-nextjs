@@ -76,12 +76,10 @@ export default async function Blog({ searchParams }: HomeProps) {
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag, selectedSort), getTags()]);
-
-  const filteredPosts =
-    selectedTag && selectedTag !== '전체'
-      ? posts.filter((post) => post.tags?.includes(selectedTag))
-      : posts;
+  const [posts, tags] = await Promise.all([
+    getPublishedPost({ tag: selectedTag, sort: selectedSort }),
+    getTags(),
+  ]);
 
   return (
     <div className="container py-8">
@@ -96,7 +94,7 @@ export default async function Blog({ searchParams }: HomeProps) {
           <HeaderSection selectedTag={selectedTag} />
 
           {/* 블로그 카드 그리드 */}
-          <PostList filteredPosts={filteredPosts} selectedTag={selectedTag} />
+          <PostList posts={posts.posts} selectedTag={selectedTag} />
         </div>
 
         {/* 우측 사이드바 */}
