@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getPostBySlug } from '@/lib/notion';
+import { getPostById } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXContent } from '@/components/features/blog/MdxContent';
 import { compile } from '@mdx-js/mdx';
@@ -42,12 +42,12 @@ function TableOfContentsLink({ item }: { item: TocEntry }) {
 }
 
 interface BlogPostProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function BlogPost({ params }: BlogPostProps) {
-  const { slug } = await params;
-  const { markdown, post } = await getPostBySlug(slug);
+  const { id } = await params;
+  const { markdown, post } = await getPostById(id);
 
   const { data } = await compile(markdown, {
     rehypePlugins: [withSlugs, rehypeSanitize, withToc, withTocExport],
