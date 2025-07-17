@@ -3,7 +3,6 @@ import type { Post, TagFilterItem } from '@/types/blog';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionUser } from '@/types/notion';
 import { NotionToMarkdown } from 'notion-to-md';
-import { unstable_cache } from 'next/cache';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
