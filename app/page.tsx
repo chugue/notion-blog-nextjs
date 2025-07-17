@@ -87,7 +87,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px] xl:grid-cols-[200px_1fr_220px]">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_250px]">
         {/* 좌측 사이드바 */}
         <aside className="hidden xl:block">
           <Suspense fallback={<TagSectionSkeleton />}>

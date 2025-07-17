@@ -10,7 +10,7 @@ import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
-import GiscusComments from '@/components/GiscusComments';
+import GiscusComments from '@/components/features/blog/GiscusComments';
 
 interface TocEntry {
   value: string;
@@ -130,8 +130,8 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
         {/* 이전글 다음글 */}
         <aside className="hidden md:block">
-          <div className="sticky top-[var(--sticky-top)] border-l-2 border-black/50">
-            <div className="space-y-4 rounded-lg p-6 backdrop-blur-sm">
+          <div className="sticky top-[var(--sticky-top)] border-l-2 border-black/50 dark:border-white/50">
+            <div className="rounded-lg px-6 py-2 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>
               <nav className="space-y-3 text-sm">
                 {data?.toc?.map((item) => (

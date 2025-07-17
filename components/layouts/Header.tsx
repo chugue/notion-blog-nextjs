@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import ThemeToggle from '../ThemeToggle';
 
 const Header = () => {
   return (
@@ -9,6 +10,7 @@ const Header = () => {
           <span className="font-bold">짐코딩 블로그</span>
         </Link>
         <nav className="ml-auto flex items-center gap-4">
+          <ThemeToggle />
           <Link href="/" className="hover:text-primary font-medium">
             홈
           </Link>

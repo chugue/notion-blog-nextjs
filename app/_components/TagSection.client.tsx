@@ -30,7 +30,7 @@ const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
               >
                 <div
                   className={cn(
-                    'flex items-center justify-between rounded-md px-4 py-1.5 transition-colors',
+                    'flex items-center justify-between rounded-md px-4 py-1.5 text-sm transition-colors',
                     isSelected
                       ? 'bg-primary/10 text-primary font-medium'
                       : 'hover:bg-muted-foreground/10 text-muted-foreground'

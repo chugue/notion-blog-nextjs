@@ -2,8 +2,11 @@
 
 import React from 'react';
 import Giscus from '@giscus/react';
+import { useTheme } from 'next-themes';
 
 const GiscusComments = () => {
+  const { theme } = useTheme();
+
   return (
     <Giscus
       repo="chugue/notion-blog-nextjs-giscus"
@@ -15,7 +18,7 @@ const GiscusComments = () => {
       reactionsEnabled="1"
       emitMetadata="0"
       inputPosition="top"
-      theme="light"
+      theme={theme === 'dark' ? 'dark' : 'noborder_light'}
       lang="ko"
       loading="lazy"
     />
