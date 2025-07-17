@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
       {
         hostname: 'www.w3.org',
       },
+      {
+        hostname: 'www.notion.so',
+      },
     ],
   },
   pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],

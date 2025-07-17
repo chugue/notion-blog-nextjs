@@ -1,13 +1,13 @@
 import { BookOpen, Github, HandshakeIcon, Instagram, Megaphone, Youtube } from 'lucide-react';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
-import { getTags } from '@/lib/notion';
 import HeaderSection from './_components/HeaderSection';
 import { Suspense } from 'react';
-import TagSectionClient from './_components/TagSection.client';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
-import TagSectionSkeleton from './_components/TagSectionSkeleton';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
+import TagSectionSkeleton from './_components/TagSectionSkeleton';
+import TagSectionClient from './_components/TagSection.client';
+import { getPublishedPost, getTags } from '@/lib/notion';
 
 const socialLinks = [
   {
@@ -80,6 +80,10 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedSort = sort ?? 'latest';
 
   const tags = getTags();
+  const postsPromise = getPublishedPost({
+    tag: selectedTag,
+    sort: selectedSort,
+  });
 
   return (
     <div className="container py-8">
@@ -91,13 +95,13 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </aside>
 
-        <div className="space-y-8">
+        <div className="max-w-[650px] space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:justify-self-end">
           {/* 섹션 제목 */}
           <HeaderSection selectedTag={selectedTag} />
 
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
-            <PostListSuspense selectedSort={selectedSort} selectedTag={selectedTag} />
+            <PostListSuspense postsPromise={postsPromise} />
           </Suspense>
         </div>
 

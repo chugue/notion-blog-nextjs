@@ -3,6 +3,7 @@ import './globals.css';
 import localFont from 'next/font/local';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
+import ProviderTanstack from './provider-tanstack';
 
 // 👈 메이플스토리 폰트만 남기고 나머지 제거
 const maplestory = localFont({
@@ -38,11 +39,13 @@ export default function RootLayout({
         className={`${maplestory.variable} antialiased`} // 👈 메이플스토리만
         suppressHydrationWarning={true}
       >
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <ProviderTanstack>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </ProviderTanstack>
       </body>
     </html>
   );

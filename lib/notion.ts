@@ -10,6 +10,19 @@ export const notion = new Client({
 
 export const n2m = new NotionToMarkdown({ notionClient: notion });
 
+export interface GetPublishedPostParams {
+  tag?: string;
+  sort?: string;
+  pageSize?: number;
+  startCursor?: string;
+}
+
+export interface GetPublishedPostResponse {
+  posts: Post[];
+  hasMore: boolean;
+  nextCursor: string;
+}
+
 function getPostMetadata(page: PageObjectResponse): Post {
   const { properties } = page;
 
@@ -85,7 +98,12 @@ export const getPostBySlug = async (
   };
 };
 
-export const getPublishedPost = async (tag?: string, sort?: string): Promise<Post[]> => {
+export const getPublishedPost = async ({
+  tag = '전체',
+  sort = 'latest',
+  pageSize = 2,
+  startCursor = undefined,
+}: GetPublishedPostParams): Promise<GetPublishedPostResponse> => {
   const response = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID!,
     filter: {
@@ -114,15 +132,25 @@ export const getPublishedPost = async (tag?: string, sort?: string): Promise<Pos
         direction: sort === 'latest' ? 'descending' : 'ascending',
       },
     ],
+    page_size: pageSize,
+    start_cursor: startCursor,
   });
 
-  return response.results
+  const posts = response.results
     .filter((page): page is PageObjectResponse => 'properties' in page)
     .map(getPostMetadata);
+
+  return {
+    posts,
+    hasMore: response.has_more,
+    nextCursor: response.next_cursor || '',
+  };
 };
 
 export const getTags = async (): Promise<TagFilterItem[]> => {
-  const posts = await getPublishedPost();
+  const { posts } = await getPublishedPost({
+    pageSize: 100,
+  });
 
   // 모든 태그를 추출하고 각 태그의 출현 횟수를 계산
   const tagCount = posts.reduce(
