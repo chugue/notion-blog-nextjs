@@ -1,13 +1,10 @@
 import { BookOpen, Github, HandshakeIcon, Instagram, Megaphone, Youtube } from 'lucide-react';
-import ProfileSection from './_components/ProfileSection';
-import ContactSection from './_components/ContactSection';
-import { getTags } from '@/lib/notion';
-import HeaderSection from './_components/HeaderSection';
-import { Suspense } from 'react';
-import TagSectionClient from './_components/TagSection.client';
-import PostListSuspense from '@/components/features/blog/PostListSuspense';
-import TagSectionSkeleton from './_components/TagSectionSkeleton';
-import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
+import { getPublishedPost, getTags } from '@/lib/notion';
+import PostList from '@/components/features/blog/PostList';
+import TagSection from '../_components/TagSection';
+import HeaderSection from '../_components/HeaderSection';
+import ProfileSection from '../_components/ProfileSection';
+import ContactSection from '../_components/ContactSection';
 
 const socialLinks = [
   {
@@ -74,21 +71,24 @@ interface HomeProps {
   }>;
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+export default async function Blog({ searchParams }: HomeProps) {
   const { tag, sort } = await searchParams;
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  const tags = getTags();
+  const [posts, tags] = await Promise.all([getPublishedPost(selectedTag, selectedSort), getTags()]);
+
+  const filteredPosts =
+    selectedTag && selectedTag !== '전체'
+      ? posts.filter((post) => post.tags?.includes(selectedTag))
+      : posts;
 
   return (
     <div className="container py-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px] xl:grid-cols-[200px_1fr_220px]">
         {/* 좌측 사이드바 */}
         <aside className="hidden xl:block">
-          <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSectionClient tags={tags} selectedTag={selectedTag} />
-          </Suspense>
+          <TagSection tags={tags} selectedTag={selectedTag} />
         </aside>
 
         <div className="space-y-8">
@@ -96,9 +96,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <HeaderSection selectedTag={selectedTag} />
 
           {/* 블로그 카드 그리드 */}
-          <Suspense fallback={<PostListSkeleton />}>
-            <PostListSuspense selectedSort={selectedSort} selectedTag={selectedTag} />
-          </Suspense>
+          <PostList filteredPosts={filteredPosts} selectedTag={selectedTag} />
         </div>
 
         {/* 우측 사이드바 */}
