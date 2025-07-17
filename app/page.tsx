@@ -95,7 +95,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </aside>
 
-        <div className="max-w-[650px] space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:justify-self-end">
+        <div className="w-full max-w-[650px] min-w-[500px] space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:justify-self-end">
           {/* 섹션 제목 */}
           <HeaderSection selectedTag={selectedTag} />
 
