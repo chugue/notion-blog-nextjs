@@ -87,15 +87,15 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_250px]">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[250px_1fr_250px]">
         {/* 좌측 사이드바 */}
-        <aside className="hidden xl:block">
+        <aside className="order-2 md:order-none">
           <Suspense fallback={<TagSectionSkeleton />}>
             <TagSectionClient tags={tags} selectedTag={selectedTag} />
           </Suspense>
         </aside>
 
-        <div className="w-full max-w-[650px] min-w-[500px] space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:justify-self-end">
+        <div className="order-3 w-full max-w-[650px] min-w-[500px] space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:order-none md:justify-self-end">
           {/* 섹션 제목 */}
           <HeaderSection selectedTag={selectedTag} />
 

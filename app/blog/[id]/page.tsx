@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, User } from 'lucide-react';
+import { CalendarDays, User, ChevronDown } from 'lucide-react';
 import { getPostById } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXContent } from '@/components/features/blog/MdxContent';
@@ -87,6 +87,24 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
           <Separator className="my-8" />
 
+          {/* 블로그 목차 */}
+          <div className="sticky top-[var(--sticky-top)] z-10 mb-6 md:hidden">
+            <details className="bg-muted/60 group rounded-lg p-4 backdrop-blur-sm">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-semibold transition-all duration-300 ease-out [&::-webkit-details-marker]:hidden">
+                목차
+                <ChevronDown
+                  className="h-5 w-5 transition-transform duration-300 ease-out group-open:rotate-180"
+                  strokeWidth={3}
+                />
+              </summary>
+              <nav className="mt-3 space-y-3 text-sm">
+                {data?.toc?.map((item) => (
+                  <TableOfContentsLink key={item.id} item={item} />
+                ))}
+              </nav>
+            </details>
+          </div>
+
           {/* 블로그 본문 */}
           <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
             <MDXContent source={markdown} />
@@ -130,10 +148,10 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
         {/* 이전글 다음글 */}
         <aside className="hidden md:block">
-          <div className="sticky top-[var(--sticky-top)] border-l-2 border-black/50 dark:border-white/50">
+          <div className="sticky top-[var(--sticky-top)] mt-[var(--sticky-toc-offset)] ml-10 self-start border-l-3 border-black/50 dark:border-white/50">
             <div className="rounded-lg px-6 py-2 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold">목차</h3>
-              <nav className="space-y-3 text-sm">
+              <h3 className="mb-2 text-lg font-semibold">목차</h3>
+              <nav className="space-y-3 overflow-y-auto pr-2 text-sm">
                 {data?.toc?.map((item) => (
                   <TableOfContentsLink key={item.id} item={item} />
                 ))}

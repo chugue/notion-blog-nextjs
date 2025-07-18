@@ -35,10 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${maplestory.variable} antialiased`} // 👈 메이플스토리만
-        suppressHydrationWarning={true}
-      >
+      <body className={`${maplestory.variable} antialiased`} suppressHydrationWarning={true}>
         <TanstackProvider>
           <ThemeProvider
             attribute="class"
