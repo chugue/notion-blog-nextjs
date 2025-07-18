@@ -68,21 +68,34 @@ export const getPostById = async (
   id: string
 ): Promise<{
   markdown: string;
-  post: Post;
+  post: Post | null;
 }> => {
-  const response = await notion.pages.retrieve({
-    page_id: id,
-  });
-  const mdBlocks = await n2m.pageToMarkdown(response.id);
-  const { parent } = n2m.toMarkdownString(mdBlocks);
+  try {
+    const response = await notion.pages.retrieve({
+      page_id: id,
+    });
 
-  return {
-    markdown: parent,
-    post: getPostMetadata(response as PageObjectResponse),
-  };
+    if (!response) {
+      return {
+        markdown: '',
+        post: null,
+      };
+    }
+
+    const mdBlocks = await n2m.pageToMarkdown(response.id);
+    const { parent } = n2m.toMarkdownString(mdBlocks);
+
+    return {
+      markdown: parent,
+      post: getPostMetadata(response as PageObjectResponse),
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
-export const getPublishedPost = async ({
+export const getPublishedPosts = async ({
   tag = '전체',
   sort = 'latest',
   pageSize = 2,
@@ -132,7 +145,7 @@ export const getPublishedPost = async ({
 };
 
 export const getTags = async (): Promise<TagFilterItem[]> => {
-  const { posts } = await getPublishedPost({
+  const { posts } = await getPublishedPosts({
     pageSize: 100,
   });
 

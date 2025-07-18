@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
-import { getPostById } from '@/lib/notion';
+import { getPostById, getPublishedPosts } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXContent } from '@/components/features/blog/MdxContent';
 import { compile } from '@mdx-js/mdx';
@@ -11,6 +11,40 @@ import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
 import GiscusComments from '@/components/features/blog/GiscusComments';
+import { notFound } from 'next/navigation';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { post } = await getPostById(id);
+
+  if (!post) {
+    return {
+      title: "Stephen's 기술블로그 | 개발 공부 및 튜토리얼",
+      description: '개발 공부 및 튜토리얼',
+    };
+  }
+
+  return {
+    title: post.title,
+    description: post.description || `${post.title} - Stephen's 기술블로그`,
+    keywords: post.tags,
+    authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
+    publisher: '김성훈',
+    alternates: {
+      canonical: `/blog/${post.id}`,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      url: `/blog/${post.id}`,
+      type: 'article',
+      publishedTime: post.date,
+      modifiedTime: post.modifiedDate,
+      authors: post.author || '김성훈',
+      tags: post.tags,
+    },
+  };
+}
 
 interface TocEntry {
   value: string;
@@ -18,6 +52,17 @@ interface TocEntry {
   id?: string;
   children?: Array<TocEntry>;
 }
+
+export const generateStaticParams = async () => {
+  const posts = await getPublishedPosts({
+    pageSize: 10,
+  });
+  return posts.posts.map((post) => ({
+    id: post.id,
+  }));
+};
+
+export const revalidate = 60;
 
 function TableOfContentsLink({ item }: { item: TocEntry }) {
   return (
@@ -47,6 +92,8 @@ interface BlogPostProps {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
   const { markdown, post } = await getPostById(id);
+
+  if (!post) notFound();
 
   const { data } = await compile(markdown, {
     rehypePlugins: [withSlugs, rehypeSanitize, withToc, withTocExport],

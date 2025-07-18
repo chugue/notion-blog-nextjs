@@ -1,4 +1,12 @@
-import { BookOpen, Github, HandshakeIcon, Instagram, Megaphone, Youtube } from 'lucide-react';
+import {
+  BookOpen,
+  Github,
+  HandshakeIcon,
+  Instagram,
+  Linkedin,
+  Megaphone,
+  NotebookPen,
+} from 'lucide-react';
 import ProfileSection from './_components/ProfileSection';
 import ContactSection from './_components/ContactSection';
 import HeaderSection from './_components/HeaderSection';
@@ -7,24 +15,24 @@ import PostListSuspense from '@/components/features/blog/PostListSuspense';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import TagSectionSkeleton from './_components/TagSectionSkeleton';
 import TagSectionClient from './_components/TagSection.client';
-import { getPublishedPost, getTags } from '@/lib/notion';
+import { getPublishedPosts, getTags } from '@/lib/notion';
 
 const socialLinks = [
   {
-    icon: Youtube,
-    href: 'https://www.youtube.com/gymcoding',
+    icon: Linkedin,
+    href: 'https://www.linkedin.com/in/seonghoon-kim-5a36a0130/',
   },
   {
     icon: Github,
-    href: 'https://github.com/gymcoding',
+    href: 'https://github.com/chugue',
   },
   {
-    icon: BookOpen,
-    href: 'https://www.inflearn.com/users/432199/@gymcoding',
+    icon: NotebookPen,
+    href: 'https://www.acts6v8.kr/',
   },
   {
     icon: Instagram,
-    href: 'https://www.instagram.com/gymcoding',
+    href: 'https://www.instagram.com/stephen_acts6v8/',
   },
 ];
 
@@ -80,7 +88,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedSort = sort ?? 'latest';
 
   const tags = getTags();
-  const postsPromise = getPublishedPost({
+  const postsPromise = getPublishedPosts({
     tag: selectedTag,
     sort: selectedSort,
   });

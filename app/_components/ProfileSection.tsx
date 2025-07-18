@@ -33,11 +33,17 @@ const ProfileSection = ({ socialLinks }: ProfileSectionProps) => {
             <h3 className="text-lg font-bold">스티븐코딩</h3>
             <p className="text-primary text-sm">Full Stack Developer</p>
           </div>
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-between gap-2">
             {socialLinks.map((item, index) => (
-              <Button key={index} variant="ghost" className="bg-primary/10" size="icon" asChild>
+              <Button
+                key={index}
+                variant="ghost"
+                className="bg-primary/10 size-10"
+                size="icon"
+                asChild
+              >
                 <a href={item.href} target="_blank" rel="noopener noreferrer">
-                  <item.icon className="2-4 h-4" />
+                  <item.icon className="h-5 w-5" />
                 </a>
               </Button>
             ))}
