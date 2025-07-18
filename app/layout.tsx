@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     telephone: false,
     address: false,
   },
-  metadataBase: new URL('https://notion-blog-nextjs-brown.vercel.app/'),
+  metadataBase: new URL(`${process.env.NEXT_PUBLIC_BASE_URL}`),
   alternates: {
     canonical: '/',
   },

@@ -7,6 +7,6 @@ export default function Robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/*', '/_static/*', '/.vercel/*'],
     },
-    sitemap: 'https://notion-blog-nextjs-brown.vercel.app/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`,
   };
 }

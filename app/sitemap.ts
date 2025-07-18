@@ -3,7 +3,7 @@ import { getPublishedPosts } from '@/lib/notion';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 기본 URL
-  const baseUrl = 'https://notion-blog-nextjs-brown.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://notion-blog-nextjs-brown.vercel.app';
 
   // 정적 페이지 목록
   const staticPages = [
