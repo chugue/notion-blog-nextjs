@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
+        // 👈 Notion 이미지에 대해서만 최적화 비활성화
       },
       {
         hostname: 'www.w3.org',
@@ -23,6 +24,10 @@ const nextConfig: NextConfig = {
         hostname: 'www.notion.so',
       },
     ],
+    // 👈 Notion 이미지 처리를 위한 추가 설정
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],
 };
