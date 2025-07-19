@@ -30,7 +30,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
       )}
       <CardContent className="flex flex-1 flex-col p-6">
         <div className="mb-4 flex flex-wrap gap-2">
-          {post.tags?.map((tag) => (
+          {post.language?.map((tag) => (
             <Badge
               key={tag}
               variant="secondary"
@@ -43,11 +43,11 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
         <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
           {post.title}
         </h2>
-        {post.description && (
+        {/* {post.description && (
           <p className="text-muted-foreground mt-2 line-clamp-2 flex-1 leading-relaxed">
             {post.description}
           </p>
-        )}
+        )} */}
         <div className="text-muted-foreground mt-6 flex items-center gap-x-4 text-sm">
           {post.author && (
             <div className="flex items-center gap-1.5">

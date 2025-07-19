@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
-import { getPublishedPosts } from '@/lib/notion';
+import { Post } from '@/types/blog';
+import { getPublishedPosts } from '@/lib/services/notion';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 기본 URL
@@ -31,9 +32,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { posts } = await getPublishedPosts({ pageSize: 100 });
 
   // 블로그 게시물 URL 생성
-  const blogPosts = posts.map((post) => ({
+  const blogPosts = posts.map((post: Post) => ({
     url: `${baseUrl}/blog/${post.id}`,
-    lastModified: post.modifiedDate ? new Date(post.modifiedDate) : new Date(),
+    lastModified: post.date ? new Date(post.date) : new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));

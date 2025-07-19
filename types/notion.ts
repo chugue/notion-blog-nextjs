@@ -1,4 +1,5 @@
 import { PartialUserObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { Post } from './blog';
 
 export interface NotionProperties {
   Title?: { title?: { plain_text: string }[] };
@@ -19,4 +20,17 @@ export interface NotionUser {
   person?: {
     email?: string;
   };
+}
+
+export interface GetPublishedPostResponse {
+  posts: Post[];
+  hasMore: boolean;
+  nextCursor: string;
+}
+
+export interface GetPublishedPostParams {
+  tag?: string;
+  sort?: string;
+  pageSize?: number;
+  startCursor?: string;
 }

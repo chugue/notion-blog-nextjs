@@ -15,7 +15,7 @@ import PostListSuspense from '@/components/features/blog/PostListSuspense';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import TagSectionSkeleton from './_components/TagSectionSkeleton';
 import TagSectionClient from './_components/TagSection.client';
-import { getPublishedPosts, getTags } from '@/lib/notion';
+import { getPublishedPosts, getTags } from '@/lib/services/notion';
 
 const socialLinks = [
   {

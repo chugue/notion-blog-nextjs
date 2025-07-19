@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import React, { use, useEffect } from 'react';
 import { PostCard } from './PostCard';
-import { GetPublishedPostResponse } from '@/lib/notion';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
+import { GetPublishedPostResponse } from '@/types/notion';
 
 interface PostListProps {
   postsPromise: Promise<GetPublishedPostResponse>;
@@ -36,7 +36,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
 
     params.append('pageSize', '2');
 
-    const response = await fetch(`/api/posts?${params.toString()}`);
+    const response = await fetch(`/api/notion?${params.toString()}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch posts');

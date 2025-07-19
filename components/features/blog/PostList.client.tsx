@@ -14,7 +14,7 @@ const PostList = ({ selectedTag }: PostListProps) => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const posts = await fetch('/api/posts').then((res) => res.json());
+      const posts = await fetch('/api/notion').then((res) => res.json());
       setPosts(posts);
     };
 
@@ -25,7 +25,7 @@ const PostList = ({ selectedTag }: PostListProps) => {
     <div className="grid gap-4">
       {posts.length > 0 ? (
         posts.map((post, index) => (
-          <Link key={post.id} href={`/blog/${post.slug}`}>
+          <Link key={post.id} href={`/blog/${post.id}`}>
             <PostCard post={post} isFirst={index === 0} />
           </Link>
         ))

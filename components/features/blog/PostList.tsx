@@ -11,9 +11,10 @@ interface PostListProps {
 const PostList = ({ posts, selectedTag }: PostListProps) => {
   return (
     <div className="grid gap-4">
+      ㄴ
       {posts.length > 0 ? (
         posts.map((post, index) => (
-          <Link key={post.id} href={`/blog/${post.slug}`}>
+          <Link key={post.id} href={`/blog/${post.id}`}>
             <PostCard post={post} isFirst={index === 0} />
           </Link>
         ))

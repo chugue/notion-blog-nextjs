@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
-import { getPostById, getPublishedPosts } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXContent } from '@/components/features/blog/MdxContent';
 import { compile } from '@mdx-js/mdx';
@@ -12,6 +11,7 @@ import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
 import GiscusComments from '@/components/features/blog/GiscusComments';
 import { notFound } from 'next/navigation';
+import { getPostById, getPublishedPosts } from '@/lib/services/notion';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   return {
     title: post.title,
-    description: post.description || `${post.title} - Stephen's 기술블로그`,
-    keywords: post.tags,
+    description: `${post.title} - Stephen's 기술블로그`,
+    keywords: post.language,
     authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
     publisher: '김성훈',
     alternates: {
@@ -35,13 +35,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     openGraph: {
       title: post.title,
-      description: post.description,
+      description: `${post.title} - Stephen's 기술블로그`,
       url: `/blog/${post.id}`,
       type: 'article',
       publishedTime: post.date,
-      modifiedTime: post.modifiedDate,
       authors: post.author || '김성훈',
-      tags: post.tags,
+      tags: post.language,
     },
   };
 }
@@ -108,7 +107,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="flex flex-wrap gap-2">
-                {post.tags?.map((tag) => (
+                {post.language?.map((tag) => (
                   <Badge key={tag}>{tag}</Badge>
                 ))}
               </div>

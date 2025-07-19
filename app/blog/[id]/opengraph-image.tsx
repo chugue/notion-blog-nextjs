@@ -1,5 +1,5 @@
+import { getPostById } from '@/lib/services/notion';
 import { ImageResponse } from 'next/og';
-import { getPostById } from '@/lib/notion';
 
 export const size = {
   width: 1200,
@@ -33,7 +33,7 @@ export default async function OgImage({ params }: { params: { id: string } }) {
     );
   }
 
-  const tagString = post.tags?.join(', ') || '';
+  const tagString = post.language?.join(', ') || '';
 
   return new ImageResponse(
     (
@@ -79,20 +79,6 @@ export default async function OgImage({ params }: { params: { id: string } }) {
           >
             {post.title}
           </div>
-          {post.description && (
-            <div
-              style={{
-                fontSize: 32,
-                color: '#cccccc',
-                maxWidth: '70%',
-                marginBottom: 30,
-              }}
-            >
-              {post.description.length > 100
-                ? `${post.description.substring(0, 100)}...`
-                : post.description}
-            </div>
-          )}
         </div>
         <div
           style={{
