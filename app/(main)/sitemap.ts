@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { Post } from '@/types/blog';
+import { Post } from '@/lib/types/blog';
 import { getPublishedPosts } from '@/lib/services/notion';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

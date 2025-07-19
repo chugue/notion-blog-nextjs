@@ -3,13 +3,13 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
 import { formatDate } from '@/lib/date';
-import { MDXContent } from '@/components/features/blog/MdxContent';
+import { MDXContent } from '@/app/(blog)/_components/MdxContent';
 import { compile } from '@mdx-js/mdx';
 import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
-import GiscusComments from '@/components/features/blog/GiscusComments';
+import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { getPostById, getPublishedPosts } from '@/lib/services/notion';
 

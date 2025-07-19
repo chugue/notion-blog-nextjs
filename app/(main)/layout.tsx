@@ -4,17 +4,17 @@ import localFont from 'next/font/local';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import TanstackProvider from '../components/providers/TanstackProvider';
+import TanstackProvider from '../../components/providers/TanstackProvider';
 
 const maplestory = localFont({
   src: [
     {
-      path: '../public/font/Maplestory OTF Light.otf',
+      path: '../../public/font/Maplestory OTF Light.otf',
       weight: '300',
       style: 'normal',
     },
     {
-      path: '../public/font/Maplestory OTF Bold.otf',
+      path: '../../public/font/Maplestory OTF Bold.otf',
       weight: '700',
       style: 'normal',
     },
@@ -61,7 +61,7 @@ export default function RootLayout({
         <TanstackProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >

@@ -47,9 +47,55 @@
   --font-sans: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;
   --font-maplestory: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
+
+  --font-title: 3rem;
+  --font-sub-title: 2.25rem;
+  --font-h1: 2rem;
+  --font-h2: 1.75rem;
+  --font-h3: 1.5rem;
+  --font-heading: 1.25rem;
+  --font-subheading: 1.125rem;
+  --font-body: 1rem;
+  --font-quote: 1.125rem;
+  --font-caption: 0.875rem;
+
+  --line-height-title: 1.1;
+  --line-height-sub-title: 1.2;
+  --line-height-h1: 1.25;
+  --line-height-h2: 1.3;
+  --line-height-h3: 1.35;
+  --line-height-heading: 1.4;
+  --line-height-subheading: 1.5;
+  --line-height-body: 1.6;
+  --line-height-quote: 1.5;
+  --line-height-caption: 1.4;
+
+  /* 타이포그래피 크기 설정 */
+  --font-size-title: 3rem; /* 48px */
+  --font-size-sub-title: 2.25rem; /* 36px */
+  --font-size-h1: 2rem; /* 32px */
+  --font-size-h2: 1.75rem; /* 28px */
+  --font-size-h3: 1.5rem; /* 24px */
+  --font-size-heading: 1.25rem; /* 20px */
+  --font-size-subheading: 1.125rem; /* 18px */
+  --font-size-body: 1rem; /* 16px */
+  --font-size-quote: 1.125rem; /* 18px */
+  --font-size-caption: 0.875rem; /* 14px */
+
+  /* 라인 하이트 설정 */
+  --line-height-title: 1.1;
+  --line-height-sub-title: 1.2;
+  --line-height-h1: 1.25;
+  --line-height-h2: 1.3;
+  --line-height-h3: 1.35;
+  --line-height-heading: 1.4;
+  --line-height-subheading: 1.5;
+  --line-height-body: 1.6;
+  --line-height-quote: 1.5;
+  --line-height-caption: 1.4;
 }
 
-/* :root {
+:root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -82,84 +128,6 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-
-  --header-height: 3.5rem;
-  --sticky-offset: 1.5rem;
-  --sticky-toc-offset: 10rem;
-  --sticky-toc: calc(var(--header-height) + var(--sticky-offset) + var(--sticky-toc-offset));
-  --sticky-top: calc(var(--header-height) + var(--sticky-offset));
-
-  --font-maplestory: var(--font-maplestory);
-  --font-maplestory-bold: var(--font-maplestory-bold);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-} */
-
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.13 0.028 261.692);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.028 261.692);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.028 261.692);
-  --primary: oklch(0.21 0.034 264.665);
-  --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
-  --accent-foreground: oklch(0.21 0.034 264.665);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.928 0.006 264.531);
-  --input: oklch(0.928 0.006 264.531);
-  --ring: oklch(0.707 0.022 261.325);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0.002 247.839);
-  --sidebar-foreground: oklch(0.13 0.028 261.692);
-  --sidebar-primary: oklch(0.21 0.034 264.665);
-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-accent: oklch(0.967 0.003 264.542);
-  --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
-  --sidebar-border: oklch(0.928 0.006 264.531);
-  --sidebar-ring: oklch(0.707 0.022 261.325);
 
   --header-height: 3.5rem;
   --sticky-offset: 1.5rem;
@@ -212,17 +180,80 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  /* 타이포그래피 전역 클래스 */
+  .title {
+    font-size: var(--font-size-title);
+    line-height: var(--line-height-title);
+    font-weight: 700;
+    @apply font-maplestory;
+  }
+
+  .sub-title {
+    font-size: var(--font-size-sub-title);
+    line-height: var(--line-height-sub-title);
+    font-weight: 600;
+    @apply font-maplestory;
+  }
+
+  .h1 {
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+    font-weight: 600;
+    @apply font-maplestory;
+  }
+
+  .h2 {
+    font-size: var(--font-size-h2);
+    line-height: var(--line-height-h2);
+    font-weight: 600;
+    @apply font-maplestory;
+  }
+
+  .h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    font-weight: 500;
+    @apply font-maplestory;
+  }
+
+  .heading {
+    font-size: var(--font-size-heading);
+    line-height: var(--line-height-heading);
+    font-weight: 500;
+    @apply font-maplestory;
+  }
+
+  .subheading {
+    font-size: var(--font-size-subheading);
+    line-height: var(--line-height-subheading);
+    font-weight: 400;
+    @apply font-maplestory;
+  }
+
+  .body {
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    font-weight: 400;
+    @apply font-maplestory;
+  }
+
+  .quote {
+    font-size: var(--font-size-quote);
+    line-height: var(--line-height-quote);
+    font-weight: 400;
+    font-style: italic;
+    @apply font-maplestory text-muted-foreground;
+  }
+
+  .caption {
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-caption);
+    font-weight: 400;
+    @apply font-maplestory text-muted-foreground;
+  }
 }
 .container {
-  @apply mx-auto max-w-6xl px-4;
+  @apply mx-auto px-4;
   width: 100%;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }

@@ -1,28 +1,17 @@
-'use client';
-
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { PostCard } from './PostCard';
-import { Post } from '@/types/blog';
+import { Post } from '@/lib/types/blog';
 
 interface PostListProps {
+  posts: Post[];
   selectedTag: string;
 }
 
-const PostList = ({ selectedTag }: PostListProps) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const posts = await fetch('/api/notion').then((res) => res.json());
-      setPosts(posts);
-    };
-
-    fetchPosts();
-  }, []);
-
+const PostList = ({ posts, selectedTag }: PostListProps) => {
   return (
     <div className="grid gap-4">
+      ㄴ
       {posts.length > 0 ? (
         posts.map((post, index) => (
           <Link key={post.id} href={`/blog/${post.id}`}>

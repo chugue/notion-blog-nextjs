@@ -1,26 +1,42 @@
 import React from 'react';
 import Link from 'next/link';
 import ThemeToggle from '../ThemeToggle';
+import Image from 'next/image';
+import { SearchIcon } from 'lucide-react';
+import { Input } from '../ui/input';
 
 const Header = () => {
   return (
     <header className="bg-background sticky top-0 z-50 border-b">
-      <div className="container flex h-[var(--header-height)] items-center px-4">
-        <Link href="/" className="text-xl font-semibold">
-          <span className="font-bold">Stephen&apos;s 기술블로그</span>
+      <div className="container grid h-[var(--header-height)] grid-cols-3 items-center justify-between px-4">
+        <Link href="/" className="text-md justify-self-start">
+          <div className="flex items-center gap-2">
+            <Image src="/images/profile.png" alt="logo" width={32} height={32} />
+            <span className="font-md">Stephen&apos;s 기술블로그</span>
+          </div>
         </Link>
-        <nav className="ml-auto flex items-center gap-4">
-          <ThemeToggle />
+        <nav className="flex items-center gap-4 justify-self-center">
           <Link href="/" className="hover:text-primary font-medium">
             홈
           </Link>
           <Link href="/blog" className="hover:text-primary font-medium">
-            블로그
+            포트폴리오
           </Link>
           <Link href="/about" className="hover:text-primary font-medium">
-            소개
+            개발자 소개
           </Link>
         </nav>
+        <div className="flex items-center gap-4 justify-self-end">
+          <div className="relative">
+            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            <Input
+              type="search"
+              placeholder="포스트 검색..."
+              className="h-9 w-[200px] pl-9 text-sm"
+            />
+          </div>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

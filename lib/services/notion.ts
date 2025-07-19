@@ -1,6 +1,6 @@
-import { GetPublishedPostParams, GetPublishedPostResponse, NotionUser } from '@/types/notion';
+import { GetPublishedPostParams, GetPublishedPostResponse, NotionUser } from '@/lib/types/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { Post, TagFilterItem } from '@/types/blog';
+import { Post, TagFilterItem } from '@/lib/types/blog';
 import { n2m, notion } from '../notion-client';
 
 const getCoverImage = (cover: PageObjectResponse['cover']) => {
