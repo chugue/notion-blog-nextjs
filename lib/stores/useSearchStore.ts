@@ -1,11 +1,11 @@
 import { create } from 'zustand';
-import { Post } from '../types/blog';
+import { PostMetadata } from '../types/blog';
 
 interface SearchState {
   // 모달 상태
   isOpen: boolean;
   searchQuery: string;
-  searchResults: Post[];
+  searchResults: PostMetadata[];
   isLoading: boolean;
 
   // 액션들
@@ -13,7 +13,7 @@ interface SearchState {
   closeModal: () => void;
   toggleModal: () => void;
   setSearchQuery: (query: string) => void;
-  setSearchResults: (results: Post[]) => void;
+  setSearchResults: (results: PostMetadata[]) => void;
   setLoading: (loading: boolean) => void;
   clearSearch: () => void;
 
@@ -64,7 +64,7 @@ export const useSearchStore = create<SearchState>((set, get) => ({
 
       if (data.posts) {
         const filtered = data.posts.filter(
-          (post: Post) =>
+          (post: PostMetadata) =>
             post.title.toLowerCase().includes(query.toLowerCase()) ||
             post.language.some((lang) => lang.toLowerCase().includes(query.toLowerCase())) ||
             post.tool.some((tool) => tool.toLowerCase().includes(query.toLowerCase()))

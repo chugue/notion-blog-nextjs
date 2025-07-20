@@ -13,12 +13,11 @@ import {
 import { useSearchStore } from '@/lib/stores/useSearchStore';
 import { Calendar, FileText, Tag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@/lib/queries/hooks/useDebounce';
 
 const SearchModal = () => {
   const router = useRouter();
 
-  // 👈 Zustand store 사용
   const { isOpen, searchQuery, searchResults, isLoading, closeModal, setSearchQuery, searchPosts } =
     useSearchStore();
 

@@ -1,0 +1,21 @@
+'use client';
+
+import { useSearchStore } from '@/lib/stores/useSearchStore';
+import { SearchIcon } from 'lucide-react';
+import React from 'react';
+
+const SearchButton = () => {
+  return (
+    <div className="relative">
+      <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2" />
+      <button
+        onClick={() => useSearchStore.getState().openModal()}
+        className="border-border bg-background text-muted-foreground flex h-9 w-[200px] items-center justify-start rounded-md border pl-9 text-sm font-medium transition-all duration-300 hover:shadow-[0_0_3px_rgba(255,204,0,0.8),0_0_6px_rgba(255,204,0,0.6),0_0_12px_rgba(255,204,0,0.4),0_0_20px_rgba(255,204,0,0.2)]"
+      >
+        포스트 검색...
+      </button>
+    </div>
+  );
+};
+
+export default SearchButton;

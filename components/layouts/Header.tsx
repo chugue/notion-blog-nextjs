@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import ThemeToggle from '../ThemeToggle';
 import Image from 'next/image';
-import { SearchIcon } from 'lucide-react';
-import { Input } from '../ui/input';
+import SearchModal from '../SearchModal';
+import SearchButton from '@/app/(main)/_components/SearchButton';
 
 const Header = () => {
   return (
@@ -28,16 +28,12 @@ const Header = () => {
         </nav>
         <div className="flex items-center gap-4 justify-self-end">
           <div className="relative">
-            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-            <Input
-              type="search"
-              placeholder="포스트 검색..."
-              className="h-9 w-[200px] pl-9 text-sm"
-            />
+            <SearchButton />
           </div>
           <ThemeToggle />
         </div>
       </div>
+      <SearchModal />
     </header>
   );
 };

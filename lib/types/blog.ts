@@ -4,7 +4,7 @@ export interface TagFilterItem {
   count: number;
 }
 
-export interface Post {
+export interface PostMetadata {
   id: string;
   title: string;
   coverImage?: string;

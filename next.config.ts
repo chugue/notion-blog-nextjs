@@ -15,7 +15,6 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
-        // 👈 Notion 이미지에 대해서만 최적화 비활성화
       },
       {
         hostname: 'www.w3.org',

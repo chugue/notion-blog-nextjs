@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import React from 'react';
 import { PostCard } from './PostCard';
-import { Post } from '@/lib/types/blog';
+import { PostMetadata } from '@/lib/types/blog';
 
 interface PostListProps {
-  posts: Post[];
+  posts: PostMetadata[];
   selectedTag: string;
 }
 

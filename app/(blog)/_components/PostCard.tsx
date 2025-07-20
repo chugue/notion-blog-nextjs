@@ -4,11 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User } from 'lucide-react';
 import Image from 'next/image';
-import { Post } from '@/lib/types/blog';
+import { PostMetadata } from '@/lib/types/blog';
 import { formatDate } from '@/lib/date';
 
 interface PostCardProps {
-  post: Post;
+  post: PostMetadata;
   isFirst: boolean;
 }
 

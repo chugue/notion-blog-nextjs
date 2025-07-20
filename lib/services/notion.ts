@@ -1,6 +1,6 @@
 import { GetPublishedPostParams, GetPublishedPostResponse, NotionUser } from '@/lib/types/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { Post, TagFilterItem } from '@/lib/types/blog';
+import { PostMetadata, TagFilterItem } from '@/lib/types/blog';
 import { n2m, notion } from '../notion-client';
 
 const getCoverImage = (cover: PageObjectResponse['cover']) => {
@@ -16,7 +16,7 @@ const getCoverImage = (cover: PageObjectResponse['cover']) => {
   }
 };
 
-const getPostMetadata = (page: PageObjectResponse): Post => {
+const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
   const { properties } = page;
 
   return {
@@ -134,7 +134,7 @@ export const getPostById = async (
   id: string
 ): Promise<{
   markdown: string;
-  post: Post | null;
+  post: PostMetadata | null;
 }> => {
   try {
     const response = await notion.pages.retrieve({

@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { PostCard } from './PostCard';
-import { Post } from '@/lib/types/blog';
+import { PostMetadata } from '@/lib/types/blog';
 
 interface PostListProps {
   selectedTag: string;
 }
 
 const PostList = ({ selectedTag }: PostListProps) => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostMetadata[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {

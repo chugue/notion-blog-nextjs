@@ -1,5 +1,5 @@
 import { PartialUserObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { Post } from './blog';
+import { PostMetadata } from './blog';
 
 export interface NotionProperties {
   Title?: { title?: { plain_text: string }[] };
@@ -23,7 +23,7 @@ export interface NotionUser {
 }
 
 export interface GetPublishedPostResponse {
-  posts: Post[];
+  posts: PostMetadata[];
   hasMore: boolean;
   nextCursor: string;
 }
