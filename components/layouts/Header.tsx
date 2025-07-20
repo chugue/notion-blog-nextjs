@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import ThemeToggle from '../ThemeToggle';
 import Image from 'next/image';
-import SearchModal from '../SearchModal';
 import SearchButton from '@/app/(main)/_components/SearchButton';
+import SearchModal from '@/app/(main)/_components/SearchModal';
 
 const Header = () => {
   return (

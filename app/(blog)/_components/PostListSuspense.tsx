@@ -16,12 +16,13 @@ interface PostListProps {
 const PostListSuspense = ({ postsPromise }: PostListProps) => {
   const searchParams = useSearchParams();
   const initialData = use(postsPromise);
+  const tag = searchParams.get('tag') || '전체';
+  const sort = searchParams.get('sort') || 'latest';
+
+  // 무한 스크롤 라이브러리
   const { ref, inView } = useInView({
     threshold: 1,
   });
-
-  const tag = searchParams.get('tag') || '전체';
-  const sort = searchParams.get('sort') || 'latest';
 
   const fetchPost = async ({
     pageParam,
@@ -64,7 +65,6 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
   // 에러 상태
@@ -79,12 +79,8 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     );
   }
 
-  // 모든 페이지의 포스트를 하나의 배열로 합치기
+  // 하나의 배열로 합치기
   const allPosts = data?.pages.flatMap((page) => page.posts) || [];
-
-  // const handleLoadMore = () => {
-  //   if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  // };
 
   return (
     <div className="space-y-6">
@@ -113,21 +109,6 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
           <span className="text-muted-foreground text-sm">로딩 중...</span>
         </div>
       )}
-
-      {/* 더보기 버튼 */}
-      {/* {hasNextPage && (
-        <div>
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full"
-            onClick={handleLoadMore}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? '로딩 중...' : '더보기'}
-          </Button>
-        </div>
-      )} */}
     </div>
   );
 };
