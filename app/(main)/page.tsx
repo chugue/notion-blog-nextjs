@@ -5,7 +5,7 @@ import PostListSkeleton from '@/app/(blog)/_components/PostListSkeleton';
 import TagSectionSkeleton from './_components/TagSectionSkeleton';
 import TagSectionClient from './_components/TagSection.client';
 import { getPublishedPosts, getTags } from '@/lib/services/notion';
-import SearchButton from './_components/SearchButton';
+import { VisitStats } from './_components/VisitStats';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -27,6 +27,9 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container mx-auto py-8">
+      <section className="mb-6 grid grid-cols-3">
+        <VisitStats className="col-span-2" />
+      </section>
       <div className="grid grid-cols-1 gap-20 md:grid-cols-[250px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center md:order-none">
