@@ -35,7 +35,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     if (sort && sort !== 'latest') params.append('sort', sort);
     if (pageParam) params.append('startCursor', pageParam);
 
-    params.append('pageSize', '2');
+    params.append('pageSize', '10');
 
     const response = await fetch(`/api/notion?${params.toString()}`);
 
@@ -84,7 +84,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4">
+      <div className="relative grid grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {allPosts.length > 0 ? (
           allPosts.map((post, index) => (
             <Link key={post.id} href={`/blog/${post.id}`}>

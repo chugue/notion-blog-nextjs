@@ -11,5 +11,7 @@ export async function GET(request: NextRequest) {
     startCursor: searchParams.get('startCursor') || undefined,
   });
 
+  //TODO: 유니온 타입 반환하기
+
   return NextResponse.json(response);
 }

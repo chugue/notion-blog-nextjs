@@ -24,7 +24,7 @@ const SortSelect = () => {
 
   return (
     <Select onValueChange={handleSortChange} value={sort}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] transition-all max-sm:w-[120px]">
         <SelectValue placeholder="정렬 방식 선택" />
       </SelectTrigger>
       <SelectContent>

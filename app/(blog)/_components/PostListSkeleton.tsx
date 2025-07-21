@@ -4,18 +4,18 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const PostListSkeleton = () => {
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 4 }).map((_, index) => (
         <Card
           key={index}
           className="group bg-card/50 border-border/40 flex h-full flex-col overflow-hidden border py-0 backdrop-blur-sm"
         >
           {/* 커버 이미지 스켈레톤 */}
-          <div className="relative aspect-[2/1] flex-shrink-0 overflow-hidden">
+          <div className="relative aspect-[16/9] flex-shrink-0 overflow-hidden">
             <Skeleton className="h-full w-full" />
           </div>
 
-          <CardContent className="flex flex-1 flex-col p-6">
+          <CardContent className="flex flex-1 flex-col px-2">
             {/* 태그 배지 스켈레톤 */}
             <div className="mb-4 flex flex-wrap gap-2">
               {Array.from({ length: Math.floor(Math.random() * 3) + 1 }).map((_, tagIndex) => (
@@ -33,15 +33,6 @@ const PostListSkeleton = () => {
               className="mb-2 h-7"
               style={{ width: `${60 + Math.random() * 40}%` }} // 👈 다양한 제목 길이
             />
-
-            {/* 설명 스켈레톤 */}
-            <div className="mt-2 flex-1 space-y-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton
-                className="h-4"
-                style={{ width: `${70 + Math.random() * 30}%` }} // 👈 다양한 설명 길이
-              />
-            </div>
 
             {/* 메타 정보 스켈레톤 */}
             <div className="mt-6 flex items-center gap-x-4">

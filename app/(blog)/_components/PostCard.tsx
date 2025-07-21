@@ -1,11 +1,7 @@
-'use client';
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User } from 'lucide-react';
 import Image from 'next/image';
 import { PostMetadata } from '@/lib/types/blog';
-import { formatDate } from '@/lib/date';
 
 interface PostCardProps {
   post: PostMetadata;
@@ -14,53 +10,58 @@ interface PostCardProps {
 
 export function PostCard({ post, isFirst = false }: PostCardProps) {
   return (
-    <Card className="group bg-card/50 hover:border-primary/20 flex h-full flex-col overflow-hidden border py-0 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+    <Card className="group bg-background relative flex h-full flex-col overflow-visible border-none py-0 backdrop-blur-sm transition-transform duration-300 hover:z-50">
       {post.coverImage && (
-        <div className="relative aspect-[2/1] flex-shrink-0 overflow-hidden">
-          <div className="from-background/20 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
-          <Image
-            src={post.coverImage}
-            alt={post.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority={isFirst}
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+        <div className="relative aspect-[16/9] flex-shrink-0">
+          <div className="from-background/20 absolute inset-0 bg-gradient-to-t to-transparent">
+            <Image
+              src={post.coverImage}
+              alt={post.title}
+              fill
+              priority={isFirst}
+              className="rounded-md object-cover transition-transform duration-300 group-hover:scale-102"
+            />
+          </div>
         </div>
       )}
-      <CardContent className="flex flex-1 flex-col p-6">
-        <div className="mb-4 flex flex-wrap gap-2">
-          {post.language?.map((tag) => (
-            <Badge
-              key={tag}
-              variant="secondary"
-              className="bg-primary/10 text-primary hover:bg-primary/20 font-medium transition-colors"
-            >
-              {tag}
-            </Badge>
-          ))}
+
+      {/* ---------- CardContent ---------- */}
+      <CardContent className="relative my-0 flex flex-1 flex-col px-0 py-0">
+        {/* 기본 콘텐츠 (레이아웃 유지용) */}
+        <div className="flex flex-col px-2 transition-opacity duration-300 group-hover:opacity-0">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {post.language?.map((tag) => (
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="bg-primary/10 text-primary hover:bg-primary/20 font-medium transition-colors"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+
+          <h2 className="mb-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold tracking-tight">
+            {post.title}
+          </h2>
         </div>
-        <h2 className="group-hover:text-primary mb-2 text-xl font-bold tracking-tight transition-colors">
-          {post.title}
-        </h2>
-        {/* {post.description && (
-          <p className="text-muted-foreground mt-2 line-clamp-2 flex-1 leading-relaxed">
-            {post.description}
-          </p>
-        )} */}
-        <div className="text-muted-foreground mt-6 flex items-center gap-x-4 text-sm">
-          {post.author && (
-            <div className="flex items-center gap-1.5">
-              <User className="h-4 w-4" />
-              <span>{post.author}</span>
-            </div>
-          )}
-          {post.date && (
-            <div className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              <time>{formatDate(post.date)}</time>
-            </div>
-          )}
+
+        {/* 호버 시 전체 콘텐츠 오버레이 */}
+        <div className="bg-background text-primary absolute z-40 flex flex-col rounded-md px-2 pb-5 opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {post.language?.map((tag) => (
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="bg-primary/10 text-primary hover:bg-primary/20 font-medium transition-colors"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+
+          {/* hover시 제목 - line-clamp 없음 */}
+          <h2 className="text-xl font-bold tracking-tight">{post.title}</h2>
         </div>
       </CardContent>
     </Card>

@@ -5,6 +5,7 @@ import { TagFilterItem } from '@/lib/types/blog';
 import Link from 'next/link';
 import React, { use } from 'react';
 import { cn } from '@/lib/utils';
+import SearchButton from './SearchButton';
 
 interface TagSectionProps {
   tags: Promise<TagFilterItem[]>;
@@ -16,11 +17,12 @@ const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-col items-start">
         <CardTitle>태그목록</CardTitle>
       </CardHeader>
       <CardContent className="px-2 py-0">
-        <div className="flex flex-col gap-3">
+        <SearchButton />
+        <div className="mt-3 flex flex-col gap-3">
           {allTags.map((tag) => {
             const isSelected = selectedTag === tag.name || (!selectedTag && tag.name === '전체');
             return (

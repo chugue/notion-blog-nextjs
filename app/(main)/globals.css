@@ -255,10 +255,6 @@
     @apply font-maplestory text-muted-foreground;
   }
 }
-.container {
-  @apply mx-auto px-4;
-  width: 100%;
-}
 
 .search-button-glow:hover {
   box-shadow:
@@ -266,4 +262,10 @@
     0 0 6px rgba(255, 204, 0, 0.6),
     0 0 12px rgba(255, 204, 0, 0.4),
     0 0 20px rgba(255, 204, 0, 0.2);
+}
+
+@layer utilities {
+  .card-hover {
+    @apply group-hover:text-primary group-hover:line-clamp-none;
+  }
 }

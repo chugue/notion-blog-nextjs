@@ -20,11 +20,11 @@ const ThemeToggle = () => {
     <Button
       variant="ghost"
       size="icon"
-      className="h-9 w-9 rounded-md"
+      className="relative h-9 w-9 rounded-md px-0"
       onClick={toggleTheme}
       aria-label="테마 변경"
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+      <Sun className="absolute h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
       <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
     </Button>
   );
