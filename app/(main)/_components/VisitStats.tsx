@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
@@ -10,9 +10,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { cn } from '@/lib/utils';
-
-export const description = 'An interactive line chart';
+import { cn } from '@/lib/utils/tailwind-cn';
 
 const chartData = [
   { date: '2024-06-01', daily: 178, total: 200 },
@@ -72,14 +70,14 @@ export function VisitStats({ className }: { className?: string }) {
   return (
     <Card className={cn('py-4 sm:py-0', className)}>
       <CardContent className="grid grid-cols-[150px_1fr]">
-        <CardHeader className="flex flex-col items-stretch !p-0">
-          <div className="flex flex-col">
+        <CardHeader className="flex h-full flex-col items-center py-5">
+          <div className="flex h-full flex-col justify-center">
             {Array.from(VisitStatType).map((key) => {
               const chart = key as keyof typeof chartConfig;
               return (
                 <div
                   key={chart}
-                  className={`flex flex-1 flex-col justify-center gap-1 px-6 py-4 ${key === 'daily' ? 'order-2' : 'order-1'}`}
+                  className={`flex flex-1 flex-col items-center justify-center gap-4 ${key === 'daily' ? 'order-2' : 'order-1'}`}
                 >
                   <span className="text-muted-foreground text-xs">{chartConfig[chart].label}</span>
                   <span className="text-lg leading-none font-bold sm:text-3xl">
@@ -91,7 +89,7 @@ export function VisitStats({ className }: { className?: string }) {
           </div>
         </CardHeader>
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
-          <LineChart
+          <AreaChart
             accessibilityLayer
             data={chartData}
             margin={{
@@ -99,6 +97,12 @@ export function VisitStats({ className }: { className?: string }) {
               right: 12,
             }}
           >
+            <defs>
+              <linearGradient id="fillDaily" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0.1} />
+              </linearGradient>
+            </defs>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
@@ -129,14 +133,67 @@ export function VisitStats({ className }: { className?: string }) {
                 />
               }
             />
-            <Line
+            <Area
               dataKey="daily"
               type="monotone"
-              stroke={`var(--color-primary)`}
+              fill="url(#fillDaily)"
+              fillOpacity={0.4}
+              stroke="var(--color-primary)"
               strokeWidth={2}
-              dot={false}
+              dot={(props) => {
+                const { index } = props;
+                const isLastPoint = index === chartData.length - 1;
+
+                if (!isLastPoint) return null;
+
+                return (
+                  <g>
+                    {/* 첫 번째 레이더 원 */}
+                    <circle
+                      cx={props.cx}
+                      cy={props.cy}
+                      r={3}
+                      fill="var(--color-primary)"
+                      opacity={0.6}
+                    >
+                      <animate attributeName="r" values="3;15" dur="3s" repeatCount="indefinite" />
+                      <animate
+                        attributeName="opacity"
+                        values="0.6;0"
+                        dur="3s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    {/* 두 번째 레이더 원 (시차) */}
+                    <circle
+                      cx={props.cx}
+                      cy={props.cy}
+                      r={3}
+                      fill="var(--color-primary)"
+                      opacity={0.6}
+                    >
+                      <animate
+                        attributeName="r"
+                        values="3;15"
+                        dur="3s"
+                        begin="2s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.6;0"
+                        dur="3s"
+                        begin="2s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    {/* 메인 점 */}
+                    <circle cx={props.cx} cy={props.cy} r={5} fill="var(--color-primary)" />
+                  </g>
+                );
+              }}
             />
-          </LineChart>
+          </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>

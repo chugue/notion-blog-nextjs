@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TagFilterItem } from '@/lib/types/blog';
 import Link from 'next/link';
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/tailwind-cn';
 
 interface TagSectionProps {
   tags: TagFilterItem[];

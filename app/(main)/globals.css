@@ -268,4 +268,26 @@
   .card-hover {
     @apply group-hover:text-primary group-hover:line-clamp-none;
   }
+  .responsive-grid {
+    @apply grid grid-cols-1 gap-4 transition-all md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4;
+  }
+  .animate-radar {
+    animation: radar-pulse 2s ease-in-out infinite;
+  }
+}
+
+/* 기존 코드 아래에 추가 */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
 }

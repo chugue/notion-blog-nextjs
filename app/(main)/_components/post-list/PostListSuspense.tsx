@@ -84,7 +84,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="relative grid grid-cols-1 gap-4 transition-all md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="responsive-grid relative">
         {allPosts.length > 0 ? (
           allPosts.map((post, index) => (
             <Link key={post.id} href={`/blog/${post.id}`}>

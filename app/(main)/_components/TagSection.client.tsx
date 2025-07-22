@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TagFilterItem } from '@/lib/types/blog';
 import Link from 'next/link';
 import React, { use } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/tailwind-cn';
 import SearchButton from './SearchButton';
 
 interface TagSectionProps {

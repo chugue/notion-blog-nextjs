@@ -13,15 +13,14 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
     <Card className="group bg-background relative flex h-full flex-col overflow-visible border-none py-0 backdrop-blur-sm transition-transform duration-300 hover:z-50">
       {post.coverImage && (
         <div className="relative aspect-[16/9] flex-shrink-0">
-          <div className="from-background/20 absolute inset-0 bg-gradient-to-t to-transparent">
-            <Image
-              src={post.coverImage}
-              alt={post.title}
-              fill
-              priority={isFirst}
-              className="rounded-md object-cover transition-transform duration-300 group-hover:scale-102"
-            />
-          </div>
+          <Image
+            src={post.coverImage}
+            alt={post.title}
+            fill
+            priority={isFirst}
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            className="rounded-md object-cover transition-transform duration-300 group-hover:scale-102"
+          />
         </div>
       )}
 

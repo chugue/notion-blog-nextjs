@@ -1,11 +1,11 @@
 import HeaderSection from './_components/HeaderSection';
 import { Suspense } from 'react';
-import PostListSuspense from '@/app/(blog)/_components/PostListSuspense';
-import PostListSkeleton from '@/app/(blog)/_components/PostListSkeleton';
 import TagSectionSkeleton from './_components/TagSectionSkeleton';
 import TagSectionClient from './_components/TagSection.client';
 import { getPublishedPosts, getTags } from '@/lib/services/notion';
 import { VisitStats } from './_components/VisitStats';
+import PostListSkeleton from './_components/post-list/PostListSkeleton';
+import PostListSuspense from './_components/post-list/PostListSuspense';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </aside>
 
-        <div className="order-3 space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:order-none md:justify-self-end">
+        <div className="order-3 space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:order-none md:justify-self-start">
           {/* 섹션 제목 */}
           <HeaderSection selectedTag={selectedTag} />
 

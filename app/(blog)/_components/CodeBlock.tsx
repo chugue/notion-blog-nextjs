@@ -2,7 +2,7 @@
 
 import { Check, Copy } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/tailwind-cn';
 
 interface CodeBlockProps {
   className?: string;
