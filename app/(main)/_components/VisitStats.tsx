@@ -56,8 +56,6 @@ const chartConfig = {
   },
 } as ChartConfig;
 
-const VisitStatType = ['daily', 'total'] as const;
-
 export function VisitStats({ className }: { className?: string }) {
   const total = React.useMemo(
     () => ({
@@ -68,33 +66,33 @@ export function VisitStats({ className }: { className?: string }) {
   );
 
   return (
-    <Card className={cn('py-4 sm:py-0', className)}>
-      <CardContent className="grid grid-cols-[150px_1fr]">
-        <CardHeader className="flex h-full flex-col items-center py-5">
-          <div className="flex h-full flex-col justify-center">
-            {Array.from(VisitStatType).map((key) => {
-              const chart = key as keyof typeof chartConfig;
-              return (
-                <div
-                  key={chart}
-                  className={`flex flex-1 flex-col items-center justify-center gap-4 ${key === 'daily' ? 'order-2' : 'order-1'}`}
-                >
-                  <span className="text-muted-foreground text-xs">{chartConfig[chart].label}</span>
-                  <span className="text-lg leading-none font-bold sm:text-3xl">
-                    {total[key as keyof typeof total].toLocaleString()}
-                  </span>
-                </div>
-              );
-            })}
+    <Card className={cn('p-0', className)}>
+      <CardContent className="flex flex-col gap-0">
+        <CardHeader className="flex min-w-0 flex-col items-center justify-center">
+          <div className="flex h-[100px] w-full flex-row items-center gap-10">
+            <div className="order-1 flex flex-1 flex-col items-center justify-between gap-4">
+              <span className="text-muted-foreground text-md">{chartConfig.daily.label}</span>
+              <span className="text-lg leading-none font-bold sm:text-3xl">
+                {total.daily.toLocaleString()}
+              </span>
+            </div>
+            <span className="order-2 h-[80%] items-center border-l-1 border-gray-600" />
+
+            <div className="order-3 flex flex-1 flex-col items-center justify-center gap-4">
+              <span className="text-muted-foreground text-md">{chartConfig.total.label}</span>
+              <span className="text-lg leading-none font-bold sm:text-3xl">
+                {total.total.toLocaleString()}
+              </span>
+            </div>
           </div>
         </CardHeader>
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+        <ChartContainer config={chartConfig} className="aspect-auto h-[150px] w-full">
           <AreaChart
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 12,
-              right: 12,
+              left: 10,
+              right: 10,
             }}
           >
             <defs>
@@ -121,7 +119,7 @@ export function VisitStats({ className }: { className?: string }) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  className="w-[150px]"
+                  className="w-fit"
                   nameKey="views"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString('en-US', {
@@ -140,14 +138,15 @@ export function VisitStats({ className }: { className?: string }) {
               fillOpacity={0.4}
               stroke="var(--color-primary)"
               strokeWidth={2}
+              // @ts-expect-error dot 타입 정의 추가 필요
               dot={(props) => {
                 const { index } = props;
                 const isLastPoint = index === chartData.length - 1;
 
-                if (!isLastPoint) return <></>;
+                if (!isLastPoint) return null;
 
                 return (
-                  <g>
+                  <g key={index}>
                     {/* 첫 번째 레이더 원 */}
                     <circle
                       cx={props.cx}

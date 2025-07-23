@@ -5,7 +5,7 @@ import { TagFilterItem } from '@/lib/types/blog';
 import Link from 'next/link';
 import React, { use } from 'react';
 import { cn } from '@/lib/utils/tailwind-cn';
-import SearchButton from './SearchButton';
+import SearchButton from '../search/SearchButton';
 
 interface TagSectionProps {
   tags: Promise<TagFilterItem[]>;

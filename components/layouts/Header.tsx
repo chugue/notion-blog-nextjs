@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import ThemeToggle from '../ThemeToggle';
 import Image from 'next/image';
-import SearchModal from '@/app/(main)/_components/SearchModal';
+import SearchModal from '@/app/(main)/_components/search/SearchModal';
 import {
   DropdownMenu,
   DropdownMenuContent,

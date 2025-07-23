@@ -1,11 +1,12 @@
 import HeaderSection from './_components/HeaderSection';
 import { Suspense } from 'react';
-import TagSectionSkeleton from './_components/TagSectionSkeleton';
-import TagSectionClient from './_components/TagSection.client';
+import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
+import TagSectionClient from './_components/tag-section/TagSection.client';
 import { getPublishedPosts, getTags } from '@/lib/services/notion';
 import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
+import { FlipHexTechStack } from './_components/FlipHexTechStack';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -27,19 +28,20 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container mx-auto py-8">
-      <section className="mb-6 grid grid-cols-3">
-        <VisitStats className="col-span-2" />
+      <section className="mb-6 grid grid-cols-[500px_1fr] max-lg:grid-cols-1 max-md:px-4">
+        <VisitStats />
+        <FlipHexTechStack className="max-lg:hidden" />
       </section>
-      <div className="grid grid-cols-1 gap-20 md:grid-cols-[250px_1fr]">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-[250px_1fr]">
         {/* 좌측 사이드바 */}
-        <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center md:order-none">
+        <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center max-md:px-4 md:order-none">
           {/* 검색버튼 (md 이상에서만) */}
           <Suspense fallback={<TagSectionSkeleton />}>
             <TagSectionClient tags={tags} selectedTag={selectedTag} />
           </Suspense>
         </aside>
 
-        <div className="order-3 space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] md:order-none md:justify-self-start">
+        <div className="order-3 space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:min-w-[286px] max-md:px-4 md:order-none md:ml-10 md:justify-self-center">
           {/* 섹션 제목 */}
           <HeaderSection selectedTag={selectedTag} />
 
