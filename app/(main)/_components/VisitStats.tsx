@@ -144,7 +144,7 @@ export function VisitStats({ className }: { className?: string }) {
                 const { index } = props;
                 const isLastPoint = index === chartData.length - 1;
 
-                if (!isLastPoint) return null;
+                if (!isLastPoint) return <></>;
 
                 return (
                   <g>

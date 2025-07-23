@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
-import { formatDate } from '@/lib/date';
+import { formatDate } from '@/lib/utils/format-date';
 import { MDXContent } from '@/app/(blog)/_components/MdxContent';
 import { compile } from '@mdx-js/mdx';
 import withSlugs from 'rehype-slug';

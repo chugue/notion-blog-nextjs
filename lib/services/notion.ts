@@ -1,7 +1,7 @@
 import { GetPublishedPostParams, GetPublishedPostResponse, NotionUser } from '@/lib/types/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { PostMetadata, TagFilterItem } from '@/lib/types/blog';
-import { n2m, notion } from '../notion-client';
+import { n2m, notion } from '@/lib/utils/notion-client';
 
 const getCoverImage = (cover: PageObjectResponse['cover']) => {
   if (!cover) return '';
