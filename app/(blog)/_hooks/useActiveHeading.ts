@@ -6,27 +6,12 @@ export function useActiveHeading(): string {
   const [activeHeading, setActiveHeading] = useState<string>('');
 
   useEffect(() => {
-    // 👈 블로그 콘텐츠 영역만 타겟
     const contentArea = document.querySelector('.prose');
-    if (!contentArea) {
-      console.log('🚨 .prose 영역을 찾을 수 없습니다');
-      return;
-    }
+    if (!contentArea) return;
 
     const headings = contentArea.querySelectorAll('h1, h2, h3');
-    console.log(
-      '🔍 찾은 헤딩들:',
-      Array.from(headings).map((h) => ({
-        tag: h.tagName,
-        id: h.id,
-        text: h.textContent?.slice(0, 20),
-      }))
-    );
 
-    if (headings.length === 0) {
-      console.log('🚨 헤딩을 찾을 수 없습니다');
-      return;
-    }
+    if (headings.length === 0) return;
 
     const updateActiveHeading = () => {
       const scrollY = window.scrollY;
@@ -45,11 +30,9 @@ export function useActiveHeading(): string {
         }
       });
 
-      console.log('📍 현재 활성 헤딩:', currentHeading);
       setActiveHeading(currentHeading);
     };
 
-    // 👈 초기 딜레이 추가 (MDX 렌더링 대기)
     const timer = setTimeout(() => {
       updateActiveHeading();
     }, 100);
