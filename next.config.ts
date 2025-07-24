@@ -30,6 +30,19 @@ const nextConfig: NextConfig = {
   },
   pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],
   reactStrictMode: true,
+  // CSS 최적화 비활성화로 빌드 에러 해결
+  experimental: {
+    optimizeCss: false,
+  },
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    // CSS 최소화 비활성화
+    if (!isServer) {
+      config.optimization.minimizer = config.optimization.minimizer.filter(
+        (minimizer: any) => !minimizer.constructor.name.includes('CssMinimizerPlugin')
+      );
+    }
+    return config;
+  },
 };
 
 const withMDX = createMDX({

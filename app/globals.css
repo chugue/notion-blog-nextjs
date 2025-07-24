@@ -1,11 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@plugin '@tailwindcss/typography';
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
+@theme {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -44,31 +40,10 @@
   --color-code-accent: #252738;
   --color-code-text: #767887;
 
-  --font-sans: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;
-  --font-maplestory: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
-
-  --font-title: 3rem;
-  --font-sub-title: 2.25rem;
-  --font-h1: 2rem;
-  --font-h2: 1.75rem;
-  --font-h3: 1.5rem;
-  --font-heading: 1.25rem;
-  --font-subheading: 1.125rem;
-  --font-body: 1rem;
-  --font-quote: 1.125rem;
-  --font-caption: 0.875rem;
-
-  --line-height-title: 1.1;
-  --line-height-sub-title: 1.2;
-  --line-height-h1: 1.25;
-  --line-height-h2: 1.3;
-  --line-height-h3: 1.35;
-  --line-height-heading: 1.4;
-  --line-height-subheading: 1.5;
-  --line-height-body: 1.6;
-  --line-height-quote: 1.5;
-  --line-height-caption: 1.4;
+  /* Font families */
+  --font-family-sans: 'Maplestory OTF Light', ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: 'Maplestory OTF Light', ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --font-family-maplestory: 'Maplestory OTF Light', ui-sans-serif, system-ui, sans-serif;
 
   /* 타이포그래피 크기 설정 */
   --font-size-title: 3rem; /* 48px */
@@ -101,9 +76,6 @@
   --sticky-toc-offset: 10rem;
   --sticky-toc: calc(var(--header-height) + var(--sticky-offset) + var(--sticky-toc-offset));
   --sticky-top: calc(var(--header-height) + var(--sticky-offset));
-
-  --font-maplestory: var(--font-maplestory);
-  --font-maplestory-bold: var(--font-maplestory-bold);
 }
 
 :root {
@@ -180,7 +152,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: var(--font-family-sans);
   }
 
   /* 타이포그래피 전역 클래스 */
@@ -188,56 +161,56 @@
     font-size: var(--font-size-title);
     line-height: var(--line-height-title);
     font-weight: 700;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .sub-title {
     font-size: var(--font-size-sub-title);
     line-height: var(--line-height-sub-title);
     font-weight: 600;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .h1 {
     font-size: var(--font-size-h1);
     line-height: var(--line-height-h1);
     font-weight: 600;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .h2 {
     font-size: var(--font-size-h2);
     line-height: var(--line-height-h2);
     font-weight: 600;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .h3 {
     font-size: var(--font-size-h3);
     line-height: var(--line-height-h3);
     font-weight: 500;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .heading {
     font-size: var(--font-size-heading);
     line-height: var(--line-height-heading);
     font-weight: 500;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .subheading {
     font-size: var(--font-size-subheading);
     line-height: var(--line-height-subheading);
     font-weight: 400;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .body {
     font-size: var(--font-size-body);
     line-height: var(--line-height-body);
     font-weight: 400;
-    @apply font-maplestory;
+    font-family: var(--font-family-maplestory);
   }
 
   .quote {
@@ -245,14 +218,16 @@
     line-height: var(--line-height-quote);
     font-weight: 400;
     font-style: italic;
-    @apply font-maplestory text-muted-foreground;
+    font-family: var(--font-family-maplestory);
+    @apply text-muted-foreground;
   }
 
   .caption {
     font-size: var(--font-size-caption);
     line-height: var(--line-height-caption);
     font-weight: 400;
-    @apply font-maplestory text-muted-foreground;
+    font-family: var(--font-family-maplestory);
+    @apply text-muted-foreground;
   }
 }
 
@@ -295,7 +270,7 @@
   transform: rotateY(180deg);
 }
 
-[style*='transform-style: preserve-3d'] {
+.preserve-3d {
   transform-style: preserve-3d;
 }
 
@@ -304,25 +279,25 @@
 }
 
 /* rehype-pretty-code 다중 테마 CSS */
-code[data-theme*=' '],
-code[data-theme*=' '] span {
+code[data-theme],
+code[data-theme] span {
   color: var(--shiki-light) !important;
   background-color: var(--shiki-light-bg) !important;
 }
 
 /* 클래스 기반 다크모드 (next-themes 사용) */
-.dark code[data-theme*=' '],
-.dark code[data-theme*=' '] span {
+.dark code[data-theme],
+.dark code[data-theme] span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
 }
 
 /* pre 태그도 동일하게 적용 */
-pre[data-theme*=' '] {
+pre[data-theme] {
   background-color: var(--shiki-light-bg) !important;
 }
 
-.dark pre[data-theme*=' '] {
+.dark pre[data-theme] {
   background-color: var(--shiki-dark-bg) !important;
 }
 
