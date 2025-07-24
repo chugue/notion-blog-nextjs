@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
@@ -12,6 +11,7 @@ import rehypeSanitize from 'rehype-sanitize';
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { getPostById, getPublishedPosts } from '@/lib/services/notion';
+import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -45,13 +45,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-interface TocEntry {
-  value: string;
-  depth: number;
-  id?: string;
-  children?: Array<TocEntry>;
-}
-
 export const generateStaticParams = async () => {
   const posts = await getPublishedPosts({
     pageSize: 10,
@@ -60,29 +53,6 @@ export const generateStaticParams = async () => {
     id: post.id,
   }));
 };
-
-export const revalidate = 60;
-
-function TableOfContentsLink({ item }: { item: TocEntry }) {
-  return (
-    <div className="space-y-2">
-      <Link
-        key={item.id}
-        href={`#${item.id}`}
-        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
-      >
-        {item.value}
-      </Link>
-      {item.children && item.children.length > 0 && (
-        <div className="space-y-2 pl-4">
-          {item.children.map((subItem) => (
-            <TableOfContentsLink key={subItem.id} item={subItem} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 interface BlogPostProps {
   params: Promise<{ id: string }>;
@@ -99,8 +69,8 @@ export default async function BlogPost({ params }: BlogPostProps) {
   });
 
   return (
-    <div className="container py-12">
-      <div className="grid grid-cols-[1fr] gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[200px_1fr_220px]">
+    <div className="container mx-auto py-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
         <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
         <section className="min-w-0">
           {/* 블로그 헤더 */}
@@ -144,9 +114,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
                 />
               </summary>
               <nav className="mt-3 space-y-3 text-sm">
-                {data?.toc?.map((item) => (
-                  <TableOfContentsLink key={item.id} item={item} />
-                ))}
+                <TableOfContentsWrapper toc={data?.toc || []} />
               </nav>
             </details>
           </div>
@@ -193,14 +161,12 @@ export default async function BlogPost({ params }: BlogPostProps) {
         </section>
 
         {/* 이전글 다음글 */}
-        <aside className="hidden md:block">
+        <aside className="hidden justify-self-end md:block">
           <div className="sticky top-[var(--sticky-top)] mt-[var(--sticky-toc-offset)] ml-10 self-start border-l-3 border-black/50 dark:border-white/50">
             <div className="rounded-lg px-6 py-2 backdrop-blur-sm">
               <h3 className="mb-2 text-lg font-semibold">목차</h3>
               <nav className="space-y-3 overflow-y-auto pr-2 text-sm">
-                {data?.toc?.map((item) => (
-                  <TableOfContentsLink key={item.id} item={item} />
-                ))}
+                <TableOfContentsWrapper toc={data?.toc || []} />
               </nav>
             </div>
           </div>

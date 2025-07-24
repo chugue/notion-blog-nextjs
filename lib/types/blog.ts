@@ -13,3 +13,10 @@ export interface PostMetadata {
   date: string;
   language: string[];
 }
+
+export interface TocEntry {
+  value: string;
+  depth: number;
+  id?: string;
+  children?: Array<TocEntry>;
+}

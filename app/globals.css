@@ -308,7 +308,6 @@ code[data-theme*=' '],
 code[data-theme*=' '] span {
   color: var(--shiki-light) !important;
   background-color: var(--shiki-light-bg) !important;
-  font-weight: var(--shiki-light-font-weight, 600) !important;
 }
 
 /* 클래스 기반 다크모드 (next-themes 사용) */
@@ -316,7 +315,6 @@ code[data-theme*=' '] span {
 .dark code[data-theme*=' '] span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
-  font-weight: var(--shiki-dark-font-weight, 600) !important;
 }
 
 /* pre 태그도 동일하게 적용 */
@@ -328,23 +326,11 @@ pre[data-theme*=' '] {
   background-color: var(--shiki-dark-bg) !important;
 }
 
-/* 코드 블록 폰트 굵게 */
-pre[data-theme*=' '],
-pre[data-theme*=' '] span {
-  font-weight: 600 !important;
-}
-
-/* 코드 내부 span들도 굵게 */
-pre[data-theme*=' '] span,
-code[data-theme*=' '] span {
-  font-weight: 600 !important;
-}
-
 /* 모든 코드 블록과 인라인 코드 굵게 */
 pre,
 code,
 .shiki {
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 pre *,

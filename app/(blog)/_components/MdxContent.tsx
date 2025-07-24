@@ -15,8 +15,8 @@ const componentsConfig = {
 
 const prettyCodeOptions = {
   theme: {
-    dark: 'material-theme-palenight', // 다크모드 테마
-    light: 'aurora-x', // 라이트모드 테마
+    dark: 'material-theme-ocean',
+    light: 'aurora-x',
   },
 };
 
