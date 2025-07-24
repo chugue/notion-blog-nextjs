@@ -160,17 +160,8 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <GiscusComments />
         </section>
 
-        {/* 이전글 다음글 */}
-        <aside className="hidden justify-self-end md:block">
-          <div className="sticky top-[var(--sticky-top)] mt-[var(--sticky-toc-offset)] ml-10 self-start border-l-3 border-black/50 dark:border-white/50">
-            <div className="rounded-lg px-6 py-2 backdrop-blur-sm">
-              <h3 className="mb-2 text-lg font-semibold">목차</h3>
-              <nav className="space-y-3 overflow-y-auto pr-2 text-sm">
-                <TableOfContentsWrapper toc={data?.toc || []} />
-              </nav>
-            </div>
-          </div>
-        </aside>
+        {/* 목차 */}
+        <TableOfContentsWrapper toc={data?.toc || []} />
       </div>
     </div>
   );

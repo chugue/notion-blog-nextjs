@@ -97,7 +97,7 @@
 
 :root {
   --header-height: 3.5rem;
-  --sticky-offset: 1.5rem;
+  --sticky-offset: 3rem;
   --sticky-toc-offset: 10rem;
   --sticky-toc: calc(var(--header-height) + var(--sticky-offset) + var(--sticky-toc-offset));
   --sticky-top: calc(var(--header-height) + var(--sticky-offset));

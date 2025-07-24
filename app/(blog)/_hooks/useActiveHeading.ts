@@ -35,7 +35,7 @@ export function useActiveHeading(): string {
       let currentHeading = '';
 
       headings.forEach((heading) => {
-        if (!heading.id) return; // 👈 ID가 없는 헤딩 스킵
+        if (!heading.id) return;
 
         const rect = heading.getBoundingClientRect();
         const elementTop = rect.top + scrollY;
