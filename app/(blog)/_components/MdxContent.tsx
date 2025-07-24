@@ -13,21 +13,26 @@ const componentsConfig = {
   pre: CodeBlock,
 };
 
-const codeBlockOptions = {
-  theme: 'aurora-x',
+const prettyCodeOptions = {
+  theme: {
+    dark: 'material-theme-palenight', // 다크모드 테마
+    light: 'aurora-x', // 라이트모드 테마
+  },
 };
 
-export async function MDXContent({ source }: MDXContentProps) {
+export function MDXContent({ source }: MDXContentProps) {
   return (
-    <MDXRemote
-      source={source}
-      options={{
-        mdxOptions: {
-          remarkPlugins: [remarkGfm],
-          rehypePlugins: [rehypeSlug, rehypeSanitize, [rehypePrettyCode, codeBlockOptions]],
-        },
-      }}
-      components={componentsConfig}
-    />
+    <>
+      <MDXRemote
+        source={source}
+        options={{
+          mdxOptions: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [rehypeSlug, rehypeSanitize, [rehypePrettyCode, prettyCodeOptions]],
+          },
+        }}
+        components={componentsConfig}
+      />
+    </>
   );
 }

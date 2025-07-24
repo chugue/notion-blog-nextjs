@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],
+  reactStrictMode: true,
 };
 
 const withMDX = createMDX({

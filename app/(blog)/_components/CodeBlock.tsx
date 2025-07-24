@@ -57,11 +57,7 @@ const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
       <pre
         ref={preRef}
         {...props}
-        className={cn(
-          'overflow-x-auto rounded-lg border p-4',
-          'bg-code-accent text-code-text',
-          className
-        )}
+        className={cn('overflow-x-auto rounded-lg border p-4', className)}
       >
         {children}
       </pre>
