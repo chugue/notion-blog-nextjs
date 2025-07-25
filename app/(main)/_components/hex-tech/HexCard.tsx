@@ -21,6 +21,7 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
   const cardRef = useRef<HTMLDivElement>(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   const isHovered = hoveredId === tech.id;
   const isOtherHovered = hoveredId && hoveredId !== tech.id;
@@ -45,6 +46,10 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
       }
     );
   }, [index]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -81,7 +86,7 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
         className={cn(
           'absolute inset-0 flex transform-gpu flex-col items-center justify-center transition-all duration-500',
           isFlipped ? 'rotate-y-180 opacity-0' : 'opacity-100',
-          theme === 'dark' ? 'bg-white' : 'bg-primary/10'
+          mounted && theme === 'dark' ? 'bg-white' : 'bg-primary/10'
         )}
       >
         <div className="relative h-10 w-10">
