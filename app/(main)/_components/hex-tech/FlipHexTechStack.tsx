@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
-
+import React, { useRef, useEffect, useState, useMemo } from 'react';
+import { Flip } from 'gsap/Flip';
 import { cn } from '@/lib/utils/tailwind-cn';
+
 import { TechStackItem } from '@/lib/types/blog';
 import HexCard from './HexCard';
+import { getHoneycombPositions } from '@/lib/utils/getHonecombPositions';
+import { useRefCenter } from '../../_hooks/useRefCenter';
 
+// 👈 컴포넌트 외부로 이동 (매번 새로 생성 방지)
 const techStacks: TechStackItem[] = [
   {
     id: '1',
@@ -169,98 +173,79 @@ const techStacks: TechStackItem[] = [
   },
 ];
 
-export function FlipHexTechStack({ className }: { className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export function FlipHexTechStack() {
+  const resizeRef = useRef<HTMLDivElement>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // 수학적으로 정확한 허니콤 패턴 (면끼리 정확히 닿도록)
-  const getHoneycombPositions = () => {
-    const positions = [];
-    const radius = 48; // 육각형 반지름 (h-24 w-24의 절반)
+  const { positions, honeycombWidth } = useMemo(() => {
+    const positions = getHoneycombPositions(techStacks.length);
+    const radius = 48;
+    const maxX = Math.max(...positions.map((pos) => pos.x));
+    const honeycombWidth = maxX + radius;
 
-    const horizontalSpacing = radius * Math.sqrt(3) + 6; // 83.14px + 6px 갭
-    const verticalSpacing = radius * 1.5 + 4; // 72px + 4px 갭
+    return { positions, honeycombWidth };
+  }, [techStacks.length]);
 
-    // 각 줄의 구조
-    const rowConfigs = [
-      { items: 4, offsetX: 0 }, // 1열: 4개
-      { items: 5, offsetX: -horizontalSpacing / 2 }, // 2열: 5개, 오프셋
-      { items: 4, offsetX: 0 }, // 3열: 4개
-    ];
+  const centerX = useRefCenter(resizeRef, honeycombWidth);
 
-    for (let row = 0; row < rowConfigs.length; row++) {
-      const config = rowConfigs[row];
-      const baseY = row * verticalSpacing;
-
-      for (let col = 0; col < config.items; col++) {
-        positions.push({
-          x: col * horizontalSpacing + config.offsetX,
-          y: baseY,
-          row,
-          col,
-        });
-      }
-    }
-
-    return positions;
-  };
-
-  const positions = getHoneycombPositions();
-  const displayedTechs = techStacks.slice(0, positions.length);
-
-  // 필터 변경 시 Flip 애니메이션
+  // 👈 초기화 완료 체크
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (centerX !== 0) {
+      setIsInitialized(true);
+    }
+  }, [centerX]);
+
+  useEffect(() => {
+    if (!resizeRef.current || !isInitialized) return;
 
     const state = Flip.getState('.hex-card');
-
-    // DOM 업데이트 후 애니메이션 실행
     requestAnimationFrame(() => {
       Flip.from(state, {
         duration: 0.8,
         ease: 'power2.inOut',
-        stagger: 0.05,
         absolute: true,
       });
     });
-  }, []);
+  }, [centerX, isInitialized]);
 
   return (
-    <div className={cn(`flex flex-col items-center justify-center overflow-x-auto ${className}`)}>
-      {/* 👈 overflow-x-auto 추가 */}
-      {/* 허니콤 패턴 컨테이너 */}
-      <div
-        ref={containerRef}
-        className="relative gap-2"
-        style={{
-          width: '500px',
-          height: '280px',
-          minWidth: '500px',
-        }}
-      >
-        {displayedTechs.map((tech, index) => {
-          const position = positions[index % positions.length];
+    <div className={cn(`relative ml-10 max-lg:hidden`)}>
+      {/* 그라데이션 */}
+      <div className="from-background via-background/80 pointer-events-none absolute top-0 left-0 z-30 h-full w-10 bg-gradient-to-r to-transparent" />
+      <div className="from-background via-background/80 pointer-events-none absolute top-0 right-0 z-30 h-full w-10 bg-gradient-to-l to-transparent" />
 
-          return (
-            <div
-              key={tech.id}
-              className="hex-card absolute"
-              style={{
-                left: `${position.x + 100}px`, // 중앙 정렬을 위한 오프셋
-                top: `${position.y + 65}px`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              <HexCard
-                tech={tech}
-                index={index}
-                onHover={setHoveredId}
-                hoveredId={hoveredId}
-                row={position.row}
-              />
-            </div>
-          );
-        })}
+      <div className="flex h-[280px] w-full flex-col justify-center">
+        {/* 허니콤 패턴 컨테이너 */}
+        <div ref={resizeRef} className="flex h-full overflow-x-auto pt-3">
+          <div
+            className="relative flex"
+            // 👈 초기화 전까지 숨김
+            style={{ opacity: isInitialized ? 1 : 0 }}
+          >
+            {techStacks.map((tech, index) => {
+              const position = positions[index];
+              return (
+                <div
+                  key={tech.id}
+                  className="hex-card absolute"
+                  style={{
+                    left: `${position.x + centerX}px`,
+                    top: `${position.y}px`,
+                  }}
+                >
+                  <HexCard
+                    tech={tech}
+                    index={index}
+                    onHover={setHoveredId}
+                    hoveredId={hoveredId}
+                    row={position.row}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
