@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { Flip } from 'gsap/Flip';
+import React, { useRef, useState } from 'react';
 import { cn } from '@/lib/utils/tailwind-cn';
 
 import { TechStackItem } from '@/lib/types/blog';
 import HexCard from './HexCard';
-import { getHoneycombPositions } from '@/lib/utils/getHonecombPositions';
 import { useRefCenter } from '../../_hooks/useRefCenter';
+import { useHoneycombInit } from '../../_hooks/useHoneycombInit';
+import { useHoneycombMemo } from '../../_hooks/useHoneycombMemo';
 
-// 👈 컴포넌트 외부로 이동 (매번 새로 생성 방지)
 const techStacks: TechStackItem[] = [
   {
     id: '1',
@@ -166,7 +165,7 @@ const techStacks: TechStackItem[] = [
   {
     id: '20',
     name: 'HTML',
-    icon: '/icons/html5.svg',
+    icon: '/icons/html.svg',
     color: '#E34F26',
     description: '마크업 언어',
     tagName: 'HTML',
@@ -176,38 +175,15 @@ const techStacks: TechStackItem[] = [
 export function FlipHexTechStack() {
   const resizeRef = useRef<HTMLDivElement>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
 
-  const { positions, honeycombWidth } = useMemo(() => {
-    const positions = getHoneycombPositions(techStacks.length);
-    const radius = 48;
-    const maxX = Math.max(...positions.map((pos) => pos.x));
-    const honeycombWidth = maxX + radius;
+  // 태그 갯수가 바뀔 시에만 업데이트 되도록 최적화 -> 허니콤 전체 가로 길이 계산
+  const { positions, honeycombWidth } = useHoneycombMemo(techStacks);
 
-    return { positions, honeycombWidth };
-  }, [techStacks.length]);
-
+  // 허니콤 길이와 부모길의를 계산해서 중앙값 계산
   const centerX = useRefCenter(resizeRef, honeycombWidth);
 
-  // 👈 초기화 완료 체크
-  useEffect(() => {
-    if (centerX !== 0) {
-      setIsInitialized(true);
-    }
-  }, [centerX]);
-
-  useEffect(() => {
-    if (!resizeRef.current || !isInitialized) return;
-
-    const state = Flip.getState('.hex-card');
-    requestAnimationFrame(() => {
-      Flip.from(state, {
-        duration: 0.8,
-        ease: 'power2.inOut',
-        absolute: true,
-      });
-    });
-  }, [centerX, isInitialized]);
+  // 허니콤 초기화 완료 체크
+  const isInitialized = useHoneycombInit(centerX, resizeRef);
 
   return (
     <div className={cn(`relative ml-10 max-lg:hidden`)}>
@@ -218,11 +194,7 @@ export function FlipHexTechStack() {
       <div className="flex h-[280px] w-full flex-col justify-center">
         {/* 허니콤 패턴 컨테이너 */}
         <div ref={resizeRef} className="flex h-full overflow-x-auto pt-3">
-          <div
-            className="relative flex"
-            // 👈 초기화 전까지 숨김
-            style={{ opacity: isInitialized ? 1 : 0 }}
-          >
+          <div className="relative flex" style={{ opacity: isInitialized ? 1 : 0 }}>
             {techStacks.map((tech, index) => {
               const position = positions[index];
               return (
