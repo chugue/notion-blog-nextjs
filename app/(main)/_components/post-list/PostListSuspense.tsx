@@ -61,6 +61,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     }
   );
 
+  // 무한 스크롤 로직
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();

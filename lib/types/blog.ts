@@ -20,3 +20,12 @@ export interface TocEntry {
   id?: string;
   children?: Array<TocEntry>;
 }
+
+export interface TechStackItem {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  description: string;
+  tagName: string;
+}

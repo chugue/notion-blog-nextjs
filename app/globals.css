@@ -41,9 +41,9 @@
   --color-code-text: #767887;
 
   /* Font families */
-  --font-family-sans: 'Maplestory OTF Light', ui-sans-serif, system-ui, sans-serif;
-  --font-family-mono: 'Maplestory OTF Light', ui-monospace, Menlo, Monaco, Consolas, monospace;
-  --font-family-maplestory: 'Maplestory OTF Light', ui-sans-serif, system-ui, sans-serif;
+  --font-family-sans: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --font-family-maplestory: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
 
   /* 타이포그래피 크기 설정 */
   --font-size-title: 3rem; /* 48px */
@@ -153,7 +153,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-family-sans);
+    font-family: var(--font-family-maplestory);
   }
 
   /* 타이포그래피 전역 클래스 */

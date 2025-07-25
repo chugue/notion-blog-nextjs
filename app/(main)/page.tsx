@@ -6,7 +6,7 @@ import { getPublishedPosts, getTags } from '@/lib/services/notion';
 import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
-import { FlipHexTechStack } from './_components/FlipHexTechStack';
+import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
 
 interface HomeProps {
   searchParams: Promise<{

@@ -46,7 +46,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
         </div>
 
         {/* 호버 시 전체 콘텐츠 오버레이 */}
-        <div className="bg-background text-primary absolute z-40 flex flex-col rounded-md px-2 pb-5 opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100">
+        <div className="bg-background text-primary absolute z-40 flex flex-col rounded-md px-2 pb-5 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100">
           <div className="mb-4 flex flex-wrap gap-2">
             {post.language?.map((tag) => (
               <Badge
