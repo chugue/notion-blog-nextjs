@@ -7,7 +7,6 @@ import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
 import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
-import { HexSkeleton } from './_components/hex-tech/HexSkeleton';
 
 interface HomeProps {
   searchParams: Promise<{

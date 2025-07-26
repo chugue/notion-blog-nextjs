@@ -29,3 +29,8 @@ export interface TechStackItem {
   description: string;
   tagName: string;
 }
+
+export interface GetPostByIdResp {
+  markdown: string;
+  post: PostMetadata | null;
+}

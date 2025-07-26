@@ -1,7 +1,8 @@
 import { GetPublishedPostParams, GetPublishedPostResponse, NotionUser } from '@/lib/types/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { PostMetadata, TagFilterItem } from '@/lib/types/blog';
+import { GetPostByIdResp, PostMetadata, TagFilterItem } from '@/lib/types/blog';
 import { n2m, notion } from '@/lib/utils/notion-client';
+import { Result } from '../types/result';
 
 const getCoverImage = (cover: PageObjectResponse['cover']) => {
   if (!cover) return '';
@@ -45,7 +46,7 @@ export const getPublishedPosts = async ({
   sort = 'latest',
   pageSize = 10,
   startCursor = undefined,
-}: GetPublishedPostParams): Promise<GetPublishedPostResponse> => {
+}: GetPublishedPostParams): Promise<Result<GetPublishedPostResponse>> => {
   try {
     const response = await notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID!,
@@ -84,18 +85,29 @@ export const getPublishedPosts = async ({
       .map(getPostMetadata);
 
     return {
-      posts,
-      hasMore: response.has_more,
-      nextCursor: response.next_cursor || '',
+      success: true,
+      data: {
+        posts,
+        hasMore: response.has_more,
+        nextCursor: response.next_cursor || '',
+      },
     };
   } catch (error) {
     console.log(error);
-    throw new Error('Notion database not found');
+    return {
+      success: false,
+      error: error as Error,
+    };
   }
 };
 
 export const getTags = async (): Promise<TagFilterItem[]> => {
-  const { posts } = await getPublishedPosts({});
+  const result = await getPublishedPosts({});
+
+  if (!result.success) {
+    return [];
+  }
+  const { posts } = result.data;
 
   // 모든 태그를 추출하고 각 태그의 출현 횟수를 계산
   const tagCount = posts.reduce(
@@ -130,12 +142,7 @@ export const getTags = async (): Promise<TagFilterItem[]> => {
   return [allTag, ...sortedTags];
 };
 
-export const getPostById = async (
-  id: string
-): Promise<{
-  markdown: string;
-  post: PostMetadata | null;
-}> => {
+export const getPostById = async (id: string): Promise<Result<GetPostByIdResp>> => {
   try {
     const response = await notion.pages.retrieve({
       page_id: id,
@@ -143,8 +150,8 @@ export const getPostById = async (
 
     if (!response) {
       return {
-        markdown: '',
-        post: null,
+        success: false,
+        error: new Error('Post not found'),
       };
     }
 
@@ -152,11 +159,17 @@ export const getPostById = async (
     const { parent } = n2m.toMarkdownString(mdBlocks);
 
     return {
-      markdown: parent,
-      post: getPostMetadata(response as PageObjectResponse),
+      success: true,
+      data: {
+        markdown: parent,
+        post: getPostMetadata(response as PageObjectResponse),
+      },
     };
   } catch (error) {
     console.log(error);
-    throw error;
+    return {
+      success: false,
+      error: error as Error,
+    };
   }
 };
