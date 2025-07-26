@@ -1,8 +1,9 @@
-import { GetPublishedPostParams, GetPublishedPostResponse, NotionUser } from '@/lib/types/notion';
+import { NotionUser } from '@/lib/types/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { GetPostByIdResp, PostMetadata, TagFilterItem } from '@/lib/types/blog';
 import { n2m, notion } from '@/lib/utils/notion-client';
 import { Result } from '../types/result';
+import { getPublishedPosts } from '../queries/notion';
 
 const getCoverImage = (cover: PageObjectResponse['cover']) => {
   if (!cover) return '';
@@ -17,7 +18,7 @@ const getCoverImage = (cover: PageObjectResponse['cover']) => {
   }
 };
 
-const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
+export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
   const { properties } = page;
 
   return {
@@ -39,66 +40,6 @@ const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
     date:
       properties.createdAt.type === 'created_time' ? (properties.createdAt.created_time ?? '') : '',
   };
-};
-
-export const getPublishedPosts = async ({
-  tag = '전체',
-  sort = 'latest',
-  pageSize = 10,
-  startCursor = undefined,
-}: GetPublishedPostParams): Promise<Result<GetPublishedPostResponse>> => {
-  try {
-    const response = await notion.databases.query({
-      database_id: process.env.NOTION_DATABASE_ID!,
-      filter: {
-        and: [
-          {
-            property: 'isPublic',
-            select: {
-              equals: 'Public',
-            },
-          },
-          ...(tag && tag !== '전체'
-            ? [
-                {
-                  property: 'language',
-                  multi_select: {
-                    contains: tag,
-                  },
-                },
-              ]
-            : []),
-        ],
-      },
-      sorts: [
-        {
-          property: 'createdAt',
-          direction: sort === 'latest' ? 'descending' : 'ascending',
-        },
-      ],
-      page_size: pageSize,
-      start_cursor: startCursor,
-    });
-
-    const posts = response.results
-      .filter((page): page is PageObjectResponse => 'properties' in page)
-      .map(getPostMetadata);
-
-    return {
-      success: true,
-      data: {
-        posts,
-        hasMore: response.has_more,
-        nextCursor: response.next_cursor || '',
-      },
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      success: false,
-      error: error as Error,
-    };
-  }
 };
 
 export const getTags = async (): Promise<TagFilterItem[]> => {

@@ -2,11 +2,12 @@ import HeaderSection from './_components/HeaderSection';
 import { Suspense } from 'react';
 import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
 import TagSectionClient from './_components/tag-section/TagSection.client';
-import { getPublishedPosts, getTags } from '@/lib/services/notion';
+import { getTags } from '@/lib/services/notion';
 import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
 import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
+import { getPublishedPosts } from '@/lib/queries/notion';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -20,7 +21,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  const tags = getTags();
+  const tags = await getTags();
   const postsPromise = getPublishedPosts({
     tag: selectedTag,
     sort: selectedSort,
