@@ -1,4 +1,4 @@
-import { getPublishedPosts } from '@/lib/services/notion';
+import { getPublishedPosts } from '@/shared/queries/notion';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {

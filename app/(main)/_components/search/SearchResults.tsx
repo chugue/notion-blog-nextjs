@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
-import { Badge } from '@/components/ui/badge';
+import { CommandEmpty, CommandGroup, CommandItem } from '@/shared/components/ui/command';
+import { Badge } from '@/shared/components/ui/badge';
 import { FileText } from 'lucide-react';
-import { PostMetadata } from '@/lib/types/blog';
+import { PostMetadata } from '@/shared/types/blog';
 import SearchHighlight from './SearchHighlight';
 
 export interface SearchResultsProps {

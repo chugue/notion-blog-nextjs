@@ -3,14 +3,14 @@
 import * as React from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart';
-import { cn } from '@/lib/utils/tailwind-cn';
+} from '@/shared/components/ui/chart';
+import { cn } from '@/shared/utils/tailwind-cn';
 
 const chartData = [
   { date: '2024-06-01', daily: 178, total: 200 },

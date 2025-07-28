@@ -2,7 +2,7 @@
 
 import { TocEntry } from '@stefanprobst/rehype-extract-toc';
 import Link from 'next/link';
-import { cn } from '@/lib/utils/tailwind-cn';
+import { cn } from '@/shared/utils/tailwind-cn';
 
 interface TableOfContentsLinkProps {
   item: TocEntry;

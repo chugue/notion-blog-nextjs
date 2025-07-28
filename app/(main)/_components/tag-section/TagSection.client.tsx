@@ -1,10 +1,10 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TagFilterItem } from '@/lib/types/blog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { TagFilterItem } from '@/shared/types/blog';
 import Link from 'next/link';
 import React, { use } from 'react';
-import { cn } from '@/lib/utils/tailwind-cn';
+import { cn } from '@/shared/utils/tailwind-cn';
 import SearchButton from '../search/SearchButton';
 
 interface TagSectionProps {

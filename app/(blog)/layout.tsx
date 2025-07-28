@@ -1,5 +1,5 @@
-import Footer from '@/components/layouts/Footer';
-import Header from '@/components/layouts/Header';
+import Footer from '@/shared/components/layouts/Footer';
+import Header from '@/shared/components/layouts/Header';
 
 export const metadata = {
   title: 'Next.js',

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { cn } from '@/lib/utils/tailwind-cn';
+import { cn } from '@/shared/utils/tailwind-cn';
 import { useRefCenter } from '../../_hooks/useRefCenter';
 import { useHoneycombInit } from '../../_hooks/useHoneycombInit';
 import { useHoneycombMemo } from '../../_hooks/useHoneycombMemo';

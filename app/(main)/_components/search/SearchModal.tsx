@@ -2,8 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { CommandDialog, CommandInput, CommandList } from '@/components/ui/command';
-import { useSearchStore } from '@/lib/stores/useSearchStore';
+import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui/command';
+import { useSearchStore } from '@/shared/stores/useSearchStore';
 import { useDebounce } from '@/app/(main)/_hooks/useDebounce';
 import SearchResults from './SearchResults';
 

@@ -2,12 +2,11 @@ import HeaderSection from './_components/HeaderSection';
 import { Suspense } from 'react';
 import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
 import TagSectionClient from './_components/tag-section/TagSection.client';
-import { getTags } from '@/lib/services/notion';
 import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
 import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
-import { getPublishedPosts } from '@/lib/queries/notion';
+import { getPublishedPosts } from '@/shared/queries/notion';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -21,7 +20,10 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  const tags = await getTags();
+  // const tags = await getTags();
+
+  // TODO: 태그를 클린 아키텍처에 맞게 리팩토링
+
   const postsPromise = getPublishedPosts({
     tag: selectedTag,
     sort: selectedSort,

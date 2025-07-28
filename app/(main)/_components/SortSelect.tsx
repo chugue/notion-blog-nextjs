@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/shared/components/ui/select';
 import { useRouter, useSearchParams } from 'next/dist/client/components/navigation';
 import React from 'react';
 

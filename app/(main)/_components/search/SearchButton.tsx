@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchStore } from '@/lib/stores/useSearchStore';
+import { useSearchStore } from '@/shared/stores/useSearchStore';
 import { SearchIcon } from 'lucide-react';
 import React from 'react';
 

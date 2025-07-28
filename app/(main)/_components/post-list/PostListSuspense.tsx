@@ -7,7 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { GetPublishedPostResponse } from '@/lib/types/notion';
+import { GetPublishedPostResponse } from '@/shared/types/notion';
 
 interface PostListProps {
   postsPromise: Promise<GetPublishedPostResponse>;

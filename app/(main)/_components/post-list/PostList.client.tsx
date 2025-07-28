@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { PostCard } from './PostCard';
-import { PostMetadata } from '@/lib/types/blog';
+import { PostMetadata } from '@/shared/types/blog';
 
 interface PostListProps {
   selectedTag: string;

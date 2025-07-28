@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { TechStackItem } from '@/lib/types/blog';
+import { TechStackItem } from '@/shared/types/blog';
 import Link from 'next/link';
-import { cn } from '@/lib/utils/tailwind-cn';
+import { cn } from '@/shared/utils/tailwind-cn';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
 

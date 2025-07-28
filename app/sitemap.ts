@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
-import { PostMetadata } from '@/lib/types/blog';
-import { getPublishedPosts } from '@/lib/services/notion';
+import { PostMetadata } from '@/shared/types/blog';
+import { getPublishedPosts } from '@/shared/services/notion';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 기본 URL

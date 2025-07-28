@@ -1,5 +1,5 @@
-import { TechStackItem } from '@/lib/types/blog';
-import { getHoneycombPositions } from '@/lib/utils/getHonecombPositions';
+import { TechStackItem } from '@/shared/types/blog';
+import { getHoneycombPositions } from '@/app/(main)/_utils/getHonecombPositions';
 import { useMemo } from 'react';
 
 export const useHoneycombMemo = (techStacks: TechStackItem[]) => {

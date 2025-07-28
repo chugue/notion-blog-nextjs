@@ -1,4 +1,4 @@
-import { getPostById } from '@/lib/services/notion';
+import { getPostById } from '@/shared/services/notion';
 import { ImageResponse } from 'next/og';
 
 export const size = {

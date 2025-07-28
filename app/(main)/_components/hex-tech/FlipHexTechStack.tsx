@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { cn } from '@/lib/utils/tailwind-cn';
+import { cn } from '@/shared/utils/tailwind-cn';
 
-import { TechStackItem } from '@/lib/types/blog';
+import { TechStackItem } from '@/shared/types/blog';
 import HexCard from './HexCard';
 import { useRefCenter } from '../../_hooks/useRefCenter';
 import { useHoneycombInit } from '../../_hooks/useHoneycombInit';
