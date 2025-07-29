@@ -1,4 +1,4 @@
-import { PostMetadata } from './blog';
+import { PostMetadata } from '../../domain/entities/blog.entity';
 
 export interface SearchState {
   // UI 상태

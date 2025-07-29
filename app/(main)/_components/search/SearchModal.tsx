@@ -3,8 +3,8 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui/command';
-import { useSearchStore } from '@/shared/stores/useSearchStore';
-import { useDebounce } from '@/app/(main)/_hooks/useDebounce';
+import { useSearchStore } from '@/presentation/stores/useSearchStore';
+import { useDebounce } from '@/presentation/hooks/main/useDebounce';
 import SearchResults from './SearchResults';
 
 const SearchModal = () => {

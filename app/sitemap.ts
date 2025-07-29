@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { PostMetadata } from '@/shared/types/blog';
+import { PostMetadata } from '@/domain/entities/blog.entity';
 import { getPublishedPosts } from '@/shared/services/notion';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

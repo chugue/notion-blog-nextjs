@@ -1,4 +1,4 @@
-import { PageView } from '@/domain/entities/page-view';
+import { PageView } from '@/domain/entities/page-view.entity';
 import { index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 // 페이지별 조회수 추적

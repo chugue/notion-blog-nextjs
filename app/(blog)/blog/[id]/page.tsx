@@ -10,12 +10,13 @@ import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import { notFound } from 'next/navigation';
-import { getPostById, getPublishedPosts } from '@/shared/services/notion';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
+import { diContainer } from '@/shared/di/di-container';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const postUseCase = diContainer.post.postUseCase;
   const { id } = await params;
-  const { post } = await getPostById(id);
+  const { post } = await postUseCase.getPostById(id);
 
   if (!post) {
     return {
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title: post.title,
     description: `${post.title} - Stephen's 기술블로그`,
-    keywords: post.language,
+    keywords: post.tag,
     authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
     publisher: '김성훈',
     alternates: {
@@ -40,13 +41,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       type: 'article',
       publishedTime: post.date,
       authors: post.author || '김성훈',
-      tags: post.language,
+      tags: post.tag,
     },
   };
 }
 
 export const generateStaticParams = async () => {
-  const posts = await getPublishedPosts({
+  const postUseCase = diContainer.post.postUseCase;
+  const posts = await postUseCase.getPublishedPosts({
     pageSize: 10,
   });
   return posts.posts.map((post) => ({
@@ -60,7 +62,8 @@ interface BlogPostProps {
 
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
-  const { markdown, post } = await getPostById(id);
+  const postUseCase = diContainer.post.postUseCase;
+  const { markdown, post } = await postUseCase.getPostById(id);
 
   if (!post) notFound();
 
@@ -77,7 +80,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="flex flex-wrap gap-2">
-                {post.language?.map((tag) => (
+                {post.tag.map((tag) => (
                   <Badge key={tag}>{tag}</Badge>
                 ))}
               </div>

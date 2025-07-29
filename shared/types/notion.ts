@@ -1,5 +1,5 @@
 import { PartialUserObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { PostMetadata } from './blog';
+import { PostMetadata } from '../../domain/entities/blog.entity';
 
 export interface NotionProperties {
   Title?: { title?: { plain_text: string }[] };
@@ -11,18 +11,7 @@ export interface NotionProperties {
   Slug?: { rich_text?: { plain_text: string }[] };
 }
 
-export interface NotionUser {
-  object: 'user';
-  id: string;
-  type?: 'person' | 'bot';
-  name?: string;
-  avatar_url?: string;
-  person?: {
-    email?: string;
-  };
-}
-
-export interface GetPublishedPostResponse {
+export interface PostMetadataResp {
   posts: PostMetadata[];
   hasMore: boolean;
   nextCursor: string;

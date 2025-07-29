@@ -2,9 +2,9 @@
 
 import React, { useRef } from 'react';
 import { cn } from '@/shared/utils/tailwind-cn';
-import { useRefCenter } from '../../_hooks/useRefCenter';
-import { useHoneycombInit } from '../../_hooks/useHoneycombInit';
-import { useHoneycombMemo } from '../../_hooks/useHoneycombMemo';
+import { useRefCenter } from '../../../../presentation/hooks/main/useRefCenter';
+import { useHoneycombInit } from '../../../../presentation/hooks/main/useHoneycombInit';
+import { useHoneycombMemo } from '../../../../presentation/hooks/main/useHoneycombMemo';
 
 interface HexSkeletonItemProps {
   delay?: number;

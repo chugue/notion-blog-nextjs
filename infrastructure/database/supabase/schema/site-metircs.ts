@@ -1,3 +1,4 @@
+import { SiteMetric } from '@/domain/entities/site-metric.entity';
 import { date, index, integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 // 페이지별 조회수 추적
@@ -19,3 +20,22 @@ export const siteMetrics = pgTable(
 
 export type SiteMetricSelect = typeof siteMetrics.$inferSelect;
 export type SiteMetricInsert = typeof siteMetrics.$inferInsert;
+
+export const toDomain = (data: SiteMetricSelect): SiteMetric => {
+  return {
+    id: data.id,
+    totalVisits: data.totalVisits,
+    dailyVisits: data.dailyVisits,
+    date: data.date,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+  };
+};
+
+export const toRecord = (data: SiteMetric): Omit<SiteMetricInsert, 'id'> => {
+  return {
+    totalVisits: data.totalVisits,
+    dailyVisits: data.dailyVisits,
+    date: data.date,
+  };
+};

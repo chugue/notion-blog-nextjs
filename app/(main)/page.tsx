@@ -6,7 +6,7 @@ import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
 import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
-import { getPublishedPosts } from '@/shared/queries/notion';
+import { diContainer } from '@/shared/di/di-container';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -16,15 +16,16 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
+  const tagInfoUseCase = diContainer.tagInfo.tagInfoUseCase;
+  const postUseCase = diContainer.post.postUseCase;
+
   const { tag, sort } = await searchParams;
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  // const tags = await getTags();
-
-  // TODO: 태그를 클린 아키텍처에 맞게 리팩토링
-
-  const postsPromise = getPublishedPosts({
+  // Promise는 하위 컴포넌트에서 use를 사용해서 처리
+  const tags = tagInfoUseCase.getAllTags();
+  const postsPromise = postUseCase.getPublishedPosts({
     tag: selectedTag,
     sort: selectedSort,
   });

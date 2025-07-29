@@ -1,4 +1,4 @@
-import { updateMetrics } from './site-metrics';
+import { updateMetrics } from './site-metrics.query';
 import { db } from '@/infrastructure/database/drizzle/drizzle';
 import { pageViews } from '@/infrastructure/database/supabase/schema';
 import { eq } from 'drizzle-orm';

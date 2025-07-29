@@ -8,10 +8,9 @@ export interface PostMetadata {
   readonly id: string;
   readonly title: string;
   readonly coverImage?: string;
-  readonly tool: string[];
   readonly author: string;
   readonly date: string;
-  readonly language: string[];
+  readonly tag: string[];
 }
 
 export interface TocEntry {
@@ -30,7 +29,7 @@ export interface TechStackItem {
   tagName: string;
 }
 
-export interface GetPostByIdResp {
-  markdown: string;
-  post: PostMetadata | null;
+export interface Post {
+  readonly markdown: string;
+  readonly post: PostMetadata | null;
 }

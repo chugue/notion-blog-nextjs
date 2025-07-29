@@ -4,7 +4,7 @@ import React from 'react';
 import { CommandEmpty, CommandGroup, CommandItem } from '@/shared/components/ui/command';
 import { Badge } from '@/shared/components/ui/badge';
 import { FileText } from 'lucide-react';
-import { PostMetadata } from '@/shared/types/blog';
+import { PostMetadata } from '@/domain/entities/blog.entity';
 import SearchHighlight from './SearchHighlight';
 
 export interface SearchResultsProps {

@@ -1,6 +1,6 @@
-import { db } from '../../infrastructure/database/drizzle/drizzle';
+import { db } from '../database/drizzle/drizzle';
 import { eq } from 'drizzle-orm';
-import { siteMetrics } from '../../infrastructure/database/supabase/schema';
+import { siteMetrics } from '../database/supabase/schema';
 
 export const updateMetrics = async (date: string) => {
   try {

@@ -1,4 +1,4 @@
-import { TagInfo } from '@/domain/entities/tag';
+import { TagInfo } from '@/domain/entities/tag.entity';
 import { index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const tagInfo = pgTable(
