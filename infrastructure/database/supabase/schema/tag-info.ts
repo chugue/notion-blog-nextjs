@@ -19,7 +19,7 @@ export const tagInfo = pgTable(
 export type TagInfoSelect = typeof tagInfo.$inferSelect;
 export type TagInfoInsert = typeof tagInfo.$inferInsert;
 
-export const toDomain = (record: TagInfoSelect): TagInfo => ({
+export const tagInfoToDomain = (record: TagInfoSelect): TagInfo => ({
   id: record.id,
   name: record.name,
   count: record.count ?? 0,
@@ -27,7 +27,7 @@ export const toDomain = (record: TagInfoSelect): TagInfo => ({
   updatedAt: record.updatedAt,
 });
 
-export const toRecord = (tagInfo: TagInfo): Omit<TagInfoInsert, 'id'> => ({
+export const tagInfoToRecord = (tagInfo: TagInfo): Omit<TagInfoInsert, 'id'> => ({
   name: tagInfo.name,
   count: tagInfo.count,
 });

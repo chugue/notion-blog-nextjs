@@ -23,7 +23,7 @@ export const pageViews = pgTable(
 export type PageViewRecord = typeof pageViews.$inferSelect;
 export type PageViewInsert = typeof pageViews.$inferInsert;
 
-export const toDomain = (record: PageViewRecord): PageView => ({
+export const pageViewToDomain = (record: PageViewRecord): PageView => ({
   id: record.id,
   notionPageId: record.notionPageId,
   pathname: record.pathname,
@@ -33,7 +33,7 @@ export const toDomain = (record: PageViewRecord): PageView => ({
   updatedAt: record.updatedAt,
 });
 
-export const toRecord = (pageView: PageView): Omit<PageViewInsert, 'id'> => ({
+export const pageViewToRecord = (pageView: PageView): Omit<PageViewInsert, 'id'> => ({
   notionPageId: pageView.notionPageId,
   pathname: pageView.pathname,
   viewCount: pageView.viewCount,

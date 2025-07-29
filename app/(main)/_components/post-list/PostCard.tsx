@@ -29,7 +29,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
         {/* 기본 콘텐츠 (레이아웃 유지용) */}
         <div className="flex flex-col px-2 transition-opacity duration-300 group-hover:opacity-0">
           <div className="mb-4 flex flex-wrap gap-2">
-            {post.language?.map((tag) => (
+            {post.tag?.map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"
@@ -48,7 +48,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
         {/* 호버 시 전체 콘텐츠 오버레이 */}
         <div className="bg-card text-primary absolute z-40 flex flex-col rounded-md px-2 pb-5 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100">
           <div className="mb-4 flex flex-wrap gap-2">
-            {post.language?.map((tag) => (
+            {post.tag?.map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"

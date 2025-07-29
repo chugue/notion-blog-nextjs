@@ -97,10 +97,6 @@ export default async function BlogPost({ params }: BlogPostProps) {
                 <CalendarDays className="h-4 w-4" />
                 <span>{post.date ? formatDate(post.date) : ''}</span>
               </div>
-              {/* <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span>5분 읽기</span>
-              </div> */}
             </div>
           </div>
 

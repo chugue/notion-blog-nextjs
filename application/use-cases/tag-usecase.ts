@@ -1,8 +1,8 @@
-import { TagInfo } from '@/domain/entities/tag.entity';
+import { TagFilterItem } from '@/domain/entities/blog.entity';
 import { TagInfoRepository } from '@/infrastructure/repositories/tag-info.repository';
 
 export interface TagInfoUseCase {
-  readonly getAllTags: () => Promise<TagInfo[]>;
+  readonly getAllTags: () => Promise<TagFilterItem[]>;
 }
 
 export const createTagInfoUseCaseImpl = (tagInfoRepository: TagInfoRepository): TagInfoUseCase => {

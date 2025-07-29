@@ -21,7 +21,7 @@ export const siteMetrics = pgTable(
 export type SiteMetricSelect = typeof siteMetrics.$inferSelect;
 export type SiteMetricInsert = typeof siteMetrics.$inferInsert;
 
-export const toDomain = (data: SiteMetricSelect): SiteMetric => {
+export const siteMetricToDomain = (data: SiteMetricSelect): SiteMetric => {
   return {
     id: data.id,
     totalVisits: data.totalVisits,
@@ -32,7 +32,7 @@ export const toDomain = (data: SiteMetricSelect): SiteMetric => {
   };
 };
 
-export const toRecord = (data: SiteMetric): Omit<SiteMetricInsert, 'id'> => {
+export const siteMetricToRecord = (data: SiteMetric): Omit<SiteMetricInsert, 'id'> => {
   return {
     totalVisits: data.totalVisits,
     dailyVisits: data.dailyVisits,

@@ -7,10 +7,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { GetPublishedPostResponse } from '@/shared/types/notion';
+import { PostMetadataResp } from '@/shared/types/notion';
 
 interface PostListProps {
-  postsPromise: Promise<GetPublishedPostResponse>;
+  postsPromise: Promise<PostMetadataResp>;
 }
 
 const PostListSuspense = ({ postsPromise }: PostListProps) => {
@@ -24,11 +24,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     threshold: 1,
   });
 
-  const fetchPost = async ({
-    pageParam,
-  }: {
-    pageParam?: string;
-  }): Promise<GetPublishedPostResponse> => {
+  const fetchPost = async ({ pageParam }: { pageParam?: string }): Promise<PostMetadataResp> => {
     const params = new URLSearchParams();
 
     if (tag && tag !== '전체') params.append('tag', tag);
