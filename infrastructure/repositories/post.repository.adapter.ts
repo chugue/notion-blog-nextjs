@@ -3,13 +3,9 @@ import { GetPublishedPostParams, PostMetadataResp } from '@/shared/types/notion'
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { getPostByIdQuery, getPostMetadata, getPublishedPostsQuery } from '../queries/post.query';
 import { Post } from '@/domain/entities/blog.entity';
+import { PostRepositoryPort } from '@/application/port/post-repository.port';
 
-export interface PostRepository {
-  readonly getPublishedPosts: (params: GetPublishedPostParams) => Promise<Result<PostMetadataResp>>;
-  readonly getPostById: (id: string) => Promise<Result<Post>>;
-}
-
-export const postRepositoryImpl = (): PostRepository => {
+export const createPostRepositoryAdapter = (): PostRepositoryPort => {
   return {
     getPublishedPosts: async ({
       tag = '전체',

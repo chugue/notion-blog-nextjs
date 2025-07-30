@@ -1,14 +1,16 @@
-import { PostUseCase, createPostUseCaseImpl } from '@/application/use-cases/post-usecase';
-import { PostRepository, postRepositoryImpl } from '@/infrastructure/repositories/post.repository';
+import { PostRepositoryPort } from '@/application/port/post-repository.port';
+import { createPostUseCaseAdapter } from '@/application/use-cases/post-usecase.adapter';
+import { createPostRepositoryAdapter } from '@/infrastructure/repositories/post.repository.adapter';
+import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
 
 export interface PostDependencies {
-  postRepository: PostRepository;
-  postUseCase: PostUseCase;
+  postRepository: PostRepositoryPort;
+  postUseCase: PostUseCasePort;
 }
 
 export const createPostDependencies = (): PostDependencies => {
-  const postRepository = postRepositoryImpl();
-  const postUseCase = createPostUseCaseImpl(postRepository);
+  const postRepository = createPostRepositoryAdapter();
+  const postUseCase = createPostUseCaseAdapter(postRepository);
 
   return {
     postRepository,

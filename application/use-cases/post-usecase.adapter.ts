@@ -1,13 +1,8 @@
-import { Post } from '@/domain/entities/blog.entity';
-import { PostRepository } from '@/infrastructure/repositories/post.repository';
-import { GetPublishedPostParams, PostMetadataResp } from '@/shared/types/notion';
+import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
+import { GetPublishedPostParams } from '@/shared/types/notion';
+import { PostRepositoryPort } from '../port/post-repository.port';
 
-export interface PostUseCase {
-  readonly getPublishedPosts: (params: GetPublishedPostParams) => Promise<PostMetadataResp>;
-  readonly getPostById: (id: string) => Promise<Post>;
-}
-
-export const createPostUseCaseImpl = (postRepository: PostRepository): PostUseCase => {
+export const createPostUseCaseAdapter = (postRepository: PostRepositoryPort): PostUseCasePort => {
   return {
     getPublishedPosts: async (params: GetPublishedPostParams) => {
       const result = await postRepository.getPublishedPosts(params);

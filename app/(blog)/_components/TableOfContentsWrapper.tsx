@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useActiveHeading } from '../../../presentation/hooks/blog/useActiveHeading';
+import { useActiveHeading } from '../../../presentation/hooks/blog/use-active-heading';
 import { TocEntry } from '@stefanprobst/rehype-extract-toc';
 import { TableOfContentsLink } from './TableOfContentsLink';
 

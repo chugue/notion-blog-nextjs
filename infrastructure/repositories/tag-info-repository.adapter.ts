@@ -1,12 +1,11 @@
-import { PostRepository } from './post.repository';
 import { toTagFilterItem } from '../queries/tag.query';
 import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { TagInfoRepositoryPort } from '@/application/port/tag-info-repository.port';
+import { PostRepositoryPort } from '@/application/port/post-repository.port';
 
-export interface TagInfoRepository {
-  readonly getAllTags: () => Promise<TagFilterItem[]>;
-}
-
-export const createTagInfoRepositoryImpl = (postRepository: PostRepository): TagInfoRepository => {
+export const createTagInfoRepositoryAdapter = (
+  postRepository: PostRepositoryPort
+): TagInfoRepositoryPort => {
   return {
     getAllTags: async (): Promise<TagFilterItem[]> => {
       const result = await postRepository.getPublishedPosts({});
