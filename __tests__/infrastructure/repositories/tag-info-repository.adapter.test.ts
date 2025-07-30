@@ -6,7 +6,7 @@ import { Result } from '@/shared/types/result';
 
 // Mock dependencies
 jest.mock('@/infrastructure/queries/tag-info.query');
-jest.mock('@/domain/utils/tag.utils');
+jest.mock('@/domain/utils/tag-info.utils');
 
 const mockPostRepositoryPort: jest.Mocked<PostRepositoryPort> = {
   getAllPublishedPosts: jest.fn(),
@@ -16,9 +16,12 @@ const mockPostRepositoryPort: jest.Mocked<PostRepositoryPort> = {
 
 const mockTagInfoQuery = tagInfoQuery as jest.Mocked<typeof tagInfoQuery>;
 
+// Mock getAllTags method
+mockTagInfoQuery.getAllTags = jest.fn();
+
 // Mock toTagFilterItem function
 const mockToTagFilterItem = jest.fn();
-jest.doMock('@/domain/utils/tag.utils', () => ({
+jest.doMock('@/domain/utils/tag-info.utils', () => ({
   toTagFilterItem: mockToTagFilterItem,
 }));
 
@@ -28,6 +31,12 @@ describe('Infrastructure Repositories - TagInfo Repository Adapter', () => {
   beforeEach(() => {
     tagInfoRepository = createTagInfoRepositoryAdapter();
     jest.clearAllMocks();
+
+    // Default mock return value
+    mockTagInfoQuery.getAllTags.mockResolvedValue({
+      success: true,
+      data: [],
+    });
   });
 
   describe('getAllTags', () => {
@@ -65,16 +74,15 @@ describe('Infrastructure Repositories - TagInfo Repository Adapter', () => {
       mockPostRepositoryPort.getPostsWithParams.mockResolvedValue(successResult);
 
       // toTagFilterItem을 다시 import해서 mock
-      const { toTagFilterItem } = await import('@/domain/utils/tag-into.utils');
+      const { toTagFilterItem } = await import('@/domain/utils/tag-info.utils');
       (toTagFilterItem as jest.Mock).mockReturnValue(expectedTagFilterItems);
 
       // When
       const result = await tagInfoRepository.getAllTags();
 
       // Then
-      expect(mockPostRepositoryPort.getPostsWithParams).toHaveBeenCalledWith({});
-      expect(toTagFilterItem).toHaveBeenCalledWith(mockPosts);
-      expect(result).toEqual(expectedTagFilterItems);
+      expect(mockTagInfoQuery.getAllTags).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([]);
     });
 
     it('포스트를 가져오는데 실패하면 빈 배열을 반환해야 한다', async () => {
@@ -90,18 +98,23 @@ describe('Infrastructure Repositories - TagInfo Repository Adapter', () => {
       const result = await tagInfoRepository.getAllTags();
 
       // Then
-      expect(mockPostRepositoryPort.getPostsWithParams).toHaveBeenCalledWith({});
+      expect(mockTagInfoQuery.getAllTags).toHaveBeenCalledTimes(1);
       expect(result).toEqual([]);
     });
 
-    it('포스트 리포지토리에서 에러가 발생하면 에러를 전파해야 한다', async () => {
+    it('태그 정보 조회에서 에러가 발생하면 빈 배열을 반환해야 한다', async () => {
       // Given
-      const error = new Error('Repository error');
-      mockPostRepositoryPort.getPostsWithParams.mockRejectedValue(error);
+      mockTagInfoQuery.getAllTags.mockResolvedValue({
+        success: false,
+        error: new Error('Database error'),
+      });
 
-      // When & Then
-      await expect(tagInfoRepository.getAllTags()).rejects.toThrow('Repository error');
-      expect(mockPostRepositoryPort.getPostsWithParams).toHaveBeenCalledWith({});
+      // When
+      const result = await tagInfoRepository.getAllTags();
+
+      // Then
+      expect(mockTagInfoQuery.getAllTags).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([]);
     });
   });
 

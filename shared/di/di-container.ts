@@ -8,7 +8,7 @@ export interface DiContainer {
 
 export const createDiContainer = (): DiContainer => {
   const postDependencies = createPostDependencies();
-  const tagInfoDependencies = createTagInfoDependencies(postDependencies.postRepository);
+  const tagInfoDependencies = createTagInfoDependencies();
 
   return {
     tagInfo: tagInfoDependencies,

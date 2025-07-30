@@ -1,4 +1,4 @@
-import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
+import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 import { PostMetadata, TagFilterItem } from '@/domain/entities/post.entity';
 
 describe('Domain Utils - Tag Utils', () => {

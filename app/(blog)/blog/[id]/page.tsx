@@ -16,14 +16,16 @@ import { diContainer } from '@/shared/di/di-container';
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const postUseCase = diContainer.post.postUseCase;
   const { id } = await params;
-  const { post } = await postUseCase.getPostById(id);
+  const result = await postUseCase.getPostById(id);
 
-  if (!post) {
+  if (!result || !result.post) {
     return {
       title: "Stephen's 기술블로그 | 개발 공부 및 튜토리얼",
       description: '개발 공부 및 튜토리얼',
     };
   }
+
+  const post = result.post;
 
   return {
     title: post.title,
@@ -63,9 +65,12 @@ interface BlogPostProps {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
   const postUseCase = diContainer.post.postUseCase;
-  const { markdown, post } = await postUseCase.getPostById(id);
+  const result = await postUseCase.getPostById(id);
 
-  if (!post) notFound();
+  if (!result || !result.post) notFound();
+
+  const post = result.post;
+  const markdown = result.markdown;
 
   const { data } = await compile(markdown, {
     rehypePlugins: [withSlugs, rehypeSanitize, withToc, withTocExport],

@@ -3,7 +3,7 @@
  */
 import { POST } from '@/app/api/tag-info/reset/route';
 import { PostMetadata, TagFilterItem } from '@/domain/entities/post.entity';
-import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
+import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 import { diContainer } from '@/shared/di/di-container';
 import { PostDependencies } from '@/shared/di/post-dependencies';
 import { TagInfoDependencies } from '@/shared/di/tag-info-dependencies';
@@ -11,7 +11,7 @@ import { NextRequest } from 'next/server';
 
 // Mock dependencies
 jest.mock('@/shared/di/di-container');
-jest.mock('@/domain/utils/tag.utils');
+jest.mock('@/domain/utils/tag-info.utils');
 
 const mockDiContainer = diContainer as jest.Mocked<typeof diContainer>;
 const mockToTagFilterItem = toTagFilterItem as jest.MockedFunction<typeof toTagFilterItem>;

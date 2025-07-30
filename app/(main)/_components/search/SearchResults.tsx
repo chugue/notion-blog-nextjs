@@ -19,42 +19,37 @@ const mockSearchResults: PostMetadata[] = [
   {
     id: '1',
     title: 'Next.js 14 App Router 완벽 가이드',
-    tool: ['Next.js', 'React'],
+    tag: ['Next.js', 'React'],
     author: 'Stephen',
     date: '2024-01-15',
-    language: ['JavaScript', 'TypeScript', 'React'],
   },
   {
     id: '2',
     title: 'TypeScript 고급 타입 시스템 마스터하기',
-    tool: ['TypeScript', 'VSCode'],
+    tag: ['TypeScript', 'VSCode'],
     author: 'Stephen',
     date: '2024-01-12',
-    language: ['TypeScript', 'JavaScript'],
   },
   {
     id: '3',
     title: 'Tailwind CSS로 반응형 디자인 구현하기',
-    tool: ['Tailwind CSS', 'CSS'],
+    tag: ['Tailwind CSS', 'CSS'],
     author: 'Stephen',
     date: '2024-01-10',
-    language: ['CSS', 'HTML', 'JavaScript'],
   },
   {
     id: '4',
     title: 'Notion API와 Next.js로 블로그 만들기',
-    tool: ['Notion API', 'Next.js'],
+    tag: ['Notion API', 'Next.js'],
     author: 'Stephen',
     date: '2024-01-08',
-    language: ['TypeScript', 'React', 'API'],
   },
   {
     id: '5',
     title: 'shadcn/ui 컴포넌트 라이브러리 활용법',
-    tool: ['shadcn/ui', 'React'],
+    tag: ['shadcn/ui', 'React'],
     author: 'Stephen',
     date: '2024-01-05',
-    language: ['React', 'TypeScript', 'CSS'],
   },
 ];
 
@@ -102,9 +97,9 @@ const SearchResults = ({
           </div>
 
           {/* 태그 섹션 */}
-          {post.language.length > 0 && (
+          {post.tag.length > 0 && (
             <div className="ml-4 flex flex-wrap gap-1.5 sm:ml-auto">
-              {post.language.map((lang) => (
+              {post.tag.map((lang) => (
                 <Badge
                   key={lang}
                   variant="secondary"

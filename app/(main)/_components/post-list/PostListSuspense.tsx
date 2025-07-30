@@ -8,7 +8,6 @@ import { useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import { PostMetadataResp } from '@/domain/entities/post.entity';
-import { Toaster } from '@/shared/components/ui/sonner';
 import { toast } from 'sonner';
 
 interface PostListProps {

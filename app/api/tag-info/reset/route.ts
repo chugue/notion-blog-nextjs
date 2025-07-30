@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { diContainer } from '@/shared/di/di-container';
 import { Result } from '@/shared/types/result';
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
+import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 
 export const POST = async (
   _request: NextRequest

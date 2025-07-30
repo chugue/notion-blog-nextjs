@@ -1,8 +1,9 @@
-import { MetadataRoute } from 'next';
 import { PostMetadata } from '@/domain/entities/post.entity';
-import { getPublishedPosts } from '@/shared/services/notion';
+import { diContainer } from '@/shared/di/di-container';
+import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const postUseCase = diContainer.post.postUseCase;
   // 기본 URL
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://notion-blog-nextjs-brown.vercel.app';
 
@@ -29,7 +30,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ] as const;
 
   // 블로그 게시물 가져오기
-  const { posts } = await getPublishedPosts({ pageSize: 100 });
+  const result = await postUseCase.getPostsWithParams({ pageSize: 100 });
+
+  const posts = result.posts;
 
   // 블로그 게시물 URL 생성
   const blogPosts = posts.map((post: PostMetadata) => ({

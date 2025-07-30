@@ -1,4 +1,4 @@
-import { getPostById } from '@/shared/services/notion';
+import { diContainer } from '@/shared/di/di-container';
 import { ImageResponse } from 'next/og';
 
 export const size = {
@@ -9,9 +9,10 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OgImage({ params }: { params: { id: string } }) {
-  const { post } = await getPostById(params.id);
+  const postUseCase = diContainer.post.postUseCase;
+  const result = await postUseCase.getPostById(params.id);
 
-  if (!post) {
+  if (!result || !result.post) {
     return new ImageResponse(
       (
         <div
@@ -33,7 +34,9 @@ export default async function OgImage({ params }: { params: { id: string } }) {
     );
   }
 
-  const tagString = post.language?.join(', ') || '';
+  const post = result.post;
+
+  const tagString = post?.tag.join(', ') || '';
 
   return new ImageResponse(
     (

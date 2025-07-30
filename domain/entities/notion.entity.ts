@@ -20,3 +20,13 @@ export interface NotionProperties {
   'Modified Date'?: { date?: { start: string } };
   Slug?: { rich_text?: { plain_text: string }[] };
 }
+
+export interface NotionPost {
+  id: string;
+  properties: {
+    title?: { title?: { plain_text: string }[] };
+    author?: { rich_text?: { plain_text: string }[] };
+    date?: { date?: { start: string } };
+    tag?: { multi_select?: { name: string }[] };
+  };
+}

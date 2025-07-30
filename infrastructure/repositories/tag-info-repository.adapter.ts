@@ -1,6 +1,6 @@
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { TagInfoRepositoryPort } from '@/application/port/tag-info-repository.port';
-import { tagInfoToDomain, toTagFilterItem } from '@/domain/utils/tag-into.utils';
+import { tagInfoToDomain, toTagFilterItem } from '@/domain/utils/tag-info.utils';
 import { tagInfoQuery } from '../queries/tag-info.query';
 
 export const createTagInfoRepositoryAdapter = (): TagInfoRepositoryPort => {
