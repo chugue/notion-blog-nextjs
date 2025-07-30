@@ -1,13 +1,13 @@
 /**
  * @jest-environment node
  */
-import { NextRequest } from 'next/server';
-import { diContainer } from '@/shared/di/di-container';
-import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
+import { POST } from '@/app/api/tag-info/reset/route';
 import { PostMetadata, TagFilterItem } from '@/domain/entities/post.entity';
+import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
+import { diContainer } from '@/shared/di/di-container';
 import { PostDependencies } from '@/shared/di/post-dependencies';
 import { TagInfoDependencies } from '@/shared/di/tag-info-dependencies';
-import { POST } from '@/app/api/tag-info/reset/route';
+import { NextRequest } from 'next/server';
 
 // Mock dependencies
 jest.mock('@/shared/di/di-container');
