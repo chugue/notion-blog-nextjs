@@ -1,4 +1,3 @@
-// @ts-nocheck
 {
   "compilerOptions": {
     "target": "ES2017",
