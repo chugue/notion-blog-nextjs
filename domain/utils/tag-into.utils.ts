@@ -1,5 +1,5 @@
 import { TagInfoInsert, TagInfoSelect } from '@/infrastructure/database/supabase/schema/tag-info';
-import { PostMetadata, TagFilterItem } from '../entities/blog.entity';
+import { PostMetadata, TagFilterItem } from '../entities/post.entity';
 import { TagInfo } from '../entities/tag-info.entity';
 
 export const toTagFilterItem = (posts: PostMetadata[]): TagFilterItem[] => {

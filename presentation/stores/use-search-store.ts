@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { PostMetadata } from '../../domain/entities/blog.entity';
+import { PostMetadata } from '../../domain/entities/post.entity';
 
 interface SearchState {
   // 모달 상태

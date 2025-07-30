@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export const generateStaticParams = async () => {
   const postUseCase = diContainer.post.postUseCase;
-  const posts = await postUseCase.getPublishedPosts({
+  const posts = await postUseCase.getPostsWithParams({
     pageSize: 10,
   });
   return posts.posts.map((post) => ({

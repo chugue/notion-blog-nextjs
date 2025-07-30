@@ -1,6 +1,6 @@
 import { createTagInfoUseCaseAdapter } from '@/application/use-cases/tag-info-usecase.adapter';
 import { TagInfoRepositoryPort } from '@/application/port/tag-info-repository.port';
-import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { TagFilterItem } from '@/domain/entities/post.entity';
 
 // Mock Repository Port
 const mockTagInfoRepositoryPort: jest.Mocked<TagInfoRepositoryPort> = {

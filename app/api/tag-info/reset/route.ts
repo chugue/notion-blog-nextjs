@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { diContainer } from '@/shared/di/di-container';
 import { Result } from '@/shared/types/result';
-import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { TagFilterItem } from '@/domain/entities/post.entity';
 import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
 
 export const POST = async (
@@ -25,8 +25,6 @@ export const POST = async (
 
   // 3. TagInfoInsert 데이터를 데이터베이스에 저장
   const result = await tagInfoUseCase.resetTagInfoList(tagFilterItems);
-
-  console.log('result', result);
 
   return NextResponse.json({
     success: true,

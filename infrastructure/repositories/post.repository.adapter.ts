@@ -1,14 +1,13 @@
 import { Result } from '@/shared/types/result';
-import { GetPublishedPostParams, PostMetadataResp } from '@/shared/types/notion';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import {
-  getPostByIdQuery,
-  getPostMetadata,
-  getPublishedPostsQuery,
-  postQuery,
-} from '../queries/post.query';
+import { getPostByIdQuery, getPublishedPostsQuery, postQuery } from '../queries/post.query';
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
-import { PostMetadata } from '@/domain/entities/blog.entity';
+import {
+  GetPublishedPostParams,
+  PostMetadata,
+  PostMetadataResp,
+} from '@/domain/entities/post.entity';
+import { getPostMetadata } from '@/domain/utils/post.utils';
 
 // UI가 원하는 데이터 형식으로 가공
 
@@ -58,7 +57,7 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
         };
       }
     },
-    getPublishedPosts: async ({
+    getPostsWithParams: async ({
       tag = '전체',
       sort = 'latest',
       pageSize = 10,

@@ -33,3 +33,16 @@ export interface Post {
   readonly markdown: string;
   readonly post: PostMetadata | null;
 }
+
+export interface PostMetadataResp {
+  posts: PostMetadata[];
+  hasMore: boolean;
+  nextCursor: string;
+}
+
+export interface GetPublishedPostParams {
+  tag?: string;
+  sort?: string;
+  pageSize?: number;
+  startCursor?: string;
+}

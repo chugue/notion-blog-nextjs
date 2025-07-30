@@ -7,7 +7,9 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { PostMetadataResp } from '@/shared/types/notion';
+import { PostMetadataResp } from '@/domain/entities/post.entity';
+import { Toaster } from '@/shared/components/ui/sonner';
+import { toast } from 'sonner';
 
 interface PostListProps {
   postsPromise: Promise<PostMetadataResp>;
@@ -37,10 +39,12 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     const response = await fetch(`/api/notion?${params.toString()}`);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch posts');
+      toast.error('포스트를 불러오는 중 오류가 발생했습니다.');
     }
 
-    return response.json();
+    const result = await response.json();
+
+    return result.data;
   };
 
   const { data, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(

@@ -1,6 +1,6 @@
 import { TagInfoUsecasePort } from '@/presentation/ports/tag-info-usecase.port';
 import { TagInfoRepositoryPort } from '../port/tag-info-repository.port';
-import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { TagFilterItem } from '@/domain/entities/post.entity';
 
 export const createTagInfoUseCaseAdapter = (
   tagInfoRepositoryPort: TagInfoRepositoryPort
@@ -8,8 +8,6 @@ export const createTagInfoUseCaseAdapter = (
   return {
     getAllTags: async (): Promise<TagFilterItem[]> => {
       const result = await tagInfoRepositoryPort.getAllTags();
-
-      console.log('result', result);
 
       return result;
     },

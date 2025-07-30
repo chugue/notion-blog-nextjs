@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
-import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { TagFilterItem } from '@/domain/entities/post.entity';
 import Link from 'next/link';
 import React from 'react';
 import { cn } from '@/shared/utils/tailwind-cn';

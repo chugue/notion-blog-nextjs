@@ -2,7 +2,7 @@ import { Result } from '@/shared/types/result';
 import { TagInfoSelect, tagInfo } from '../database/supabase/schema/tag-info';
 import { db } from '../database/drizzle/drizzle';
 import { desc } from 'drizzle-orm';
-import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { TagFilterItem } from '@/domain/entities/post.entity';
 import { tagInfoToDomain } from '@/domain/utils/tag-into.utils';
 import { TagInfo } from '@/domain/entities/tag-info.entity';
 

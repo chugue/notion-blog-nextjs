@@ -25,7 +25,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   // Promise는 하위 컴포넌트에서 use를 사용해서 처리
   const tags = tagInfoUseCase.getAllTags();
-  const postsPromise = postUseCase.getPublishedPosts({
+  const postsPromise = postUseCase.getPostsWithParams({
     tag: selectedTag,
     sort: selectedSort,
   });

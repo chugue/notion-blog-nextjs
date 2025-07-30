@@ -1,7 +1,10 @@
 import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
-import { GetPublishedPostParams, PostMetadataResp } from '@/shared/types/notion';
 import { PostRepositoryPort } from '../port/post-repository.port';
-import { PostMetadata } from '@/domain/entities/blog.entity';
+import {
+  GetPublishedPostParams,
+  PostMetadata,
+  PostMetadataResp,
+} from '@/domain/entities/post.entity';
 
 export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
@@ -15,8 +18,8 @@ export const createPostUseCaseAdapter = (
       return result.data;
     },
 
-    getPublishedPosts: async (params: GetPublishedPostParams): Promise<PostMetadataResp> => {
-      const result = await postRepositoryPort.getPublishedPosts(params);
+    getPostsWithParams: async (params: GetPublishedPostParams): Promise<PostMetadataResp> => {
+      const result = await postRepositoryPort.getPostsWithParams(params);
 
       if (!result.success) {
         return {

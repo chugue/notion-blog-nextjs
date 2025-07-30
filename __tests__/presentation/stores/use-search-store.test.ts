@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { useSearchStore } from '@/presentation/stores/use-search-store';
-import { PostMetadata } from '@/domain/entities/blog.entity';
+import { PostMetadata } from '@/domain/entities/post.entity';
 
 // Mock fetch
 const mockFetch = jest.fn();

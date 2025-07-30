@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { TechStackItem } from '@/domain/entities/blog.entity';
+import { TechStackItem } from '@/domain/entities/post.entity';
 import Link from 'next/link';
 import { cn } from '@/shared/utils/tailwind-cn';
 import { gsap } from 'gsap';

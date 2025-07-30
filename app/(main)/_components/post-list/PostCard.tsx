@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Badge } from '@/shared/components/ui/badge';
 import Image from 'next/image';
-import { PostMetadata } from '@/domain/entities/blog.entity';
+import { PostMetadata } from '@/domain/entities/post.entity';
 
 interface PostCardProps {
   post: PostMetadata;

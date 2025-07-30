@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { cn } from '@/shared/utils/tailwind-cn';
 
-import { TechStackItem } from '@/domain/entities/blog.entity';
+import { TechStackItem } from '@/domain/entities/post.entity';
 import HexCard from './HexCard';
 import { useRefCenter } from '../../../../presentation/hooks/main/useRefCenter';
 import { useHoneycombInit } from '../../../../presentation/hooks/main/useHoneycombInit';
