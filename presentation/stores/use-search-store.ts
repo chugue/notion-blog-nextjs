@@ -66,8 +66,7 @@ export const useSearchStore = create<SearchState>((set, get) => ({
         const filtered = data.posts.filter(
           (post: PostMetadata) =>
             post.title.toLowerCase().includes(query.toLowerCase()) ||
-            post.language.some((lang) => lang.toLowerCase().includes(query.toLowerCase())) ||
-            post.tool.some((tool) => tool.toLowerCase().includes(query.toLowerCase()))
+            post.tag?.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
         );
         setSearchResults(filtered);
       }

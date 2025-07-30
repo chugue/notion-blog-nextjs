@@ -8,6 +8,47 @@ import { Post, PostMetadata } from '@/domain/entities/blog.entity';
 import { NotionUser } from '@/domain/entities/notion.entity';
 import { Result } from '@/shared/types/result';
 
+export const postQuery = {
+  getPublishedPosts: async ({
+    tag = '전체',
+    sort = 'latest',
+    pageSize = 10,
+    startCursor = undefined,
+  }: GetPublishedPostParams): Promise<QueryDatabaseResponse> => {
+    return await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID!,
+      filter: {
+        and: [
+          {
+            property: 'isPublic',
+            select: {
+              equals: 'Public',
+            },
+          },
+          ...(tag && tag !== '전체'
+            ? [
+                {
+                  property: 'tag',
+                  multi_select: {
+                    contains: tag,
+                  },
+                },
+              ]
+            : []),
+        ],
+      },
+      sorts: [
+        {
+          property: 'createdAt',
+          direction: sort === 'latest' ? 'descending' : 'ascending',
+        },
+      ],
+      page_size: pageSize,
+      start_cursor: startCursor,
+    });
+  },
+};
+
 export const getPublishedPostsQuery = async ({
   tag = '전체',
   sort = 'latest',

@@ -1,23 +1,39 @@
 import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
-import { GetPublishedPostParams } from '@/shared/types/notion';
+import { GetPublishedPostParams, PostMetadataResp } from '@/shared/types/notion';
 import { PostRepositoryPort } from '../port/post-repository.port';
+import { PostMetadata } from '@/domain/entities/blog.entity';
 
-export const createPostUseCaseAdapter = (postRepository: PostRepositoryPort): PostUseCasePort => {
+export const createPostUseCaseAdapter = (
+  postRepositoryPort: PostRepositoryPort
+): PostUseCasePort => {
   return {
-    getPublishedPosts: async (params: GetPublishedPostParams) => {
-      const result = await postRepository.getPublishedPosts(params);
+    getAllPublishedPostMetadatas: async (): Promise<PostMetadata[]> => {
+      const result = await postRepositoryPort.getAllPublishedPosts();
+
+      if (!result.success) return [];
+
+      return result.data;
+    },
+
+    getPublishedPosts: async (params: GetPublishedPostParams): Promise<PostMetadataResp> => {
+      const result = await postRepositoryPort.getPublishedPosts(params);
 
       if (!result.success) {
-        throw new Error(result.error?.message);
+        return {
+          posts: [],
+          hasMore: false,
+          nextCursor: '',
+        };
       }
 
       return result.data;
     },
+
     getPostById: async (id: string) => {
-      const result = await postRepository.getPostById(id);
+      const result = await postRepositoryPort.getPostById(id);
 
       if (!result.success) {
-        throw new Error(result.error?.message);
+        return null;
       }
 
       return result.data;
