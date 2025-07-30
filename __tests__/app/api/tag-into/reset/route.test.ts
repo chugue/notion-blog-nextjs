@@ -2,9 +2,9 @@
  * @jest-environment node
  */
 import { NextRequest } from 'next/server';
-import { POST } from '@/app/api/tag-into/reset/route';
+import { POST } from '@/app/api/tag-info/reset/route';
 import { diContainer } from '@/shared/di/di-container';
-import { toTagFilterItem } from '@/domain/utils/tag.utils';
+import { toTagFilterItem } from '@/domain/utils/tag-into.utils';
 import { PostMetadata, TagFilterItem } from '@/domain/entities/blog.entity';
 import { PostDependencies } from '@/shared/di/post-dependencies';
 import { TagInfoDependencies } from '@/shared/di/tag-info-dependencies';

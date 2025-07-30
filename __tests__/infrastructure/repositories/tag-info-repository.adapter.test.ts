@@ -66,7 +66,7 @@ describe('Infrastructure Repositories - TagInfo Repository Adapter', () => {
       mockPostRepositoryPort.getPublishedPosts.mockResolvedValue(successResult);
 
       // toTagFilterItem을 다시 import해서 mock
-      const { toTagFilterItem } = await import('@/domain/utils/tag.utils');
+      const { toTagFilterItem } = await import('@/domain/utils/tag-into.utils');
       (toTagFilterItem as jest.Mock).mockReturnValue(expectedTagFilterItems);
 
       // When

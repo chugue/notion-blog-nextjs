@@ -14,8 +14,9 @@ interface PostListProps {
 }
 
 const PostListSuspense = ({ postsPromise }: PostListProps) => {
-  const searchParams = useSearchParams();
   const initialData = use(postsPromise);
+
+  const searchParams = useSearchParams();
   const tag = searchParams.get('tag') || '전체';
   const sort = searchParams.get('sort') || 'latest';
 

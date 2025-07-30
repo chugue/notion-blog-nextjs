@@ -9,6 +9,8 @@ export const createTagInfoUseCaseAdapter = (
     getAllTags: async (): Promise<TagFilterItem[]> => {
       const result = await tagInfoRepositoryPort.getAllTags();
 
+      console.log('result', result);
+
       return result;
     },
     resetTagInfoList: async (tagFilterItems: TagFilterItem[]): Promise<TagFilterItem[]> => {

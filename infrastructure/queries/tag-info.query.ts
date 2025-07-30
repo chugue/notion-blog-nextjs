@@ -3,6 +3,8 @@ import { TagInfoSelect, tagInfo } from '../database/supabase/schema/tag-info';
 import { db } from '../database/drizzle/drizzle';
 import { desc } from 'drizzle-orm';
 import { TagFilterItem } from '@/domain/entities/blog.entity';
+import { tagInfoToDomain } from '@/domain/utils/tag-into.utils';
+import { TagInfo } from '@/domain/entities/tag-info.entity';
 
 export const tagInfoQuery = {
   resetTagInfoList: async (tagInfos: TagFilterItem[]): Promise<Result<TagInfoSelect[]>> => {
@@ -39,5 +41,20 @@ export const tagInfoQuery = {
         error: new Error('Failed to update tags'),
       };
     }
+  },
+  getAllTags: async (): Promise<Result<TagInfoSelect[]>> => {
+    const result = await db.select().from(tagInfo).orderBy(desc(tagInfo.count));
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        error: new Error('Failed to get tags'),
+      };
+    }
+
+    return {
+      success: true,
+      data: result,
+    };
   },
 };
