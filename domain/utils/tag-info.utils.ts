@@ -36,7 +36,7 @@ export const toTagFilterItem = (posts: PostMetadata[]): TagFilterItem[] => {
   });
 
   const [allTag, ...restTags] = tags;
-  const sortedTags = restTags.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedTags = restTags.sort((a, b) => b.count - a.count);
 
   return [allTag, ...sortedTags];
 };

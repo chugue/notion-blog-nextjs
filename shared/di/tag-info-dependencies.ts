@@ -9,9 +9,11 @@ export interface TagInfoDependencies {
   tagInfoUseCase: TagInfoUsecasePort;
 }
 
-export const createTagInfoDependencies = (): TagInfoDependencies => {
-  const tagInfoRepository = createTagInfoRepositoryAdapter();
-  const tagInfoUseCase = createTagInfoUseCaseAdapter(tagInfoRepository);
+export const createTagInfoDependencies = (
+  postRepositoryPort: PostRepositoryPort
+): TagInfoDependencies => {
+  const tagInfoRepository = createTagInfoRepositoryAdapter(postRepositoryPort);
+  const tagInfoUseCase = createTagInfoUseCaseAdapter(tagInfoRepository, postRepositoryPort);
 
   return {
     tagInfoRepository,

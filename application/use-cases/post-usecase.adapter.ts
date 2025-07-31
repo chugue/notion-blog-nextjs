@@ -5,13 +5,15 @@ import {
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
+import { unstable_cache } from 'next/cache';
+import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
 
 export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
 ): PostUseCasePort => {
   return {
     getAllPublishedPostMetadatas: async (): Promise<PostMetadata[]> => {
-      const result = await postRepositoryPort.getAllPublishedPosts();
+      const result = await allPostMetadatasDataCache(postRepositoryPort);
 
       if (!result.success) return [];
 

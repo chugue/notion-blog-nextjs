@@ -3,8 +3,6 @@ import { TagInfoSelect, tagInfo } from '../database/supabase/schema/tag-info';
 import { db } from '../database/drizzle/drizzle';
 import { desc } from 'drizzle-orm';
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import { tagInfoToDomain } from '@/domain/utils/tag-info.utils';
-import { TagInfo } from '@/domain/entities/tag-info.entity';
 
 export const tagInfoQuery = {
   resetTagInfoList: async (tagInfos: TagFilterItem[]): Promise<Result<TagInfoSelect[]>> => {
@@ -42,19 +40,19 @@ export const tagInfoQuery = {
       };
     }
   },
-  getAllTags: async (): Promise<Result<TagInfoSelect[]>> => {
-    const result = await db.select().from(tagInfo).orderBy(desc(tagInfo.count));
+  // getAllTags: async (): Promise<Result<TagInfoSelect[]>> => {
+  //   const result = await db.select().from(tagInfo).orderBy(desc(tagInfo.count));
 
-    if (result.length === 0) {
-      return {
-        success: false,
-        error: new Error('Failed to get tags'),
-      };
-    }
+  //   if (result.length === 0) {
+  //     return {
+  //       success: false,
+  //       error: new Error('Failed to get tags'),
+  //     };
+  //   }
 
-    return {
-      success: true,
-      data: result,
-    };
-  },
+  //   return {
+  //     success: true,
+  //     data: result,
+  //   };
+  // },
 };
