@@ -1,4 +1,3 @@
-import { TagInfoInsert, TagInfoSelect } from '@/infrastructure/database/supabase/schema/tag-info';
 import { PostMetadata, TagFilterItem } from '../entities/post.entity';
 import { TagInfo } from '../entities/tag-info.entity';
 
@@ -41,7 +40,7 @@ export const toTagFilterItem = (posts: PostMetadata[]): TagFilterItem[] => {
   return [allTag, ...sortedTags];
 };
 
-export const tagInfoToDomain = (record: TagInfoSelect): TagInfo => ({
+export const tagInfoToDomain = (record: TagInfo): TagInfo => ({
   id: record.id,
   name: record.name,
   count: record.count ?? 0,
@@ -49,7 +48,9 @@ export const tagInfoToDomain = (record: TagInfoSelect): TagInfo => ({
   updatedAt: record.updatedAt,
 });
 
-export const tagInfoToRecord = (tagInfo: TagInfo): Omit<TagInfoInsert, 'id'> => ({
+export const tagInfoToRecord = (tagInfo: TagInfo): Omit<TagInfo, 'id'> => ({
   name: tagInfo.name,
   count: tagInfo.count,
+  createdAt: tagInfo.createdAt,
+  updatedAt: tagInfo.updatedAt,
 });
