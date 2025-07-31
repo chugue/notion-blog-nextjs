@@ -3,13 +3,11 @@
 import Link from 'next/link';
 import React, { use, useEffect } from 'react';
 import { PostCard } from './PostCard';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import { PostMetadataResp } from '@/domain/entities/post.entity';
-import { toast } from 'sonner';
-import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
+import { useFetchPost } from '@/presentation/hooks/blog/use-fetch-post';
+import { useInfiniteScroll } from '@/presentation/hooks/blog/use-infinite-scroll';
+import { useCheckSelectedTag } from '@/presentation/hooks/blog/use-check-selected-tag';
 
 interface PostListProps {
   postsPromise: Promise<PostMetadataResp>;
@@ -17,61 +15,11 @@ interface PostListProps {
 
 const PostListSuspense = ({ postsPromise }: PostListProps) => {
   const initialData = use(postsPromise);
-  const { selectedTag, isChanging, ...store } = useSelectedTagStore();
 
-  const searchParams = useSearchParams();
-  const tag = searchParams.get('tag') || '전체';
-  const sort = searchParams.get('sort') || 'latest';
-
-  // 무한 스크롤 라이브러리
-  const { ref, inView } = useInView({
-    threshold: 1,
-  });
-
-  const fetchPost = async ({ pageParam }: { pageParam?: string }): Promise<PostMetadataResp> => {
-    const params = new URLSearchParams();
-
-    if (tag && tag !== '전체') params.append('tag', tag);
-    if (sort && sort !== 'latest') params.append('sort', sort);
-    if (pageParam) params.append('startCursor', pageParam);
-
-    params.append('pageSize', '10');
-
-    const response = await fetch(`/api/notion?${params.toString()}`);
-
-    if (!response.ok) {
-      toast.error('포스트를 불러오는 중 오류가 발생했습니다.');
-    }
-
-    const result = await response.json();
-
-    return result.data;
-  };
-
-  const { data, isError, error, fetchNextPage, isFetching, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ['posts', tag, sort],
-      queryFn: fetchPost,
-      initialPageParam: undefined,
-      getNextPageParam: (lastPage) => {
-        return lastPage.hasMore ? lastPage.nextCursor : undefined;
-      },
-      initialData: {
-        pages: [initialData],
-        pageParams: [undefined],
-      },
-    });
-
-  useEffect(() => {
-    if (!isFetching && isChanging) store.setChanging(false);
-  }, [isFetching, isChanging]);
-
-  // 무한 스크롤 로직
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView]);
+  const { data, isError, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, tag } =
+    useFetchPost(initialData);
+  const { ref } = useInfiniteScroll(hasNextPage, isFetchingNextPage, fetchNextPage);
+  const { isChanging } = useCheckSelectedTag(isFetching);
 
   // 에러 상태
   if (isError) {
