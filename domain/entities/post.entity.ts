@@ -20,15 +20,6 @@ export interface TocEntry {
   children?: Array<TocEntry>;
 }
 
-export interface TechStackItem {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  description: string;
-  tagName: string;
-}
-
 export interface Post {
   readonly markdown: string;
   readonly post: PostMetadata | null;

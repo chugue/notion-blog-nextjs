@@ -1,11 +1,14 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { TechStackItem } from '@/domain/entities/post.entity';
 import Link from 'next/link';
 import { cn } from '@/shared/utils/tailwind-cn';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
+import { TechStackItem } from '@/domain/entities/hex-tech-stack';
+import { useRouter } from 'next/navigation';
 
 interface HexCardProps {
   tech: TechStackItem;
@@ -13,18 +16,30 @@ interface HexCardProps {
   onHover: (id: string | null) => void;
   hoveredId: string | null;
   row: number;
+  selectedTag: string;
+  setSelectedTag: (tag: string) => void;
 }
 // GSAP 플러그인 등록
 gsap.registerPlugin(Flip);
 
-const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row }) => {
+const HexCard: React.FC<HexCardProps> = ({
+  tech,
+  index,
+  onHover,
+  hoveredId,
+  row,
+  selectedTag,
+  setSelectedTag,
+}) => {
   const cardRef = useRef<HTMLDivElement>(null);
+
   const [isFlipped, setIsFlipped] = useState(false);
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
-  const isHovered = hoveredId === tech.id;
-  const isOtherHovered = hoveredId && hoveredId !== tech.id;
+  const isHovered = hoveredId === tech.tagName;
+  const isOtherHovered = hoveredId && hoveredId !== tech.tagName;
 
   // 1,3열은 z-10, 2,4열은 z-20
   const zIndex = row % 2 === 0 ? 10 : 20;
@@ -52,6 +67,14 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
   }, []);
 
   useEffect(() => {
+    if (selectedTag === tech.name) {
+      setIsFlipped(true);
+    } else {
+      setIsFlipped(false);
+    }
+  }, [selectedTag, tech.name]);
+
+  useEffect(() => {
     if (!cardRef.current) return;
 
     // 호버 상태에 따른 스케일 애니메이션
@@ -63,6 +86,12 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
     });
   }, [isHovered, isOtherHovered, zIndex]);
 
+  const handleClick = () => {
+    setIsFlipped(true);
+    setSelectedTag(tech.name);
+    router.push(`?tag=${encodeURIComponent(tech.name)}`);
+  };
+
   return (
     <div
       ref={cardRef}
@@ -73,13 +102,16 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
         zIndex: zIndex,
       }}
       onMouseEnter={() => {
-        onHover(tech.id);
+        onHover(tech.tagName);
         setIsFlipped(true);
       }}
       onMouseLeave={() => {
         onHover(null);
-        setIsFlipped(false);
+        if (selectedTag !== tech.name) {
+          setIsFlipped(false);
+        }
       }}
+      onClick={handleClick}
     >
       {/* 앞면 - 하얀 배경 */}
       <div
@@ -113,9 +145,7 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row 
         }}
       >
         <Link href={`?tag=${encodeURIComponent(tech.tagName)}`}>
-          <p className="cursor-pointer text-center text-xs leading-tight font-medium text-white">
-            {tech.description}
-          </p>
+          <p className="cursor-pointer text-center text-sm font-bold text-white">{tech.tagName}</p>
         </Link>
       </div>
     </div>
