@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import { PostMetadataResp } from '@/domain/entities/post.entity';
 import { toast } from 'sonner';
+import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
 
 interface PostListProps {
   postsPromise: Promise<PostMetadataResp>;
@@ -16,6 +17,7 @@ interface PostListProps {
 
 const PostListSuspense = ({ postsPromise }: PostListProps) => {
   const initialData = use(postsPromise);
+  const { selectedTag, isChanging, ...store } = useSelectedTagStore();
 
   const searchParams = useSearchParams();
   const tag = searchParams.get('tag') || '전체';
@@ -46,8 +48,8 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
     return result.data;
   };
 
-  const { data, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-    {
+  const { data, isError, error, fetchNextPage, isFetching, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
       queryKey: ['posts', tag, sort],
       queryFn: fetchPost,
       initialPageParam: undefined,
@@ -58,8 +60,11 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
         pages: [initialData],
         pageParams: [undefined],
       },
-    }
-  );
+    });
+
+  useEffect(() => {
+    if (!isFetching && isChanging) store.setChanging(false);
+  }, [isFetching, isChanging]);
 
   // 무한 스크롤 로직
   useEffect(() => {
@@ -85,7 +90,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="responsive-grid relative">
+      <div className={`responsive-grid relative ${isChanging ? 'opacity-50' : ''}`}>
         {allPosts.length > 0 ? (
           allPosts.map((post, index) => (
             <Link key={post.id} href={`/blog/${post.id}`}>

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui/command';
-import { useSearchStore } from '@/presentation/stores/use-search-store';
+import { useSearchStore } from '@/presentation/stores/use-search.store';
 import { useDebounce } from '@/presentation/hooks/main/useDebounce';
 import SearchResults from './SearchResults';
 

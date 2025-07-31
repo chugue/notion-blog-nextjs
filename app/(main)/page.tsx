@@ -1,7 +1,7 @@
 import HeaderSection from './_components/HeaderSection';
 import { Suspense } from 'react';
 import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
-import TagSectionClient from './_components/tag-section/TagSection.client';
+import TagSection from './_components/tag-section/TagSection';
 import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
@@ -41,7 +41,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center max-md:px-4 md:order-none">
           {/* 검색버튼 (md 이상에서만) */}
           <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSectionClient tags={tags} selectedTag={selectedTag} />
+            <TagSection tags={tags} />
           </Suspense>
         </aside>
 

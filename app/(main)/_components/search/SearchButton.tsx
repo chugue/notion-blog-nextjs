@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchStore } from '@/presentation/stores/use-search-store';
+import { useSearchStore } from '@/presentation/stores/use-search.store';
 import { SearchIcon } from 'lucide-react';
 import React from 'react';
 
