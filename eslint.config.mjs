@@ -25,6 +25,7 @@ const eslintConfig = [
     rules: {
       // 여기에 추가적인 규칙을 설정할 수 있습니다
       '@typescript-eslint/no-unused-vars': 'off',
+      'react-hooks/exhaustive-deps': 'off',
       'no-unused-vars': 'off',
       // 'no-console': 'warn',
     },
