@@ -1,4 +1,4 @@
-import { TechStackItem } from '@/domain/entities/post.entity';
+import { TechStackItem } from '@/domain/entities/hex-tech-stack';
 import { getHoneycombPositions } from '@/presentation/utils/get-honecomb-positions';
 import { useMemo } from 'react';
 

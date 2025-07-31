@@ -38,8 +38,8 @@ const HexCard: React.FC<HexCardProps> = ({
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
-  const isHovered = hoveredId === tech.tagName;
-  const isOtherHovered = hoveredId && hoveredId !== tech.tagName;
+  const isHovered = hoveredId === tech.name;
+  const isOtherHovered = hoveredId && hoveredId !== tech.name;
 
   // 1,3열은 z-10, 2,4열은 z-20
   const zIndex = row % 2 === 0 ? 10 : 20;

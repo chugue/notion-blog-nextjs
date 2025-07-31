@@ -44,7 +44,7 @@ export function FlipHexTechStack({ tags }: { tags: Promise<TagFilterItem[]> }) {
               const position = positions[index];
               return (
                 <div
-                  key={tech.tagName}
+                  key={tech.name}
                   className="hex-card absolute"
                   style={{
                     left: `${position.x + centerX}px`,
