@@ -37,14 +37,14 @@
 └─────────────────┬─────────────────┘
                   │
                   ▼
-               [ PORT ]
-             [ Adapter ]     !! PORT/ADAPTER로 인해서 단방향 의존성이 유지가 됨
-                  ▲          !! Presentation이 Application을 의존
+               [ PORT ]      !! PORT/ADAPTER로 인해서 단방향 의존성이 유지가 됨 
+             [ Adapter ]     !! Presentation이 Application을 의존
+                  ▲          
                   │                            
 ┌───────────────────────────────────┐                               ┌─────────────────────────────────────┐
 │            Application            │                               │         Infrastructure Layer        │
 │      책임: 비즈니스 로직, 에러 처리      │────▶︎ [PORT] | [Adapter] ◀︎─────│       책임: 외부 API, 데이터 베이스      │
-│            (Use Cases)            │         의존성 역전              │            (Repository)             │
+│            (Use Cases)            │          의존성 역전             │            (Repository)             │
 └─────────────────┬─────────────────┘                               └─────────────────────────────────────┘
                   │        
                   ▼    

@@ -86,11 +86,11 @@ export default async function BlogPost({ params }: BlogPostProps) {
         <section className="min-w-0 px-4">
           {/* 블로그 헤더 */}
           <div className="space-y-4">
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold">{post.title}</h1>
+            <div className="my-4 space-y-4">
+              <h1 className="text-4xl font-bold sm:text-5xl">{post.title}</h1>
             </div>
 
-            <div className="relative aspect-video w-full">
+            <div className="relative my-8 aspect-video w-full">
               <Image
                 src={post.coverImage || '/public/images/no-image-dark.png'}
                 alt={post.title}
