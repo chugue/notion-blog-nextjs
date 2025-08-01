@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import ThemeToggle from '../ThemeToggle';
 import Image from 'next/image';
@@ -9,14 +9,19 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 import { Github, Instagram, Linkedin, MenuIcon } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Separator } from '../ui/separator';
+import { useHeaderScrollAnimation } from '@/presentation/hooks/blog-detail/use-scroll-direction';
+import { cn } from '@/shared/utils/tailwind-cn';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  useHeaderScrollAnimation({ headerRef });
 
   const navigationItems = [
     { href: '/', label: '홈' },
@@ -40,7 +45,10 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 min-w-2xs border-b backdrop-blur">
+    <header
+      ref={headerRef}
+      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 min-w-2xs border-b px-4 backdrop-blur transition-all duration-300 ease-out sm:px-0"
+    >
       <div className="container mx-auto flex items-center justify-between py-2">
         {/* 로고 */}
         <Link href="/" className="text-md flex flex-nowrap items-center gap-2">
@@ -65,10 +73,10 @@ const Header = () => {
 
           <Separator
             orientation="vertical"
-            className="light:bg-black/50 !h-5 self-center dark:bg-white/50"
+            className="light:bg-black/50 hidden !h-5 self-center sm:flex dark:bg-white/50"
           />
           {/* 테마 토글 */}
-          <div className="flex items-center">
+          <div className="hidden items-center sm:flex">
             {socialLinks.map((item, index) => (
               <Button key={index} variant="ghost" className="size-10" size="icon" asChild>
                 <a href={item.href} target="_blank" rel="noopener noreferrer">
@@ -82,7 +90,12 @@ const Header = () => {
           {/* 모바일 햄버거 메뉴 - 드롭다운으로 변경 👈 */}
           <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden" aria-label="메뉴 열기">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn('md:hidden', isMenuOpen && 'bg-primary/20')}
+                aria-label="메뉴 열기"
+              >
                 <MenuIcon className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
@@ -98,6 +111,16 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
               ))}
+              <DropdownMenuSeparator />
+              <div className="ml-2 flex items-center gap-2">
+                {socialLinks.map((item, index) => (
+                  <Button key={index} variant="ghost" className="size-10" size="icon" asChild>
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      <item.icon className="h-5 w-5" />
+                    </a>
+                  </Button>
+                ))}
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>

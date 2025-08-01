@@ -20,7 +20,6 @@ const GiscusComments = () => {
       inputPosition="top"
       theme={theme === 'dark' ? 'dark' : 'noborder_light'}
       lang="ko"
-      loading="lazy"
     />
   );
 };

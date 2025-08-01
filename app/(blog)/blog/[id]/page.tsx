@@ -12,6 +12,9 @@ import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import { notFound } from 'next/navigation';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 import { diContainer } from '@/shared/di/di-container';
+import { Suspense } from 'react';
+import LoadingSpinner from '@/shared/components/LoadingSpinner';
+import Image from 'next/image';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const postUseCase = diContainer.post.postUseCase;
@@ -77,38 +80,50 @@ export default async function BlogPost({ params }: BlogPostProps) {
   });
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto py-6 sm:py-12">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
         <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
-        <section className="min-w-0">
+        <section className="min-w-0 px-4">
           {/* 블로그 헤더 */}
           <div className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold">{post.title}</h1>
+            </div>
+
+            <div className="relative aspect-video w-full">
+              <Image
+                src={post.coverImage || '/public/images/no-image-dark.png'}
+                alt={post.title}
+                fill
+                className="rounded-lg object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </div>
+
+            {/* 메타 정보 */}
+            <div className="text-muted-foreground flex flex-col gap-4 text-sm">
               <div className="flex flex-wrap gap-2">
                 {post.tag.map((tag) => (
                   <Badge key={tag}>{tag}</Badge>
                 ))}
               </div>
-              <h1 className="text-4xl font-bold">{post.title}</h1>
-            </div>
-
-            {/* 메타 정보 */}
-            <div className="text-muted-foreground flex gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <User className="h-4 w-4" />
-                <span>{post.author}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <CalendarDays className="h-4 w-4" />
-                <span>{post.date ? formatDate(post.date) : ''}</span>
+              <div className="flex items-center justify-end gap-4">
+                <div className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  <span>{post.author}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <CalendarDays className="h-4 w-4" />
+                  <span>{post.date ? formatDate(post.date) : ''}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <Separator className="my-8" />
+          <Separator className="my-6" />
 
-          {/* 블로그 목차 */}
-          <div className="sticky top-[var(--sticky-top)] z-10 mb-6 md:hidden">
+          {/* 모바일 블로그 목차 */}
+          <div className="mb-6 md:hidden">
             <details className="bg-muted/60 group rounded-lg p-4 backdrop-blur-sm">
               <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-semibold transition-all duration-300 ease-out [&::-webkit-details-marker]:hidden">
                 목차
@@ -161,7 +176,9 @@ export default async function BlogPost({ params }: BlogPostProps) {
               </Card>
             </Link>
           </nav> */}
-          <GiscusComments />
+          <Suspense fallback={<LoadingSpinner />}>
+            <GiscusComments />
+          </Suspense>
         </section>
 
         {/* 목차 */}

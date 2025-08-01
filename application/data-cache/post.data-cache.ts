@@ -14,3 +14,14 @@ export const allPostMetadatasDataCache = async (postRepositoryPort: PostReposito
 
   return await cachedFn();
 };
+
+export const getCachedPostById = (postRepositoryPort: PostRepositoryPort, id: string) =>
+  unstable_cache(
+    async () => {
+      return await postRepositoryPort.getPostById(id);
+    },
+    ['post', id],
+    {
+      tags: [`post-${id}`, 'all-posts'],
+    }
+  );

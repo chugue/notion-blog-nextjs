@@ -2,11 +2,12 @@ import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
 import { PostRepositoryPort } from '../port/post-repository.port';
 import {
   GetPublishedPostParams,
+  Post,
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
-import { unstable_cache } from 'next/cache';
-import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
+import { allPostMetadatasDataCache, getCachedPostById } from '../data-cache/post.data-cache';
 
 export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
@@ -34,10 +35,11 @@ export const createPostUseCaseAdapter = (
       return result.data;
     },
 
-    getPostById: async (id: string) => {
-      const result = await postRepositoryPort.getPostById(id);
+    getPostById: async (id: string): Promise<Post | null> => {
+      const result = await getCachedPostById(postRepositoryPort, id)();
 
       if (!result.success) {
+        revalidateTag(`post-${id}`);
         return null;
       }
 
