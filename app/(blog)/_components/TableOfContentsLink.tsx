@@ -12,12 +12,12 @@ interface TableOfContentsLinkProps {
 export function TableOfContentsLink({ item, activeHeading }: TableOfContentsLinkProps) {
   const isActive = activeHeading === item.id;
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 pl-2">
       <Link
         key={item.id}
         href={`#${item.id}`}
         className={cn('block pl-4 font-bold transition-all duration-300', {
-          'text-primary': isActive,
+          'text-primary scale-105': isActive,
           'text-muted-foreground hover:text-foreground': !isActive,
         })}
       >

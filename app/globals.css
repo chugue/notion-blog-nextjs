@@ -302,16 +302,12 @@ pre[data-theme] {
 }
 
 /* 모든 코드 블록과 인라인 코드 굵게 */
-pre,
-code,
-.shiki {
-  font-weight: 400 !important;
-}
 
 pre *,
 code *,
 .shiki * {
   font-weight: inherit !important;
+  font-size: 1rem !important;
 }
 
 /* 스켈레톤 애니메이션 */

@@ -22,8 +22,15 @@ const nextConfig: NextConfig = {
       {
         hostname: 'www.notion.so',
       },
+      {
+        hostname: 'localhost',
+        port: '3000',
+      },
+      {
+        hostname: 'notion-blog-nextjs-brown.vercel.app',
+        pathname: '/api/image-proxy/**',
+      },
     ],
-    // 👈 Notion 이미지 처리를 위한 추가 설정
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

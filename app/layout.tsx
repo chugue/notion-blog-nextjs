@@ -56,7 +56,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${maplestory.variable} antialiased`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${maplestory.variable} scroll-smooth antialiased`}
+      suppressHydrationWarning
+    >
       <body suppressHydrationWarning={true}>
         <TanstackProvider>
           <ThemeProvider

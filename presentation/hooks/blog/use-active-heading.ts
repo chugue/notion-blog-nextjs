@@ -15,7 +15,7 @@ export function useActiveHeading(): string {
 
     const updateActiveHeading = () => {
       const scrollY = window.scrollY;
-      const offset = window.innerHeight * 0.3;
+      const offset = window.innerHeight * 0.5;
 
       let currentHeading = '';
 

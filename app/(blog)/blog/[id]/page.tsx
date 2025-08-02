@@ -15,6 +15,7 @@ import { diContainer } from '@/shared/di/di-container';
 import { Suspense } from 'react';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import Image from 'next/image';
+import ColoredBadge from '../../_components/ColoredBadge';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const postUseCase = diContainer.post.postUseCase;
@@ -87,7 +88,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="my-4 space-y-4">
-              <h1 className="text-4xl font-bold sm:text-5xl">{post.title}</h1>
+              <h1 className="my-10 text-4xl font-bold sm:text-[3.5rem]">{post.title}</h1>
             </div>
 
             <div className="relative my-8 aspect-video w-full">
@@ -101,10 +102,10 @@ export default async function BlogPost({ params }: BlogPostProps) {
             </div>
 
             {/* 메타 정보 */}
-            <div className="text-muted-foreground flex flex-col gap-4 text-sm">
+            <div className="text-muted-foreground flex flex-col gap-4 text-lg">
               <div className="flex flex-wrap gap-2">
                 {post.tag.map((tag) => (
-                  <Badge key={tag}>{tag}</Badge>
+                  <ColoredBadge key={tag} tag={tag} />
                 ))}
               </div>
               <div className="flex items-center justify-end gap-4">

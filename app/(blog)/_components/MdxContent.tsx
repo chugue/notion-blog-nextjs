@@ -4,6 +4,8 @@ import CodeBlock from './CodeBlock';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
+import Image from 'next/image';
+import BookmarkCard from './BookmarkCard';
 
 interface MDXContentProps {
   source: string;
@@ -11,6 +13,80 @@ interface MDXContentProps {
 
 const componentsConfig = {
   pre: CodeBlock,
+  h1: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h1
+      className="group before:text-primary relative mt-20 scroll-m-20 py-0 text-[2.7rem] font-bold before:absolute before:-left-10 before:opacity-0 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100"
+      {...props}
+    >
+      {children}
+    </h1>
+  ),
+  h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h2 className="h2 mt-10 scroll-m-20 font-semibold" {...props}>
+      {children}
+    </h2>
+  ),
+  h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h3 className="h3 mt-10 scroll-m-20 font-semibold" {...props}>
+      {children}
+    </h3>
+  ),
+  p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
+    const content = props.content;
+    if (content === '') {
+      return <p className="flex h-20 w-full" />;
+    }
+
+    return (
+      <p
+        className="text-md mt-10 mb-2 leading-[2.2] font-light tracking-wider sm:text-xl"
+        {...props}
+      >
+        {children}
+      </p>
+    );
+  },
+  blockquote: ({ children, ...props }: React.HTMLAttributes<HTMLQuoteElement>) => (
+    <blockquote
+      className="border-primary bg-muted-foreground/10 mt-10 rounded-sm border-l-4 px-8 py-4 [&>*]:my-0"
+      {...props}
+    >
+      {children}
+    </blockquote>
+  ),
+  code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
+    <code
+      className="caption bg-muted relative rounded px-[0.5rem] py-[0.4rem] font-semibold text-white/80"
+      {...props}
+    >
+      {children}
+    </code>
+  ),
+  img: ({ src, alt, width, height, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
+    const imageSrc = typeof src === 'string' ? src : '/images/no-image-dark.png';
+    const imageWidth = width ? Number(width) : 800;
+    const imageHeight = height ? Number(height) : 400;
+
+    return (
+      <Image
+        src={imageSrc}
+        alt={alt || ''}
+        width={imageWidth}
+        height={imageHeight}
+        className="mt-8 mb-8 w-full rounded-lg shadow-sm transition-shadow hover:shadow-md"
+      />
+    );
+  },
+  a: ({ href }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    // 일반 링크
+    return <BookmarkCard href={href || ''} />;
+  },
+  li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
+    <li className="ml-12 flex items-start" {...props}>
+      <span className="mr-4 leading-[2.7]">•</span>
+      <span className="text-md leading-[2] font-light tracking-wider sm:text-xl">{children}</span>
+    </li>
+  ),
 };
 
 const prettyCodeOptions = {
