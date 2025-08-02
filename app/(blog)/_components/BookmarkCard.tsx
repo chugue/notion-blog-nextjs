@@ -38,7 +38,7 @@ const BookmarkCard = ({ href }: { href: string }) => {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="-mt-8 flex gap-4 rounded-lg border transition-shadow hover:shadow-md"
+      className="-mt-8 flex h-40 gap-4 rounded-lg border transition-shadow hover:shadow-md"
     >
       <span className="flex min-w-0 flex-1 flex-col justify-center p-4">
         <span className="mb-2 line-clamp-1 text-lg font-semibold">{ogData.ogTitle || href}</span>
