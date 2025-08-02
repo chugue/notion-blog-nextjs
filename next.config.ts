@@ -37,7 +37,6 @@ const nextConfig: NextConfig = {
   },
   pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],
   reactStrictMode: true,
-  // CSS 최적화 비활성화로 빌드 에러 해결
   experimental: {
     optimizeCss: false,
   },
@@ -49,6 +48,19 @@ const nextConfig: NextConfig = {
       );
     }
     return config;
+  },
+  headers: async () => {
+    return [
+      {
+        source: '/_next/image/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400',
+          },
+        ],
+      },
+    ];
   },
 };
 

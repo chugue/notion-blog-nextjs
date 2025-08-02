@@ -27,8 +27,6 @@ export const GET = async (request: NextRequest): Promise<NextResponse<Result<OgO
       },
     });
 
-    console.log('👉👉👉👉👉', result);
-
     if (!result.success) {
       return NextResponse.json(
         { success: false, error: new Error('Failed to scrape Open Graph data') },
