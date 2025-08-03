@@ -6,7 +6,7 @@ import { VisitStats } from './_components/VisitStats';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
 import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
-import { diContainer } from '@/shared/di/di-container';
+import getMainPageData from '@/presentation/utils/main/get-main-page-data';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -16,19 +16,11 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const tagInfoUseCase = diContainer.tagInfo.tagInfoUseCase;
-  const postUseCase = diContainer.post.postUseCase;
-
   const { tag, sort } = await searchParams;
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  // Promise는 하위 컴포넌트에서 use를 사용해서 처리
-  const tags = tagInfoUseCase.getAllTags();
-  const postsPromise = postUseCase.getPostsWithParams({
-    tag: selectedTag,
-    sort: selectedSort,
-  });
+  const { tags, postsPromise } = await getMainPageData({ selectedTag, selectedSort });
 
   return (
     <div className="container mx-auto py-8">

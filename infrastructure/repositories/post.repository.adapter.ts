@@ -57,6 +57,7 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
         };
       }
     },
+
     getPostsWithParams: async ({
       tag = '전체',
       sort = 'latest',
