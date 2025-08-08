@@ -61,7 +61,7 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
     getPostsWithParams: async ({
       tag = '전체',
       sort = 'latest',
-      pageSize = 10,
+      pageSize,
       startCursor = undefined,
     }: GetPublishedPostParams): Promise<Result<PostMetadataResp>> => {
       try {

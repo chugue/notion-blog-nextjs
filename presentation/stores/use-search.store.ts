@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { PostMetadata } from '../../domain/entities/post.entity';
+import { toast } from 'sonner';
 
 interface SearchState {
   // 모달 상태
@@ -16,9 +17,6 @@ interface SearchState {
   setSearchResults: (results: PostMetadata[]) => void;
   setLoading: (loading: boolean) => void;
   clearSearch: () => void;
-
-  // 검색 함수
-  searchPosts: (query: string) => Promise<void>;
 }
 
 export const useSearchStore = create<SearchState>((set, get) => ({
@@ -47,34 +45,4 @@ export const useSearchStore = create<SearchState>((set, get) => ({
       searchQuery: '',
       searchResults: [],
     }),
-
-  // 검색 로직 👈
-  searchPosts: async (query: string) => {
-    const { setLoading, setSearchResults } = get();
-
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetch('/api/notion');
-      const data = await response.json();
-
-      if (data.posts) {
-        const filtered = data.posts.filter(
-          (post: PostMetadata) =>
-            post.title.toLowerCase().includes(query.toLowerCase()) ||
-            post.tag?.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
-        );
-        setSearchResults(filtered);
-      }
-    } catch (error) {
-      console.error('검색 중 오류 발생:', error);
-      setSearchResults([]);
-    } finally {
-      setLoading(false);
-    }
-  },
 }));

@@ -8,61 +8,12 @@ import { PostMetadata } from '@/domain/entities/post.entity';
 import SearchHighlight from './SearchHighlight';
 
 export interface SearchResultsProps {
-  isLoading: boolean;
   searchQuery: string;
   searchResults: PostMetadata[];
   onSelectPost: (postId: string) => void;
 }
 
-// 👈 하드코딩된 샘플 데이터 추가ㄴ
-const mockSearchResults: PostMetadata[] = [
-  {
-    id: '1',
-    title: 'Next.js 14 App Router 완벽 가이드',
-    tag: ['Next.js', 'React'],
-    author: 'Stephen',
-    date: '2024-01-15',
-  },
-  {
-    id: '2',
-    title: 'TypeScript 고급 타입 시스템 마스터하기',
-    tag: ['TypeScript', 'VSCode'],
-    author: 'Stephen',
-    date: '2024-01-12',
-  },
-  {
-    id: '3',
-    title: 'Tailwind CSS로 반응형 디자인 구현하기',
-    tag: ['Tailwind CSS', 'CSS'],
-    author: 'Stephen',
-    date: '2024-01-10',
-  },
-  {
-    id: '4',
-    title: 'Notion API와 Next.js로 블로그 만들기',
-    tag: ['Notion API', 'Next.js'],
-    author: 'Stephen',
-    date: '2024-01-08',
-  },
-  {
-    id: '5',
-    title: 'shadcn/ui 컴포넌트 라이브러리 활용법',
-    tag: ['shadcn/ui', 'React'],
-    author: 'Stephen',
-    date: '2024-01-05',
-  },
-];
-
-const SearchResults = ({
-  isLoading,
-  searchQuery,
-  searchResults,
-  onSelectPost,
-}: SearchResultsProps) => {
-  if (isLoading) {
-    return <div className="text-muted-foreground py-6 text-center text-sm">검색 중...</div>;
-  }
-
+const SearchResults = ({ searchQuery, searchResults, onSelectPost }: SearchResultsProps) => {
   if (searchQuery && searchResults.length === 0) {
     return <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>;
   }
@@ -75,14 +26,11 @@ const SearchResults = ({
     );
   }
 
-  const displayResults = mockSearchResults;
-
   return (
-    <CommandGroup heading={`검색 결과 (${displayResults.length}개)`}>
-      {displayResults.map((post) => (
+    <CommandGroup heading={`검색 결과 (${searchResults.length}개)`}>
+      {searchResults.map((post) => (
         <CommandItem
           key={post.id}
-          value={post.id}
           onSelect={() => onSelectPost(post.id)}
           className="flex flex-row items-center justify-between p-4 transition-colors max-md:flex-col max-md:items-start"
         >

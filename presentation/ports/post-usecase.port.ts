@@ -4,6 +4,7 @@ import {
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
+import { Result } from '@/shared/types/result';
 
 export interface PostUseCasePort {
   readonly getAllPublishedPostMetadatas: () => Promise<PostMetadata[]>;

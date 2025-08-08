@@ -28,7 +28,6 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: 'notion-blog-nextjs-brown.vercel.app',
-        pathname: '/api/image-proxy/**',
       },
     ],
     dangerouslyAllowSVG: true,

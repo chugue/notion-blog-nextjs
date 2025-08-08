@@ -288,6 +288,11 @@ code[data-theme] span {
   background-color: var(--shiki-light-bg) !important;
 }
 
+code:not([data-theme]) {
+  font-family: var(--font-family-maplestory);
+  font-weight: inherit;
+}
+
 /* 클래스 기반 다크모드 (next-themes 사용) */
 .dark code[data-theme],
 .dark code[data-theme] span {

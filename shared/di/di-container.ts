@@ -12,7 +12,6 @@ declare global {
 }
 
 export const createDiContainer = (): DiContainer => {
-  console.log('🏗️ DiContainer 생성됨:', new Date().toISOString());
   const postDependencies = createPostDependencies();
   const tagInfoDependencies = createTagInfoDependencies(postDependencies.postRepository);
 

@@ -59,7 +59,7 @@ const componentsConfig = {
   ),
   code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <code
-      className="caption bg-muted relative rounded px-[0.5rem] py-[0.4rem] font-semibold text-white/80"
+      className="bg-muted relative rounded px-[0.5rem] py-[0.4rem] font-semibold text-white/80"
       {...props}
     >
       {children}
@@ -93,7 +93,7 @@ const componentsConfig = {
   },
   li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
     <li className="ml-12 flex items-start" {...props}>
-      <span className="mr-4 leading-[2.8]">•</span>
+      <span className="mt-[0.8rem] mr-4 text-[0.6rem] leading-[2] font-light">●</span>
       <span className="text-md leading-[2] font-light tracking-wider sm:text-xl">{children}</span>
     </li>
   ),

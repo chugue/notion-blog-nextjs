@@ -6,22 +6,16 @@ import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui
 import { useSearchStore } from '@/presentation/stores/use-search.store';
 import SearchResults from './SearchResults';
 import { useDebounce } from '@/presentation/hooks/main/use-debounce';
+import useSearchResults from '@/presentation/hooks/get-search-results';
 
 const SearchModal = () => {
   const router = useRouter();
 
-  const { isOpen, searchQuery, searchResults, isLoading, closeModal, setSearchQuery, searchPosts } =
-    useSearchStore();
+  const { isOpen, searchQuery, closeModal, setSearchQuery } = useSearchStore();
+  const debouncedQuery = useDebounce(searchQuery, 100);
+  const filteredList = useSearchResults(debouncedQuery);
 
-  // 디바운스된 검색어
-  const debouncedQuery = useDebounce(searchQuery, 300);
-
-  // 디바운스된 검색어가 변경될 때 검색 실행
-  useEffect(() => {
-    searchPosts(debouncedQuery);
-  }, [debouncedQuery, searchPosts]);
-
-  // 키보드 단축키 처리 👈
+  // 키보드 단축키 처리
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -45,19 +39,19 @@ const SearchModal = () => {
       open={isOpen}
       onOpenChange={closeModal}
       title="포스트 검색"
-      description="제목, 태그, 도구로 포스트를 검색해보세요"
-      className="max-md:max-w-2xl max-sm:max-w-xs md:max-w-3xl"
+      description="제목, 태그로 포스트를 검색해보세요"
+      className="top-1/4 min-h-0 translate-y-0 max-md:max-w-2xl max-sm:max-w-xs md:max-w-3xl"
+      shouldFilter={false}
     >
       <CommandInput
         placeholder="포스트를 검색해보세요... "
         value={searchQuery}
         onValueChange={setSearchQuery}
       />
-      <CommandList>
+      <CommandList className="max-h-[50vh] min-h-0 flex-1 overflow-y-auto">
         <SearchResults
-          isLoading={isLoading}
           searchQuery={searchQuery}
-          searchResults={searchResults}
+          searchResults={filteredList}
           onSelectPost={handleSelectPost}
         />
       </CommandList>

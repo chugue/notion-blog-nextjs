@@ -5,7 +5,6 @@ import { OgObject } from 'open-graph-scraper/types';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import Image from 'next/image';
-import { Loader2 } from 'lucide-react';
 
 const fetchOGData = async (url: string): Promise<OgObject> => {
   const response = await fetch(`/api/open-graph?url=${encodeURIComponent(url)}`);
@@ -48,13 +47,13 @@ const BookmarkCard = ({ href }: { href: string }) => {
         <span className="text-sm text-blue-500">{ogData.ogSiteName || new URL(href).hostname}</span>
       </span>
       {ogData.ogImage?.[0]?.url && (
-        <span className="relative w-80 flex-shrink-0">
+        <span className="relative w-80 flex-shrink-0 overflow-hidden">
           <Image
             src={`/api/image-proxy?url=${encodeURIComponent(ogData.ogImage[0].url)}`}
             alt={ogData.ogImage[0].alt || ogData.ogTitle || '북마크 이미지'}
             fill
             className="rounded object-cover object-center"
-            sizes="128px"
+            sizes="512px"
           />
         </span>
       )}

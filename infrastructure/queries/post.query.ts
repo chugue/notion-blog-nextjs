@@ -51,7 +51,7 @@ export const postQuery = {
 export const getPublishedPostsQuery = async ({
   tag = '전체',
   sort = 'latest',
-  pageSize = 10,
+  pageSize = 12,
   startCursor = undefined,
 }: GetPublishedPostParams): Promise<QueryDatabaseResponse> => {
   return await notion.databases.query({
