@@ -6,9 +6,8 @@ import {
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
-import { revalidateTag, unstable_cache } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { allPostMetadatasDataCache, getCachedPostById } from '../data-cache/post.data-cache';
-import { Result } from '@/shared/types/result';
 
 export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
@@ -39,10 +38,7 @@ export const createPostUseCaseAdapter = (
     getPostById: async (id: string): Promise<Post | null> => {
       const result = await getCachedPostById(postRepositoryPort, id)();
 
-      if (!result.success) {
-        revalidateTag(`post-${id}`);
-        return null;
-      }
+      if (!result.success) return null;
 
       return result.data;
     },

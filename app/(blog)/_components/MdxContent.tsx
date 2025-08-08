@@ -69,6 +69,7 @@ const componentsConfig = {
     const imageSrc = typeof src === 'string' ? src : '/images/no-image-dark.png';
     const imageWidth = width ? Number(width) : 800;
     const imageHeight = height ? Number(height) : 400;
+    const isAnimated = typeof src === 'string' && src.includes('.gif');
 
     return (
       <Image
@@ -77,8 +78,7 @@ const componentsConfig = {
         width={imageWidth}
         height={imageHeight}
         className="mt-8 mb-8 w-full rounded-lg shadow-sm transition-shadow hover:shadow-md"
-        placeholder="blur" // 블러 효과
-        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+        unoptimized={isAnimated}
       />
     );
   },
@@ -92,9 +92,11 @@ const componentsConfig = {
     return <BookmarkCard href={href} />;
   },
   li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
-    <li className="ml-12 flex items-start" {...props}>
+    <li className="ml-6 flex items-start lg:ml-12" {...props}>
       <span className="mt-[0.8rem] mr-4 text-[0.6rem] leading-[2] font-light">●</span>
-      <span className="text-md leading-[2] font-light tracking-wider sm:text-xl">{children}</span>
+      <div className="text-md w-full min-w-0 flex-1 leading-[2] font-light tracking-wider [overflow-wrap:anywhere] whitespace-normal sm:text-xl [&_code]:break-all [&_figure]:w-full [&_figure]:max-w-full [&_ol]:min-w-0 [&_p]:mt-0 [&_p]:mb-0 [&_pre]:w-full [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_ul]:min-w-0">
+        {children}
+      </div>
     </li>
   ),
 };

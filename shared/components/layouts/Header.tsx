@@ -47,9 +47,9 @@ const Header = () => {
   return (
     <header
       ref={headerRef}
-      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 min-w-2xs border-b px-4 backdrop-blur transition-all duration-300 ease-out sm:px-0"
+      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out sm:px-0"
     >
-      <div className="container mx-auto flex items-center justify-between py-2">
+      <div className="container mx-auto flex items-center justify-between">
         {/* 로고 */}
         <Link href="/" className="text-md flex flex-nowrap items-center gap-2">
           <Image src="/images/profile.png" alt="logo" width={32} height={32} />

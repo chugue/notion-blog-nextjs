@@ -178,7 +178,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
             </Link>
           </nav> */}
           <Suspense fallback={<LoadingSpinner />}>
-            <GiscusComments />
+            <GiscusComments term={`blog-${id}`} />
           </Suspense>
         </section>
 

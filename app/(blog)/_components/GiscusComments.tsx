@@ -4,17 +4,21 @@ import React from 'react';
 import Giscus from '@giscus/react';
 import { useTheme } from 'next-themes';
 
-const GiscusComments = () => {
+interface GiscusCommentsProps {
+  term: string;
+}
+
+const GiscusComments = ({ term }: GiscusCommentsProps) => {
   const { theme } = useTheme();
 
   return (
     <Giscus
       repo="chugue/notion-blog-nextjs-giscus"
       repoId="R_kgDOPN-hOQ"
-      category="Announcements"
       categoryId="DIC_kwDOPN-hOc4CtEbo"
-      mapping="pathname"
+      mapping="specific"
       strict="0"
+      term={term}
       reactionsEnabled="1"
       emitMetadata="0"
       inputPosition="top"

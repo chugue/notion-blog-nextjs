@@ -58,7 +58,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${maplestory.variable} scroll-smooth antialiased`}
+      className={`${maplestory.variable} scroll-smooth p-0 antialiased`}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning={true}>

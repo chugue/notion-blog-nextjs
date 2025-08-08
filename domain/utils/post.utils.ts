@@ -2,13 +2,16 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { PostMetadata, Post } from '../entities/post.entity';
 import { NotionUser, NotionPost } from '../entities/notion.entity';
 
+const buildNotionImageUrl = (src: string, pageId: string) =>
+  `https://www.notion.so/image/${encodeURIComponent(src)}?table=block&id=${pageId}&cache=v2`;
+
 export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
   const { properties } = page;
 
   return {
     id: page.id,
     title: properties.title.type === 'title' ? (properties.title.title[0]?.plain_text ?? '') : '',
-    coverImage: getCoverImage(page.cover),
+    coverImage: getCoverImage(page.cover, page.id),
     tag:
       properties.tag.type === 'multi_select'
         ? properties.tag.multi_select.map((tag) => tag.name)
@@ -22,14 +25,14 @@ export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
   };
 };
 
-const getCoverImage = (cover: PageObjectResponse['cover']) => {
+const getCoverImage = (cover: PageObjectResponse['cover'], pageId: string) => {
   if (!cover) return '';
 
   switch (cover.type) {
     case 'external':
-      return cover.external.url;
+      return buildNotionImageUrl(cover.external.url, pageId);
     case 'file':
-      return cover.file.url;
+      return buildNotionImageUrl(cover.file.url, pageId);
     default:
       return '';
   }

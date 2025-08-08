@@ -2,7 +2,6 @@ import { TagInfoUsecasePort } from '@/presentation/ports/tag-info-usecase.port';
 import { TagInfoRepositoryPort } from '../port/tag-info-repository.port';
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { PostRepositoryPort } from '../port/post-repository.port';
-import { unstable_cache } from 'next/cache';
 import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
 import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 
