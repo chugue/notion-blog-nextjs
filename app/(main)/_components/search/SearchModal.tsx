@@ -12,7 +12,7 @@ const SearchModal = () => {
   const router = useRouter();
 
   const { isOpen, searchQuery, closeModal, setSearchQuery } = useSearchStore();
-  const debouncedQuery = useDebounce(searchQuery, 100);
+  const debouncedQuery = useDebounce(searchQuery, 0);
   const filteredList = useSearchResults(debouncedQuery);
 
   // 키보드 단축키 처리

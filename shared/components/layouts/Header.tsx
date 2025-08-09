@@ -47,7 +47,7 @@ const Header = () => {
   return (
     <header
       ref={headerRef}
-      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out sm:px-0"
+      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out sm:px-0"
     >
       <div className="container mx-auto flex items-center justify-between">
         {/* 로고 */}
@@ -73,10 +73,10 @@ const Header = () => {
 
           <Separator
             orientation="vertical"
-            className="light:bg-black/50 hidden !h-5 self-center sm:flex dark:bg-white/50"
+            className="light:bg-black/50 hidden !h-5 self-center md:flex dark:bg-white/50"
           />
-          {/* 테마 토글 */}
-          <div className="hidden items-center sm:flex">
+          {/* 소셜 링크 */}
+          <div className="hidden items-center md:flex">
             {socialLinks.map((item, index) => (
               <Button key={index} variant="ghost" className="size-10" size="icon" asChild>
                 <a href={item.href} target="_blank" rel="noopener noreferrer">
@@ -84,7 +84,6 @@ const Header = () => {
                 </a>
               </Button>
             ))}
-            <ThemeToggle />
           </div>
 
           {/* 모바일 햄버거 메뉴 - 드롭다운으로 변경 👈 */}
@@ -96,7 +95,7 @@ const Header = () => {
                 className={cn('md:hidden', isMenuOpen && 'bg-primary/20')}
                 aria-label="메뉴 열기"
               >
-                <MenuIcon className="h-5 w-5" />
+                <MenuIcon />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="mt-2 w-56" sideOffset={8}>

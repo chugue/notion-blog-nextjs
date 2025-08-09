@@ -11,7 +11,7 @@ interface PostCardProps {
 
 export function PostCard({ post, isFirst = false }: PostCardProps) {
   return (
-    <Card className="group bg-card relative flex h-full flex-col overflow-visible border-none py-0 backdrop-blur-sm transition-transform duration-300 hover:z-50">
+    <Card className="group bg-card relative flex h-full flex-col overflow-visible border-none py-0 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 hover:z-50">
       {post.coverImage && (
         <div className="relative aspect-[16/9] flex-shrink-0 overflow-hidden rounded-md">
           <Image
@@ -20,7 +20,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
             fill
             priority={isFirst}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            className="rounded-md object-cover transition-transform duration-300 hover:scale-105"
+            className="rounded-md object-cover transition-transform duration-300 hover:scale-110"
           />
         </div>
       )}
@@ -37,7 +37,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
 
           <div
             data-title={post.title}
-            className="after:bg-card-post_list dark:after:bg-card relative -mx-2 overflow-visible px-2 after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:z-10 after:[display:block] after:px-2 after:pb-2 after:text-xl after:font-bold after:tracking-tight after:whitespace-normal after:opacity-0 after:transition-opacity after:duration-300 after:content-[attr(data-title)] group-hover:after:opacity-100"
+            className="dark:after:bg-card relative -mx-2 overflow-visible px-2 after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:z-10 after:[display:block] after:rounded-b-lg after:px-2 after:pb-2 after:text-xl after:font-bold after:tracking-tight after:whitespace-normal after:opacity-0 after:transition-opacity after:duration-300 after:content-[attr(data-title)] group-hover:after:opacity-100"
           >
             <h2 className="mb-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold tracking-tight transition-opacity duration-300 group-hover:opacity-0">
               {post.title}

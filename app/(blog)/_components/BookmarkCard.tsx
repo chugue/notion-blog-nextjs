@@ -37,17 +37,21 @@ const BookmarkCard = ({ href }: { href: string }) => {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="-mt-8 flex h-40 gap-4 rounded-lg border transition-shadow hover:shadow-md"
+      className="-mt-8 flex h-30 gap-4 rounded-lg border transition-shadow hover:shadow-md"
     >
       <span className="flex min-w-0 flex-1 flex-col justify-center p-4">
         <span className="mb-2 line-clamp-1 text-lg font-semibold">{ogData.ogTitle || href}</span>
         {ogData.ogDescription && (
-          <span className="mb-2 line-clamp-3 text-sm text-gray-600">{ogData.ogDescription}</span>
+          <span className="mb-2 line-clamp-1 text-sm text-gray-600 sm:line-clamp-2">
+            {ogData.ogDescription}
+          </span>
         )}
-        <span className="text-sm text-blue-500">{ogData.ogSiteName || new URL(href).hostname}</span>
+        <span className="truncate text-sm text-blue-500">
+          {ogData.ogSiteName || new URL(href).hostname}
+        </span>
       </span>
       {ogData.ogImage?.[0]?.url && (
-        <span className="relative w-80 flex-shrink-0 overflow-hidden">
+        <span className="relative w-80 flex-shrink-0 basis-1/3 overflow-hidden">
           <Image
             src={`/api/image-proxy?url=${encodeURIComponent(ogData.ogImage[0].url)}`}
             alt={ogData.ogImage[0].alt || ogData.ogTitle || '북마크 이미지'}

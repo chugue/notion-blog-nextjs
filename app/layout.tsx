@@ -61,7 +61,7 @@ export default function RootLayout({
       className={`${maplestory.variable} scroll-smooth p-0 antialiased`}
       suppressHydrationWarning
     >
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true} className="overflow-x-hidden">
         <TanstackProvider>
           <ThemeProvider
             attribute="class"

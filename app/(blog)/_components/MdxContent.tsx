@@ -93,7 +93,9 @@ const componentsConfig = {
   },
   li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
     <li className="ml-6 flex items-start lg:ml-12" {...props}>
-      <span className="mt-[0.8rem] mr-4 text-[0.6rem] leading-[2] font-light">●</span>
+      <span className="mt-[0.4rem] mr-4 text-[0.6rem] leading-[2] font-light sm:mt-[0.7rem]">
+        ●
+      </span>
       <div className="text-md w-full min-w-0 flex-1 leading-[2] font-light tracking-wider [overflow-wrap:anywhere] whitespace-normal sm:text-xl [&_code]:break-all [&_figure]:w-full [&_figure]:max-w-full [&_ol]:min-w-0 [&_p]:mt-0 [&_p]:mb-0 [&_pre]:w-full [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_ul]:min-w-0">
         {children}
       </div>

@@ -25,7 +25,7 @@ const HighlightText = ({ text, searchQuery, className = '' }: HighlightTextProps
         return isMatch ? (
           <mark
             key={index}
-            className="bg-primary/20 text-primary dark:bg-primary/50 rounded-sm px-0.5 font-bold dark:text-white"
+            className="dark:bg-primary rounded-sm px-2 py-0.5 font-bold dark:text-gray-800"
           >
             {part}
           </mark>

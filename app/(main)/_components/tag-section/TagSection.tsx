@@ -34,7 +34,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
       </CardHeader>
       <CardContent className="px-2 py-0">
         <SearchButton />
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="mt-3 flex flex-col gap-3 max-md:overflow-y-auto max-md:overscroll-contain">
           {allTags.map((tag) => {
             const isSelected = selectedTag === tag.name || (!selectedTag && tag.name === '전체');
             return (
