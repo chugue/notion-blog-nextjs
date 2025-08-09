@@ -20,7 +20,7 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
             fill
             priority={isFirst}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            className="rounded-md object-cover transition-transform duration-300 hover:scale-110"
+            className="rounded-md object-cover transition-transform duration-300 group-hover:scale-110"
           />
         </div>
       )}
