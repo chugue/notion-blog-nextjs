@@ -1,5 +1,4 @@
 import { Separator } from '@/shared/components/ui/separator';
-import { Badge } from '@/shared/components/ui/badge';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
 import { formatDate } from '@/shared/utils/format-date';
 import { MDXContent } from '@/app/(blog)/_components/MdxContent';
@@ -16,11 +15,12 @@ import { Suspense } from 'react';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import Image from 'next/image';
 import ColoredBadge from '../../_components/ColoredBadge';
+import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const postUseCase = diContainer.post.postUseCase;
   const { id } = await params;
-  const result = await postUseCase.getPostById(id);
+
+  const result = await getPostDetailPage(id);
 
   if (!result || !result.post) {
     return {
@@ -68,8 +68,8 @@ interface BlogPostProps {
 
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
-  const postUseCase = diContainer.post.postUseCase;
-  const result = await postUseCase.getPostById(id);
+
+  const result = await getPostDetailPage(id);
 
   if (!result || !result.post) notFound();
 

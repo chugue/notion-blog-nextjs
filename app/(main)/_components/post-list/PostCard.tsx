@@ -2,6 +2,7 @@ import { Card, CardContent } from '@/shared/components/ui/card';
 import { Badge } from '@/shared/components/ui/badge';
 import Image from 'next/image';
 import { PostMetadata } from '@/domain/entities/post.entity';
+import CustomBadge from '../CustomBadge';
 
 interface PostCardProps {
   post: PostMetadata;
@@ -27,40 +28,21 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
       {/* ---------- CardContent ---------- */}
       <CardContent className="relative my-0 flex flex-1 flex-col p-0">
         {/* 기본 콘텐츠 (레이아웃 유지용) */}
-        <div className="flex flex-col px-2 transition-opacity duration-300 group-hover:opacity-0">
+        <div className="flex flex-col px-2 transition-opacity duration-300">
           <div className="mb-4 flex flex-wrap gap-2">
             {post.tag?.map((tag) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className="bg-primary/10 text-primary hover:bg-primary/20 font-medium transition-colors"
-              >
-                {tag}
-              </Badge>
+              <CustomBadge key={tag} tag={tag} />
             ))}
           </div>
 
-          <h2 className="mb-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold tracking-tight">
-            {post.title}
-          </h2>
-        </div>
-
-        {/* 호버 시 전체 콘텐츠 오버레이 */}
-        <div className="bg-card text-primary absolute z-40 flex flex-col rounded-md px-2 pb-5 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100">
-          <div className="mb-4 flex flex-wrap gap-2">
-            {post.tag?.map((tag) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className="bg-primary/10 text-primary hover:bg-primary/20 font-medium transition-colors"
-              >
-                {tag}
-              </Badge>
-            ))}
+          <div
+            data-title={post.title}
+            className="after:bg-card after:text-primary relative -mx-2 px-2 after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:z-10 after:[display:block] after:rounded-md after:px-2 after:pb-2 after:text-xl after:font-bold after:tracking-tight after:whitespace-normal after:opacity-0 after:backdrop-blur-sm after:transition-all after:duration-300 after:content-[attr(data-title)] group-hover:after:opacity-100"
+          >
+            <h2 className="mb-2 line-clamp-2 min-h-[3.5rem] text-xl font-bold tracking-tight">
+              {post.title}
+            </h2>
           </div>
-
-          {/* hover시 제목 - line-clamp 없음 */}
-          <h2 className="text-xl font-bold tracking-tight">{post.title}</h2>
         </div>
       </CardContent>
     </Card>

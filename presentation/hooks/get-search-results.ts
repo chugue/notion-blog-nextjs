@@ -8,7 +8,7 @@ const useSearchResults = (searchQuery: string): PostMetadata[] => {
   const { data: result, isError } = useQuery({
     queryKey: ['all-searchable-posts'],
     queryFn: () =>
-      fetch(`/api/notion`)
+      fetch(`/api/search`)
         .then((res) => res.json())
         .then((data) => data.data as PostMetadata[]),
     enabled: !!searchQuery && searchQuery.trim() !== '',

@@ -6,6 +6,7 @@ import { Badge } from '@/shared/components/ui/badge';
 import { FileText } from 'lucide-react';
 import { PostMetadata } from '@/domain/entities/post.entity';
 import SearchHighlight from './SearchHighlight';
+import CustomBadge from '../CustomBadge';
 
 export interface SearchResultsProps {
   searchQuery: string;
@@ -48,13 +49,7 @@ const SearchResults = ({ searchQuery, searchResults, onSelectPost }: SearchResul
           {post.tag.length > 0 && (
             <div className="ml-4 flex flex-wrap gap-1.5 sm:ml-auto">
               {post.tag.map((lang) => (
-                <Badge
-                  key={lang}
-                  variant="secondary"
-                  className="bg-primary/20 text-xs transition-colors"
-                >
-                  {lang}
-                </Badge>
+                <CustomBadge key={lang} tag={lang} />
               ))}
             </div>
           )}
