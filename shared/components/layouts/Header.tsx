@@ -73,7 +73,7 @@ const Header = () => {
 
           <Separator
             orientation="vertical"
-            className="light:bg-black/50 hidden !h-5 self-center md:flex dark:bg-white/50"
+            className="hidden !h-5 !w-0.5 self-center md:flex dark:bg-white/80"
           />
           {/* 소셜 링크 */}
           <div className="hidden items-center md:flex">

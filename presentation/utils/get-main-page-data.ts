@@ -13,6 +13,7 @@ const getMainPageData = async ({ selectedTag, selectedSort }: MainPageDataProps)
   const postsPromise = postUseCase.getPostsWithParams({
     tag: selectedTag,
     sort: selectedSort,
+    pageSize: 12,
   });
 
   return {

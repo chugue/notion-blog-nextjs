@@ -68,10 +68,12 @@ export function VisitStats({ className }: { className?: string }) {
   return (
     <Card className={cn('p-0', className)}>
       <CardContent className="flex flex-col gap-0">
-        <CardHeader className="flex min-w-0 flex-col items-center justify-center">
+        <CardHeader className="flex w-full flex-col items-center justify-center">
           <div className="flex h-[100px] w-full flex-row items-center gap-10">
             <div className="order-1 flex flex-1 flex-col items-center justify-between gap-4">
-              <span className="text-muted-foreground text-md">{chartConfig.daily.label}</span>
+              <span className="text-muted-foreground text-md whitespace-nowrap">
+                {chartConfig.daily.label}
+              </span>
               <span className="text-lg leading-none font-bold sm:text-3xl">
                 {total.daily.toLocaleString()}
               </span>
@@ -79,7 +81,9 @@ export function VisitStats({ className }: { className?: string }) {
             <span className="order-2 h-[80%] items-center border-l-1 border-gray-600" />
 
             <div className="order-3 flex flex-1 flex-col items-center justify-center gap-4">
-              <span className="text-muted-foreground text-md">{chartConfig.total.label}</span>
+              <span className="text-muted-foreground text-md whitespace-nowrap">
+                {chartConfig.total.label}
+              </span>
               <span className="text-lg leading-none font-bold sm:text-3xl">
                 {total.total.toLocaleString()}
               </span>

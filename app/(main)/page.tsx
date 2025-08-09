@@ -23,7 +23,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const { tags, postsPromise } = await getMainPageData({ selectedTag, selectedSort });
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-5 sm:py-8">
       <section className="mb-6 grid grid-cols-[500px_1fr] max-lg:grid-cols-1 max-md:px-4">
         <VisitStats />
         <FlipHexTechStack tags={tags} />
