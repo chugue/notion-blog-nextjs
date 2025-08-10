@@ -6,12 +6,15 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import Image from 'next/image';
 import BookmarkCard from './BookmarkCard';
+import { buildNotionImageUrl } from '@/domain/utils/post.utils';
+import { convertToImageProxy } from '@/presentation/utils/covert-to-img-proxy';
 
 interface MDXContentProps {
   source: string;
+  pageId: string;
 }
 
-const componentsConfig = {
+const componentsConfig = (pageId: string) => ({
   pre: CodeBlock,
   h1: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
@@ -66,7 +69,8 @@ const componentsConfig = {
     </code>
   ),
   img: ({ src, alt, width, height, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
-    const imageSrc = typeof src === 'string' ? src : '/images/no-image-dark.png';
+    const rawSrc = typeof src === 'string' ? src : '/images/no-image-dark.png';
+    const imageSrc = convertToImageProxy(rawSrc);
     const imageWidth = width ? Number(width) : 800;
     const imageHeight = height ? Number(height) : 400;
     const isAnimated = typeof src === 'string' && src.includes('.gif');
@@ -101,7 +105,7 @@ const componentsConfig = {
       </div>
     </li>
   ),
-};
+});
 
 const prettyCodeOptions = {
   theme: {
@@ -110,7 +114,7 @@ const prettyCodeOptions = {
   },
 };
 
-export function MDXContent({ source }: MDXContentProps) {
+export function MDXContent({ source, pageId }: MDXContentProps) {
   return (
     <>
       <MDXRemote
@@ -121,7 +125,7 @@ export function MDXContent({ source }: MDXContentProps) {
             rehypePlugins: [rehypeSlug, rehypeSanitize, [rehypePrettyCode, prettyCodeOptions]],
           },
         }}
-        components={componentsConfig}
+        components={componentsConfig(pageId)}
       />
     </>
   );

@@ -100,14 +100,20 @@ export const getPostByIdQuery = async (id: string): Promise<Result<Post>> => {
       };
     }
 
+    console.log(response);
+
     const mdBlocks = await n2m.pageToMarkdown(response.id);
     const { parent } = n2m.toMarkdownString(mdBlocks);
+
+    const postMetadata = getPostMetadata(response as PageObjectResponse);
+
+    console.log(postMetadata);
 
     return {
       success: true,
       data: {
         markdown: parent,
-        post: getPostMetadata(response as PageObjectResponse),
+        post: postMetadata,
       },
     };
   } catch (error) {

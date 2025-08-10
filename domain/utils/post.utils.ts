@@ -2,8 +2,21 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { PostMetadata, Post } from '../entities/post.entity';
 import { NotionUser, NotionPost } from '../entities/notion.entity';
 
-const buildNotionImageUrl = (src: string, pageId: string) =>
+export const buildNotionImageUrl = (src: string, pageId: string) =>
   `https://www.notion.so/image/${encodeURIComponent(src)}?table=block&id=${pageId}&cache=v2`;
+
+const getCoverImage = (cover: PageObjectResponse['cover'], pageId: string) => {
+  if (!cover) return '';
+
+  switch (cover.type) {
+    case 'external':
+      return buildNotionImageUrl(cover.external.url, pageId);
+    case 'file':
+      return buildNotionImageUrl(cover.file.url, pageId);
+    default:
+      return '';
+  }
+};
 
 export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
   const { properties } = page;
@@ -23,19 +36,6 @@ export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
     date:
       properties.createdAt.type === 'created_time' ? (properties.createdAt.created_time ?? '') : '',
   };
-};
-
-const getCoverImage = (cover: PageObjectResponse['cover'], pageId: string) => {
-  if (!cover) return '';
-
-  switch (cover.type) {
-    case 'external':
-      return buildNotionImageUrl(cover.external.url, pageId);
-    case 'file':
-      return buildNotionImageUrl(cover.file.url, pageId);
-    default:
-      return '';
-  }
 };
 
 // 테스트에서 기대하는 함수들 추가

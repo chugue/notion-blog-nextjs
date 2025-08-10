@@ -69,12 +69,7 @@ interface BlogPostProps {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
 
-  const result = await getPostDetailPage(id);
-
-  if (!result || !result.post) notFound();
-
-  const post = result.post;
-  const markdown = result.markdown;
+  const { post, markdown } = await getPostDetailPage(id);
 
   const { data } = await compile(markdown, {
     rehypePlugins: [withSlugs, rehypeSanitize, withToc, withTocExport],
@@ -141,7 +136,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
           {/* 블로그 본문 */}
           <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-            <MDXContent source={markdown} />
+            <MDXContent source={markdown} pageId={id} />
           </div>
 
           <Separator className="my-16" />

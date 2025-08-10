@@ -3,7 +3,14 @@ import { notFound } from 'next/navigation';
 
 const getPostDetailPage = async (id: string) => {
   const postUseCase = diContainer.post.postUseCase;
-  return await postUseCase.getPostById(id);
+  const result = await postUseCase.getPostById(id);
+
+  if (!result || !result.post) notFound();
+
+  return {
+    post: result.post,
+    markdown: result.markdown,
+  };
 };
 
 export default getPostDetailPage;

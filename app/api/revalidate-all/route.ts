@@ -6,7 +6,5 @@ export const GET = async () => {
   revalidateTag('all-searchable-posts');
   revalidateTag('all-posts');
 
-  console.log('revalidated all');
-
   return NextResponse.json({ success: true });
 };
