@@ -132,6 +132,11 @@ const Header = () => {
 
       {/* 검색 모달 */}
       <SearchModal />
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7428195998895873"
+        crossOrigin="anonymous"
+      />
     </header>
   );
 };
