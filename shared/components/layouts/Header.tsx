@@ -17,6 +17,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Separator } from '../ui/separator';
 import { useHeaderScrollAnimation } from '@/presentation/hooks/blog-detail/use-scroll-direction';
 import { cn } from '@/shared/utils/tailwind-cn';
+import Threads from '../Threads';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,6 +31,10 @@ const Header = () => {
   ];
 
   const socialLinks = [
+    {
+      icon: Threads,
+      href: 'https://www.threads.net/@stephen_acts6v8',
+    },
     {
       icon: Linkedin,
       href: 'https://www.linkedin.com/in/seonghoon-kim-5a36a0130/',
@@ -80,7 +85,7 @@ const Header = () => {
             {socialLinks.map((item, index) => (
               <Button key={index} variant="ghost" className="size-10" size="icon" asChild>
                 <a href={item.href} target="_blank" rel="noopener noreferrer">
-                  <item.icon className="h-5 w-5" />
+                  {item.icon === Threads ? <Threads /> : <item.icon className="h-5 w-5" />}
                 </a>
               </Button>
             ))}
