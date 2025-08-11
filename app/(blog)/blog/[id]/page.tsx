@@ -8,7 +8,6 @@ import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import rehypeSanitize from 'rehype-sanitize';
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
-import { notFound } from 'next/navigation';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 import { diContainer } from '@/shared/di/di-container';
 import { Suspense } from 'react';
@@ -26,6 +25,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return {
       title: "Stephen's 기술블로그 | 개발 공부 및 튜토리얼",
       description: '개발 공부 및 튜토리얼',
+      openGraph: {
+        images: [{ url: '/images/main-thumbnail.png', width: 1200, height: 630, alt: 'Not Found' }],
+      },
+      twitter: { images: ['/images/main-thumbnail.png'] },
     };
   }
 
@@ -48,6 +51,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       publishedTime: post.date,
       authors: post.author || '김성훈',
       tags: post.tag,
+      images: [post.coverImage || '/images/no-image-dark.png'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: `${post.title} - Stephen's 기술블로그`,
+      images: [post.coverImage || '/images/no-image-dark.png'],
     },
   };
 }

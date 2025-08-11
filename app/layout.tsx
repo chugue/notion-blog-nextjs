@@ -48,6 +48,26 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    title: `Stephen's 기술블로그| 개발 공부 및 튜토리얼`,
+    description: '개발과 관련된 다양한 지식과 경험을 공유하는 블로그입니다.',
+    images: [
+      {
+        url: '/images/main-thumbnail.png',
+        width: 1200,
+        height: 630,
+        alt: "Stephen's 기술블로그 대표 이미지",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Stephen's 기술블로그| 개발 공부 및 튜토리얼`,
+    description: '개발과 관련된 다양한 지식과 경험을 공유하는 블로그입니다.',
+    images: ['/images/main-thumbnail.png'],
+  },
 };
 
 export default function RootLayout({
