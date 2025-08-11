@@ -13,10 +13,6 @@ export const useInfiniteScroll = (
 
   // 무한 스크롤 로직
   useEffect(() => {
-    console.log('inView', inView);
-    console.log('hasNextPage', hasNextPage);
-    console.log('isFetchingNextPage', isFetchingNextPage);
-
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }

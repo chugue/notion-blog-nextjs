@@ -15,7 +15,7 @@ export const useFetchPost = (initialData: PostMetadataResp) => {
     if (sort && sort !== 'latest') params.append('sort', sort);
     if (pageParam) params.append('startCursor', pageParam);
 
-    params.append('pageSize', '10');
+    params.append('pageSize', '8');
 
     const response = await fetch(`/api/notion?${params.toString()}`);
 
