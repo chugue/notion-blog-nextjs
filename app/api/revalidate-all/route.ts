@@ -5,6 +5,7 @@ export const GET = async () => {
   revalidateTag('getAllPublishedPostMetadatas');
   revalidateTag('all-searchable-posts');
   revalidateTag('all-posts');
+  revalidateTag('image-proxy');
 
   return NextResponse.json({ success: true });
 };

@@ -86,7 +86,10 @@ export async function GET(request: NextRequest): Promise<NextResponse<Result<Arr
         'User-Agent': 'Mozilla/5.0 (compatible; BookmarkBot/1.0)',
       },
       signal: AbortSignal.timeout(isDevelopment ? 30000 : 10000), // 개발: 30초, 프로덕션: 10초
-      next: { revalidate: 60 * 60 * 24 }, // 24시간
+      cache: 'force-cache',
+      next: {
+        tags: ['image-proxy', `image-${imageUrl}`],
+      },
     });
 
     if (!response.ok) {
