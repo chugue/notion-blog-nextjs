@@ -6,7 +6,7 @@ const PostListSkeleton = () => {
   return (
     <div className="w-full space-y-6">
       <div className="responsive-grid relative">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {Array.from({ length: 12 }).map((_, index) => (
           <Card
             key={index}
             className="group bg-background relative flex h-full w-full min-w-[280px] flex-col overflow-visible border-none py-0 backdrop-blur-sm transition-transform duration-300"

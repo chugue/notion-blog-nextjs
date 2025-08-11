@@ -6,8 +6,9 @@ import Link from 'next/link';
 import React, { use } from 'react';
 import { cn } from '@/shared/utils/tailwind-cn';
 import SearchButton from '../search/SearchButton';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
+import { getTagIcon } from '@/domain/utils/tag-info.utils';
+import Image from 'next/image';
 
 export interface TagSectionProps {
   tags: Promise<TagFilterItem[]>;
@@ -52,7 +53,16 @@ const TagSection = ({ tags }: TagSectionProps) => {
                       : 'hover:bg-muted-foreground/10 text-muted-foreground'
                   )}
                 >
-                  <span>{tag.name}</span>
+                  <span className="flex items-center gap-2">
+                    <Image
+                      src={getTagIcon(tag.name)}
+                      alt={tag.name}
+                      width={16}
+                      height={16}
+                      className="h-5 w-5"
+                    />
+                    {tag.name}
+                  </span>
                   <span>{tag.count}</span>
                 </div>
               </Link>
