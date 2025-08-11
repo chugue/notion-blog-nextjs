@@ -1,5 +1,5 @@
 import Header from '@/shared/components/layouts/Header';
-import Footer from '@/shared/components/layouts/Footer';
+import { Analytics } from '@vercel/analytics/next';
 
 export default function MainLayout({
   children,
@@ -11,6 +11,7 @@ export default function MainLayout({
       <Header />
       <main className="flex-1">{children}</main>
       {/* <Footer /> */}
+      <Analytics />
     </div>
   );
 }

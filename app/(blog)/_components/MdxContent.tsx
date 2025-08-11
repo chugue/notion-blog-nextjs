@@ -70,10 +70,10 @@ const componentsConfig = (pageId: string) => ({
   ),
   img: ({ src, alt, width, height, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
     const rawSrc = typeof src === 'string' ? src : '/images/no-image-dark.png';
+    const isAnimated = typeof src === 'string' && src.includes('.gif');
     const imageSrc = convertToImageProxy(rawSrc);
     const imageWidth = width ? Number(width) : 800;
     const imageHeight = height ? Number(height) : 400;
-    const isAnimated = typeof src === 'string' && src.includes('.gif');
 
     return (
       <Image

@@ -56,7 +56,7 @@ const PostListSuspense = ({ postsPromise }: PostListProps) => {
         )}
       </div>
 
-      {hasNextPage && !isFetchingNextPage && <div ref={ref} className="h-10"></div>}
+      {hasNextPage && !isFetchingNextPage && <div ref={ref} className="h-10 bg-red-500"></div>}
       {isFetchingNextPage && (
         <div className="flex items-center justify-center gap-2 py-4">
           <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
