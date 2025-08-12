@@ -169,7 +169,6 @@ export const createDiContainer = (): DiContainer => {
 
 - **Jest + Testing Library** - 종합적인 테스트 환경
 - **ESLint + Prettier** - 코드 품질 관리
-- **Husky + lint-staged** - Git hooks로 품질 보장
 
 ## 🧪 테스트 전략
 
@@ -261,11 +260,6 @@ describe('Application Use Cases - TagInfo UseCase', () => {
 - **인터페이스 분리**로 모듈 간 결합도 최소화
 
 ### 🚀 **향후 확장 계획**
-
-- 마이크로서비스 아키텍처로의 전환 가능성
-- GraphQL API 도입 고려
-- 실시간 댓글 시스템 (WebSocket)
-- 다국어 지원 (i18n)
 
 ## 🛠️ 로컬 개발 환경 설정
 
