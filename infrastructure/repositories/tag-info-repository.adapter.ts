@@ -7,13 +7,6 @@ export const createTagInfoRepositoryAdapter = (
   postRepositoryPort: PostRepositoryPort
 ): TagInfoRepositoryPort => {
   return {
-    // getAllTags: async (): Promise<TagFilterItem[]> => {
-    //   const result = await tagInfoQuery.getAllTags();
-
-    //   if (!result.success) return [];
-
-    //   return result.data.map((tagInfo) => tagInfoToDomain(tagInfo));
-    // },
     getAllTags: async (): Promise<TagFilterItem[]> => {
       const result = await postRepositoryPort.getAllPublishedPosts();
 

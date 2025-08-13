@@ -202,6 +202,14 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
           tagName: 'linux',
         });
         break;
+      case 'nextjs':
+        techStackItems.push({
+          name: 'Next.js',
+          icon: '/icons/nextjs.svg',
+          color: '#484647',
+          tagName: 'nextjs',
+        });
+        break;
 
       default:
         techStackItems.push({
