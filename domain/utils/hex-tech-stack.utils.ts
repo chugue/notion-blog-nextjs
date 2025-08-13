@@ -16,7 +16,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
         break;
       case 'java':
         techStackItems.push({
-          name: 'Java',
+          name: tagFilterItem.name,
           icon: '/icons/java.svg',
           color: '#d3504a',
           tagName: 'java',
@@ -25,7 +25,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'spring':
         techStackItems.push({
-          name: 'Spring',
+          name: tagFilterItem.name,
           icon: '/icons/spring-boot.svg',
           color: '#6ab341',
           tagName: 'spring',
@@ -34,7 +34,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'webapp':
         techStackItems.push({
-          name: 'WebApp',
+          name: tagFilterItem.name,
           icon: '/icons/web-app.svg',
           color: '#4695e9',
           tagName: 'web-app',
@@ -43,7 +43,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'system':
         techStackItems.push({
-          name: 'System',
+          name: tagFilterItem.name,
           icon: '/icons/system.svg',
           color: '#80b3e7',
           tagName: 'system',
@@ -52,7 +52,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'network':
         techStackItems.push({
-          name: 'Network',
+          name: tagFilterItem.name,
           icon: '/icons/network.svg',
           color: '#72d5eb',
           tagName: 'network',
@@ -61,7 +61,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'docker':
         techStackItems.push({
-          name: 'Docker',
+          name: tagFilterItem.name,
           icon: '/icons/docker.svg',
           color: '#046abd',
           tagName: 'docker',
@@ -70,7 +70,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'flutter':
         techStackItems.push({
-          name: 'Flutter',
+          name: tagFilterItem.name,
           icon: '/icons/flutter.svg',
           color: '#64c2ee',
           tagName: 'flutter',
@@ -79,7 +79,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'javascript':
         techStackItems.push({
-          name: 'JavaScript',
+          name: tagFilterItem.name,
           icon: '/icons/javascript.svg',
           color: '#f0db4f',
           tagName: 'javascript',
@@ -88,7 +88,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'http':
         techStackItems.push({
-          name: 'HTTP',
+          name: tagFilterItem.name,
           icon: '/icons/http.svg',
           color: '#6898db',
           tagName: 'http',
@@ -97,7 +97,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'jquery':
         techStackItems.push({
-          name: 'jQuery',
+          name: tagFilterItem.name,
           icon: '/icons/j-query.svg',
           color: '#1d6ea6',
           tagName: 'jquery',
@@ -106,7 +106,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'algorithm':
         techStackItems.push({
-          name: 'Algorithm',
+          name: tagFilterItem.name,
           icon: '/icons/algorithm.svg',
           color: '#f1ddd7',
           tagName: 'algorithm',
@@ -115,7 +115,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'react':
         techStackItems.push({
-          name: 'React',
+          name: tagFilterItem.name,
           icon: '/icons/react.svg',
           color: '#26c7e3',
           tagName: 'react',
@@ -124,7 +124,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'methodology':
         techStackItems.push({
-          name: 'Methodology',
+          name: tagFilterItem.name,
           icon: '/icons/methodology.svg',
           color: '#fadee3',
           tagName: 'methodology',
@@ -133,7 +133,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'nestjs':
         techStackItems.push({
-          name: 'NestJS',
+          name: tagFilterItem.name,
           icon: '/icons/nestjs.svg',
           color: '#de274b',
           tagName: 'NestJS',
@@ -142,7 +142,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'git':
         techStackItems.push({
-          name: 'Git',
+          name: tagFilterItem.name,
           icon: '/icons/git.svg',
           color: '#f4501f',
           tagName: 'git',
@@ -151,7 +151,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'python':
         techStackItems.push({
-          name: 'Python',
+          name: tagFilterItem.name,
           icon: '/icons/python.svg',
           color: '#3b6c9b',
           tagName: 'python',
@@ -160,7 +160,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'ajax':
         techStackItems.push({
-          name: 'AJAX',
+          name: tagFilterItem.name,
           icon: '/icons/ajax.svg',
           color: '#4597cf',
           tagName: 'ajax',
@@ -169,7 +169,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'sql':
         techStackItems.push({
-          name: 'SQL',
+          name: tagFilterItem.name,
           icon: '/icons/sql.svg',
           color: '#aed730',
           tagName: 'sql',
@@ -178,7 +178,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'css':
         techStackItems.push({
-          name: 'CSS',
+          name: tagFilterItem.name,
           icon: '/icons/css.svg',
           color: '#1776b5',
           tagName: 'css',
@@ -187,7 +187,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'html':
         techStackItems.push({
-          name: 'HTML',
+          name: tagFilterItem.name,
           icon: '/icons/html.svg',
           color: '#e44134',
           tagName: 'html',
@@ -196,7 +196,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
 
       case 'linux':
         techStackItems.push({
-          name: 'Linux',
+          name: tagFilterItem.name,
           icon: '/icons/linux.svg',
           color: '#fac706',
           tagName: 'linux',
@@ -204,7 +204,7 @@ export const toHexTechStackItem = (tagFilterItems: TagFilterItem[]): TechStackIt
         break;
       case 'nextjs':
         techStackItems.push({
-          name: 'Next.js',
+          name: tagFilterItem.name,
           icon: '/icons/nextjs.svg',
           color: '#484647',
           tagName: 'nextjs',
