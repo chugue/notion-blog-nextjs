@@ -1,5 +1,5 @@
 CREATE TABLE "page_views" (
-	"id" uuid PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"notion_page_id" text NOT NULL,
 	"pathname" text NOT NULL,
 	"view_count" integer DEFAULT 0,
@@ -10,9 +10,9 @@ CREATE TABLE "page_views" (
 );
 --> statement-breakpoint
 CREATE TABLE "site_metrics" (
-	"id" uuid PRIMARY KEY NOT NULL,
-	"total_visits" integer DEFAULT 0,
-	"daily_visits" integer DEFAULT 0,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"total_visits" integer DEFAULT 0 NOT NULL,
+	"daily_visits" integer DEFAULT 0 NOT NULL,
 	"date" date NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,

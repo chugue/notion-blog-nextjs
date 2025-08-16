@@ -2,8 +2,27 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { PostMetadata, Post } from '../entities/post.entity';
 import { NotionUser, NotionPost } from '../entities/notion.entity';
 
-export const buildNotionImageUrl = (src: string, pageId: string) =>
-  `https://www.notion.so/image/${encodeURIComponent(src)}?table=block&id=${pageId}&cache=v2`;
+const toStableNotionS3Src = (src: string): string => {
+  try {
+    const u = new URL(src);
+    const isNotionSignedS3 =
+      u.hostname === 'prod-files-secure.s3.us-west-2.amazonaws.com' ||
+      u.hostname.endsWith('.amazonaws.com');
+    if (isNotionSignedS3) {
+      u.search = '';
+      return u.toString();
+    }
+    return src;
+  } catch {
+    return src;
+  }
+};
+
+export const buildNotionImageUrl = (src: string, pageId: string) => {
+  const stableSrc = toStableNotionS3Src(src);
+
+  return `https://www.notion.so/image/${encodeURIComponent(stableSrc)}?table=block&id=${pageId}&cache=v2`;
+};
 
 const getCoverImage = (cover: PageObjectResponse['cover'], pageId: string) => {
   if (!cover) return '';

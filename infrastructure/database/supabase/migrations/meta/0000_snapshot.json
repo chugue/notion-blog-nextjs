@@ -1,5 +1,5 @@
 {
-  "id": "adf96728-d911-4da2-bcb0-ef2850fdafb2",
+  "id": "0a0301d5-fc63-4bd5-ad9a-d81fc2a6e40b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -12,7 +12,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "notion_page_id": {
           "name": "notion_page_id",
@@ -125,20 +126,21 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "total_visits": {
           "name": "total_visits",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": 0
         },
         "daily_visits": {
           "name": "daily_visits",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": 0
         },
         "date": {

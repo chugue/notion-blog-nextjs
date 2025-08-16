@@ -44,24 +44,6 @@ async function isDomainSafe(hostname: string): Promise<boolean> {
   return true;
 }
 
-async function validateImageResponse(response: Response): Promise<boolean> {
-  const contentType = response.headers.get('content-type');
-  const contentLength = response.headers.get('content-length');
-
-  // 이미지 타입 검증
-  if (!contentType?.startsWith('image/')) {
-    return false;
-  }
-
-  // 크기 제한 (5MB)
-  const maxSize = 5 * 1024 * 1024;
-  if (contentLength && parseInt(contentLength) > maxSize) {
-    return false;
-  }
-
-  return true;
-}
-
 export async function GET(request: NextRequest): Promise<NextResponse<Result<ArrayBuffer>>> {
   const { searchParams } = new URL(request.url);
   const imageUrl = searchParams.get('url');
@@ -82,24 +64,15 @@ export async function GET(request: NextRequest): Promise<NextResponse<Result<Arr
 
     // 이미지 fetch (개발 환경에서는 더 관대한 설정)
     const response = await fetch(imageUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; BookmarkBot/1.0)',
-      },
       signal: AbortSignal.timeout(isDevelopment ? 30000 : 10000), // 개발: 30초, 프로덕션: 10초
       cache: 'force-cache',
       next: {
-        tags: ['image-proxy', `image-${imageUrl}`],
+        tags: ['image-proxy'],
       },
     });
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
-    }
-
-    // 👈 응답 검증
-    const isValid = await validateImageResponse(response);
-    if (!isValid) {
-      return new NextResponse('Invalid image response', { status: 400 });
     }
 
     const imageBuffer = await response.arrayBuffer();

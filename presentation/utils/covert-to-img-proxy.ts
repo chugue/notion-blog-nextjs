@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const convertToImageProxy = (rawSrc: string) => {
   try {
     const u = new URL(rawSrc);

@@ -6,7 +6,7 @@ import {
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
 import { allPostMetadatasDataCache, getCachedPostById } from '../data-cache/post.data-cache';
 
 export const createPostUseCaseAdapter = (
@@ -22,6 +22,32 @@ export const createPostUseCaseAdapter = (
     },
 
     getPostsWithParams: async (params: GetPublishedPostParams): Promise<PostMetadataResp> => {
+      const { tag, sort } = params;
+
+      if (tag === '전체' && sort === 'latest') {
+        const cachedFn = unstable_cache(
+          async () => {
+            return await postRepositoryPort.getPostsWithParams(params);
+          },
+          ['mainPageDefault'],
+          {
+            tags: ['mainPageDefault'],
+          }
+        );
+
+        const result = await cachedFn();
+
+        if (!result.success) {
+          return {
+            posts: [],
+            hasMore: false,
+            nextCursor: '',
+          };
+        }
+
+        return result.data;
+      }
+
       const result = await postRepositoryPort.getPostsWithParams(params);
 
       if (!result.success) {
