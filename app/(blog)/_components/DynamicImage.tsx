@@ -1,5 +1,6 @@
 'use client';
 
+import { convertToImageProxy } from '@/presentation/utils/covert-to-img-proxy';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
@@ -9,6 +10,7 @@ const DynamicImage = ({ src, alt, width, height }: React.ImgHTMLAttributes<HTMLI
   const isAnimated = typeof src === 'string' && src.includes('.gif');
   const imageWidth = width ? Number(width) : 800;
   const imageHeight = height ? Number(height) : 400;
+  const proxiedSrc = typeof src === 'string' ? convertToImageProxy(rawSrc) : rawSrc;
 
   return (
     <span className="relative block">
@@ -18,7 +20,7 @@ const DynamicImage = ({ src, alt, width, height }: React.ImgHTMLAttributes<HTMLI
         </span>
       )}
       <Image
-        src={rawSrc}
+        src={proxiedSrc}
         alt={alt || ''}
         width={imageWidth}
         height={imageHeight}
