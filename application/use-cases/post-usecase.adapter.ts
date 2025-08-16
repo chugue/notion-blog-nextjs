@@ -62,7 +62,7 @@ export const createPostUseCaseAdapter = (
     },
 
     getPostById: async (id: string): Promise<Post | null> => {
-      const result = await getCachedPostById(postRepositoryPort, id)();
+      const result = await postRepositoryPort.getPostById(id);
 
       if (!result.success) return null;
 
