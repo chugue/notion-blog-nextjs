@@ -44,6 +44,24 @@ async function isDomainSafe(hostname: string): Promise<boolean> {
   return true;
 }
 
+async function validateImageResponse(response: Response): Promise<boolean> {
+  const contentType = response.headers.get('content-type');
+  const contentLength = response.headers.get('content-length');
+
+  // 이미지 타입 검증
+  if (!contentType?.startsWith('image/')) {
+    return false;
+  }
+
+  // 크기 제한 (5MB)
+  const maxSize = 5 * 1024 * 1024;
+  if (contentLength && parseInt(contentLength) > maxSize) {
+    return false;
+  }
+
+  return true;
+}
+
 export async function GET(request: NextRequest): Promise<NextResponse<Result<ArrayBuffer>>> {
   const { searchParams } = new URL(request.url);
   const imageUrl = searchParams.get('url');
@@ -54,13 +72,17 @@ export async function GET(request: NextRequest): Promise<NextResponse<Result<Arr
 
   try {
     const urlObj = new URL(decodeURIComponent(imageUrl));
+
+    // 환경별 도메인 안전성 검증
     const isSafe = await isDomainSafe(urlObj.hostname);
 
     if (!isSafe) {
       return new NextResponse('Domain not allowed', { status: 403 });
     }
 
+    // 이미지 fetch (개발 환경에서는 더 관대한 설정)
     const response = await fetch(imageUrl, {
+      signal: AbortSignal.timeout(isDevelopment ? 30000 : 10000), // 개발: 30초, 프로덕션: 10초
       cache: 'force-cache',
       next: {
         tags: ['image-proxy'],

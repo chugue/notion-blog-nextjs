@@ -31,7 +31,7 @@ const CodeBlock = ({ className = '', children, ...props }: CodeBlockProps) => {
   };
 
   return (
-    <div className="group relative my-6">
+    <div className="group relative mt-2">
       {/* 복사 버튼 */}
       <button
         type="button"

@@ -27,7 +27,7 @@ export function MDXContent({ source, mdBlocks }: MDXContentProps) {
     pre: CodeBlock,
     h1: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
       <h1
-        className="group before-header-tag relative mt-20 scroll-m-20 py-0 text-[2.7rem] font-bold before:-left-15"
+        className="group before-header-tag relative mt-25 scroll-m-20 py-0 text-[2.7rem] font-bold before:-left-15"
         {...props}
       >
         {children}
@@ -65,10 +65,7 @@ export function MDXContent({ source, mdBlocks }: MDXContentProps) {
       );
     },
     blockquote: ({ children, ...props }: React.HTMLAttributes<HTMLQuoteElement>) => (
-      <blockquote
-        className="border-primary bg-muted-foreground/10 mt-10 rounded-sm border-l-4 px-8 py-4 [&>*]:my-0"
-        {...props}
-      >
+      <blockquote className="border-primary mt-15 border-l-4 px-8 [&>*]:my-0" {...props}>
         {children}
       </blockquote>
     ),

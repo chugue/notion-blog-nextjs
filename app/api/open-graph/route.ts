@@ -14,6 +14,16 @@ export const GET = async (request: NextRequest): Promise<NextResponse<Result<OgO
     );
   }
 
+  const isImageUrl =
+    /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url) || url.includes('notion.so/image/');
+
+  if (isImageUrl) {
+    return NextResponse.json(
+      { success: true, data: { message: '이미지 URL입니다.' } as OgObject },
+      { status: 200 }
+    );
+  }
+
   try {
     const { result } = await ogs({
       url,
