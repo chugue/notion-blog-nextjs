@@ -42,7 +42,7 @@ const BookmarkCard = ({ href }: { href: string }) => {
       <span className="flex min-w-0 flex-1 flex-col justify-center p-4">
         <span className="mb-2 line-clamp-1 text-lg font-semibold">{ogData.ogTitle || href}</span>
         {ogData.ogDescription && (
-          <span className="mb-2 line-clamp-1 text-sm text-gray-600 sm:line-clamp-2">
+          <span className="mb-2 line-clamp-1 text-sm text-gray-600 sm:line-clamp-1">
             {ogData.ogDescription}
           </span>
         )}

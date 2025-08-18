@@ -1,3 +1,5 @@
+import { MdBlock } from 'notion-to-md/build/types';
+
 export interface TagFilterItem {
   id: string;
   name: string;
@@ -21,6 +23,7 @@ export interface TocEntry {
 }
 
 export interface Post {
+  readonly mdBlocks: MdBlock[];
   readonly markdown: string;
   readonly post: PostMetadata | null;
 }

@@ -108,6 +108,7 @@ export const getPostByIdQuery = async (id: string): Promise<Result<Post>> => {
     return {
       success: true,
       data: {
+        mdBlocks,
         markdown: parent,
         post: postMetadata,
       },

@@ -53,18 +53,14 @@ export async function GET(request: NextRequest): Promise<NextResponse<Result<Arr
   }
 
   try {
-    const urlObj = new URL(imageUrl);
-
-    // 환경별 도메인 안전성 검증
+    const urlObj = new URL(decodeURIComponent(imageUrl));
     const isSafe = await isDomainSafe(urlObj.hostname);
 
     if (!isSafe) {
       return new NextResponse('Domain not allowed', { status: 403 });
     }
 
-    // 이미지 fetch (개발 환경에서는 더 관대한 설정)
     const response = await fetch(imageUrl, {
-      signal: AbortSignal.timeout(isDevelopment ? 30000 : 10000), // 개발: 30초, 프로덕션: 10초
       cache: 'force-cache',
       next: {
         tags: ['image-proxy'],

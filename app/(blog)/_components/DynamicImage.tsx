@@ -1,36 +1,37 @@
 'use client';
 
-import { convertToImageProxy } from '@/presentation/utils/covert-to-img-proxy';
-import { is } from 'drizzle-orm';
+import { convertS3UrlToNotionUrl } from '@/domain/utils/post.utils';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React from 'react';
 
-const DynamicImage = ({ src, alt, width, height }: React.ImgHTMLAttributes<HTMLImageElement>) => {
-  const [isLoading, setIsLoading] = useState(true);
+const DynamicImage = ({
+  src,
+  alt,
+  width,
+  height,
+  pageId,
+}: React.ImgHTMLAttributes<HTMLImageElement> & { pageId: string }) => {
   const rawSrc = typeof src === 'string' ? src : '/images/no-image-dark.png';
-  const isAnimated = typeof src === 'string' && src.includes('.gif');
+  const isGIf = typeof src === 'string' && src.includes('.gif');
   const imageWidth = width ? Number(width) : 800;
   const imageHeight = height ? Number(height) : 400;
-  const proxiedSrc = isAnimated ? convertToImageProxy(rawSrc) : rawSrc;
+  const proxiedSrc = isGIf
+    ? `/api/image-proxy?url=${encodeURIComponent(rawSrc)}`
+    : convertS3UrlToNotionUrl(rawSrc, pageId);
 
   return (
-    <span className="relative block">
-      {isLoading && (
-        <span className="absolute inset-0 z-10 block">
-          <span className="block h-full w-full animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800" />
-        </span>
-      )}
-      <Image
-        src={proxiedSrc}
-        alt={alt || ''}
-        width={imageWidth}
-        height={imageHeight}
-        className={`mt-8 mb-8 w-full rounded-lg shadow-sm transition-shadow hover:shadow-md ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-        unoptimized={isAnimated}
-        loading="eager"
-        onLoad={() => setIsLoading(false)}
-      />
-    </span>
+    <Image
+      src={proxiedSrc ?? ''}
+      alt={alt || ''}
+      width={imageWidth}
+      height={imageHeight}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+      className={`'opacity-0 mt-8 mb-8 w-full rounded-lg opacity-100 shadow-sm transition-shadow hover:shadow-md`}
+      unoptimized={isGIf}
+      loading="eager"
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+    />
   );
 };
 

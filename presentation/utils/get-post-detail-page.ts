@@ -8,6 +8,7 @@ const getPostDetailPage = async (id: string) => {
   if (!result || !result.post) notFound();
 
   return {
+    mdBlocks: result.mdBlocks,
     post: result.post,
     markdown: result.markdown,
   };

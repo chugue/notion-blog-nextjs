@@ -1,37 +1,45 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { PostMetadata, Post } from '../entities/post.entity';
+import { PostMetadata } from '../entities/post.entity';
 import { NotionUser, NotionPost } from '../entities/notion.entity';
 
-const toStableNotionS3Src = (src: string): string => {
+export const convertS3UrlToNotionUrl = (s3Url: string, pageId: string): string | null => {
   try {
-    const u = new URL(src);
-    const isNotionSignedS3 =
-      u.hostname === 'prod-files-secure.s3.us-west-2.amazonaws.com' ||
-      u.hostname.endsWith('.amazonaws.com');
-    if (isNotionSignedS3) {
-      u.search = '';
-      return u.toString();
-    }
-    return src;
-  } catch {
-    return src;
+    // 1. S3 URL 파싱하여 경로 정보 추출
+    const url = new URL(s3Url);
+    const pathParts = url.pathname.split('/').filter((part) => part);
+
+    const [spaceId, fileId, ...fileNameParts] = pathParts;
+    const filename = fileNameParts.join('/');
+
+    // 2. 영구 URL의 인코딩된 경로 생성
+    const rawPath = `attachment:${fileId}:${filename}`;
+    const encodedPath = encodeURIComponent(rawPath);
+
+    // 3. 쿼리 파라미터 생성
+    const params = new URLSearchParams({
+      table: 'block',
+      id: pageId,
+      spaceId,
+    });
+
+    // 4. 모든 요소를 조합하여 최종 URL 반환
+    return `https://www.notion.so/image/${encodedPath}?${params.toString()}`;
+  } catch (error) {
+    console.error('Error parsing the S3 URL:', error);
+    return null;
   }
-};
-
-export const buildNotionImageUrl = (src: string, pageId: string) => {
-  const stableSrc = toStableNotionS3Src(src);
-
-  return `https://www.notion.so/image/${encodeURIComponent(stableSrc)}?table=block&id=${pageId}&cache=v2`;
 };
 
 const getCoverImage = (cover: PageObjectResponse['cover'], pageId: string) => {
   if (!cover) return '';
 
   switch (cover.type) {
-    case 'external':
-      return buildNotionImageUrl(cover.external.url, pageId);
-    case 'file':
-      return buildNotionImageUrl(cover.file.url, pageId);
+    case 'external': {
+      return convertS3UrlToNotionUrl(cover.external.url, pageId);
+    }
+    case 'file': {
+      return convertS3UrlToNotionUrl(cover.file.url, pageId);
+    }
     default:
       return '';
   }
@@ -43,7 +51,7 @@ export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
   return {
     id: page.id,
     title: properties.title.type === 'title' ? (properties.title.title[0]?.plain_text ?? '') : '',
-    coverImage: getCoverImage(page.cover, page.id),
+    coverImage: getCoverImage(page.cover, page.id) ?? undefined,
     tag:
       properties.tag.type === 'multi_select'
         ? properties.tag.multi_select.map((tag) => tag.name)
