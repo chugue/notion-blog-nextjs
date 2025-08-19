@@ -15,9 +15,10 @@ const DynamicImage = ({
   const isGIf = typeof src === 'string' && src.includes('.gif');
   const imageWidth = width ? Number(width) : 800;
   const imageHeight = height ? Number(height) : 400;
+  const convertedSrc = convertS3UrlToNotionUrl(rawSrc, pageId) ?? '';
   const proxiedSrc = isGIf
-    ? `/api/image-proxy?url=${encodeURIComponent(rawSrc)}`
-    : convertS3UrlToNotionUrl(rawSrc, pageId);
+    ? `/api/image-proxy?url=${encodeURIComponent(convertedSrc)}`
+    : convertedSrc;
 
   return (
     <Image
