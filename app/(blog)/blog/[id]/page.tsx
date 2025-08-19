@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Separator } from '@/shared/components/ui/separator';
 import { CalendarDays, User, ChevronDown } from 'lucide-react';
 import { formatDate } from '@/shared/utils/format-date';
