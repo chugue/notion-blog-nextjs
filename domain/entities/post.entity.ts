@@ -1,4 +1,4 @@
-import { MdBlock } from 'notion-to-md/build/types';
+import * as notionType from 'notion-types';
 
 export interface TagFilterItem {
   id: string;
@@ -23,9 +23,8 @@ export interface TocEntry {
 }
 
 export interface Post {
-  readonly mdBlocks: MdBlock[];
-  readonly markdown: string;
-  readonly post: PostMetadata | null;
+  readonly recordMap: notionType.ExtendedRecordMap;
+  readonly properties: PostMetadata | null;
 }
 
 export interface PostMetadataResp {

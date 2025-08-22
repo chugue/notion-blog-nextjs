@@ -4,6 +4,7 @@ import { getPostByIdQuery, getPublishedPostsQuery, postQuery } from '../queries/
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
 import {
   GetPublishedPostParams,
+  Post,
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
@@ -93,7 +94,7 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
       }
     },
 
-    getPostById: async (id: string) => {
+    getPostById: async (id: string): Promise<Result<Post>> => {
       const result = await getPostByIdQuery(id);
 
       return result;

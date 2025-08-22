@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-notion-x-code-block/dist/index.js b/node_modules/react-notion-x-code-block/dist/index.js
+index a53a35d..d8037ec 100644
+--- a/node_modules/react-notion-x-code-block/dist/index.js
++++ b/node_modules/react-notion-x-code-block/dist/index.js
+@@ -5454,7 +5454,7 @@ function splitLines(code, preserveEnding = false) {
+  * Hard-coded plain text languages: `plaintext`, `txt`, `text`, `plain`.
+  */
+ function isPlainLang(lang) {
+-    return !lang || ['plaintext', 'txt', 'text', 'plain'].includes(lang);
++    return !lang || ['plaintext', 'txt', 'text', 'plain', 'plain_text', 'plain text'].includes(lang);
+ }
+ /**
+  * Check if the language is specially handled or bypassed by Shiki.

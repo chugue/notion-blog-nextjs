@@ -54,7 +54,6 @@ export async function GET(request: NextRequest): Promise<NextResponse<Result<Arr
 
   try {
     const urlObj = new URL(decodeURIComponent(imageUrl));
-    console.log('👉👉👉👉👉urlObj', urlObj);
     const isSafe = await isDomainSafe(urlObj.hostname);
 
     if (!isSafe) {

@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* notion-x 전용 */
+@import 'react-notion-x/src/styles.css';
+@import 'prismjs/themes/prism-tomorrow.css';
+@import 'katex/dist/katex.min.css';
+
 @theme {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -116,9 +121,10 @@
 }
 
 .dark {
+  /* --background: #5c6887; */
   --background: #030712;
   --foreground: oklch(0.985 0 0);
-  --card: #1c1f29;
+  --card: #1c212a;
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
@@ -156,80 +162,6 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-family-maplestory);
-  }
-
-  /* 타이포그래피 전역 클래스 */
-  .title {
-    font-size: var(--font-size-title);
-    line-height: var(--line-height-title);
-    font-weight: 700;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .sub-title {
-    font-size: var(--font-size-sub-title);
-    line-height: var(--line-height-sub-title);
-    font-weight: 600;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .h1 {
-    font-size: var(--font-size-h1);
-    line-height: var(--line-height-h1);
-    font-weight: 600;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .h2 {
-    font-size: var(--font-size-h2);
-    line-height: var(--line-height-h2);
-    font-weight: 600;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .h3 {
-    font-size: var(--font-size-h3);
-    line-height: var(--line-height-h3);
-    font-weight: 500;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .heading {
-    font-size: var(--font-size-heading);
-    line-height: var(--line-height-heading);
-    font-weight: 500;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .subheading {
-    font-size: var(--font-size-subheading);
-    line-height: var(--line-height-subheading);
-    font-weight: 400;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .body {
-    font-size: var(--font-size-body);
-    line-height: var(--line-height-body);
-    font-weight: 400;
-    font-family: var(--font-family-maplestory);
-  }
-
-  .quote {
-    font-size: var(--font-size-quote);
-    line-height: var(--line-height-quote);
-    font-weight: 400;
-    font-style: italic;
-    font-family: var(--font-family-maplestory);
-    @apply text-muted-foreground;
-  }
-
-  .caption {
-    font-size: var(--font-size-caption);
-    line-height: var(--line-height-caption);
-    font-weight: 400;
-    font-family: var(--font-family-maplestory);
-    @apply text-muted-foreground;
   }
 }
 
@@ -283,43 +215,6 @@
   backface-visibility: hidden;
 }
 
-/* rehype-pretty-code 다중 테마 CSS */
-code[data-theme],
-code[data-theme] span {
-  color: var(--shiki-light) !important;
-  background-color: var(--shiki-light-bg) !important;
-}
-
-code:not([data-theme]) {
-  font-family: var(--font-family-maplestory);
-  font-weight: inherit;
-}
-
-/* 클래스 기반 다크모드 (next-themes 사용) */
-.dark code[data-theme],
-.dark code[data-theme] span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}
-
-/* pre 태그도 동일하게 적용 */
-pre[data-theme] {
-  background-color: var(--shiki-light-bg) !important;
-}
-
-.dark pre[data-theme] {
-  background-color: var(--shiki-dark-bg) !important;
-}
-
-/* 모든 코드 블록과 인라인 코드 굵게 */
-
-pre *,
-code *,
-.shiki * {
-  font-weight: inherit !important;
-  font-size: 1rem !important;
-}
-
 /* 스켈레톤 애니메이션 */
 @keyframes shimmer {
   0% {
@@ -346,4 +241,130 @@ code *,
 
 .animate-pulse-subtle {
   animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* notion-x 설정  */
+.notion-header-anchor,
+.notion-table-of-contents,
+.notion-hash-link {
+  display: none;
+}
+.notion-h1 {
+  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-[2.7rem] font-bold before:absolute before:-left-12 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+  font-family: var(--font-family-maplestory);
+}
+.notion-h3 {
+  @apply before:text-primary scroll-m-20 text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+  font-family: var(--font-family-maplestory);
+}
+.notion-text {
+  @apply leading-[2] font-extralight text-neutral-300 sm:text-xl;
+  font-family: var(--font-family-maplestory);
+}
+.notion-quote {
+  @apply border-primary border-l-4 px-8 text-neutral-400 [&>*]:my-0;
+  font-family: var(--font-family-maplestory);
+}
+.notion-inline-code {
+  @apply bg-primary/10 text-primary rounded px-[0.3rem] py-[0.3rem] font-semibold;
+  letter-spacing: 0.08rem;
+}
+
+figure {
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+figure:has(pre.shiki) {
+  @apply overflow-hidden rounded-lg;
+}
+
+pre.shiki {
+  @apply overflow-x-auto text-[1rem];
+  margin: 0 !important;
+  padding: 3rem 3rem 3rem 2rem !important;
+  overflow-wrap: normal !important;
+  scrollbar-color: var(--muted-foreground) transparent;
+  scrollbar-width: thin;
+}
+
+pre.shiki::-webkit-scrollbar {
+  @apply rounded-full bg-transparent; /* 스크롤바 색상 및 둥근 모서리 */
+}
+
+figure [class^='code_module_codeCopyButton'] {
+  @apply bg-muted/30 hover:text-primary top-4 right-4 flex items-center justify-end rounded-md transition-all;
+}
+
+figure [class^='code_module_codeLanLabel'] {
+  @apply bg-muted/30 top-4 left-2 items-center justify-start rounded-md transition-all;
+}
+
+.notion-bookmark {
+  @apply rounded-md;
+  font-family: var(--font-family-maplestory);
+}
+
+.notion-bookmark-title {
+  @apply font-bold;
+}
+
+.notion-bookmark-link-text {
+  @apply text-blue-700;
+}
+
+.notion-page-icon-span > .notion-page-icon {
+  @apply relative top-2;
+}
+
+.notion-callout-text {
+  @apply text-lg;
+  font-family: var(--font-family-maplestory);
+}
+
+.notion-list > ol,
+.notion-list > ul {
+  @apply my-0 px-0;
+}
+
+.notion-simple-table {
+  @apply table w-full border-none;
+}
+
+.notion-text-children {
+  @apply pl-4;
+}
+
+.notion-asset-wrapper-image img {
+  @apply rounded-lg;
+}
+
+.notion-asset-caption {
+  @apply text-muted-foreground/80 text-base;
+  font-family: var(--font-family-maplestory);
+}
+
+.notion-external {
+  @apply items-center rounded-md border-gray-400 p-5 text-base;
+}
+
+.notion-external svg path {
+  fill: var(--color-muted-foreground);
+}
+
+.notion-external-image {
+  @apply flex justify-center;
+}
+
+.notion-external-image svg {
+  @apply mx-auto; /* 수평 중앙 정렬 */
+}
+
+.notion-external-title {
+  @apply text-base font-bold;
+}
+
+.notion-external-block-desc {
+  @apply text-muted-foreground/80 text-sm;
 }
