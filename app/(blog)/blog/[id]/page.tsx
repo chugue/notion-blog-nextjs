@@ -125,7 +125,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
             <div className="relative my-8 aspect-video w-full">
               <Image
-                src={properties.coverImage || '/public/images/no-image-dark.png'}
+                src={properties.coverImage || '/images/no-image-dark.png'}
                 alt={properties.title}
                 fill
                 className="rounded-lg object-cover"
