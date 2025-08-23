@@ -262,7 +262,7 @@
   font-family: var(--font-family-maplestory);
 }
 .notion-quote {
-  @apply border-primary border-l-4 px-8 text-neutral-400 [&>*]:my-0;
+  @apply border-primary border-l-4 px-8 text-neutral-400 [&>*]:my-0 mt-8;
   font-family: var(--font-family-maplestory);
 }
 .notion-inline-code {
@@ -297,6 +297,10 @@ figure [class^='code_module_codeCopyButton'] {
   @apply bg-muted/30 hover:text-primary top-4 right-4 flex items-center justify-end rounded-md transition-all;
 }
 
+figure [class^='code_module_codeCopyButton'] svg {
+  @apply hidden;
+}
+
 figure [class^='code_module_codeLanLabel'] {
   @apply bg-muted/30 top-4 left-2 items-center justify-start rounded-md transition-all;
 }
@@ -323,10 +327,6 @@ figure [class^='code_module_codeLanLabel'] {
   font-family: var(--font-family-maplestory);
 }
 
-.notion-list > ol,
-.notion-list > ul {
-  @apply my-0 px-0;
-}
 
 .notion-simple-table {
   @apply table w-full border-none;
@@ -336,8 +336,13 @@ figure [class^='code_module_codeLanLabel'] {
   @apply pl-4;
 }
 
-.notion-asset-wrapper-image img {
-  @apply rounded-lg;
+
+.notion-asset-wrapper-image > div {
+  @apply !h-auto !max-h-none;
+}
+
+.notion-asset-wrapper img {
+  @apply rounded-lg w-full h-auto object-contain;
 }
 
 .notion-asset-caption {
@@ -367,4 +372,34 @@ figure [class^='code_module_codeLanLabel'] {
 
 .notion-external-block-desc {
   @apply text-muted-foreground/80 text-sm;
+}
+
+
+/* 리스트 스타일 추가 */
+.notion-list > ol,
+.notion-list > ul {
+  @apply my-0 px-0 text-xl;
+}
+
+.notion-list > li {
+  @apply text-xl;
+}
+
+.notion-list-numbered > li{
+  @apply list-decimal text-xl;
+  font-family: var(--font-family-maplestory);
+}
+
+
+ol .notion-text {
+  @apply text-gray-400 text-xl;
+}
+
+ol ul li {
+  @apply text-gray-400 ml-6 text-xl;
+  font-family: var(--font-family-maplestory);
+}
+
+.notion-text-children > ul > ul {
+  @apply ml-8 text-gray-400 ;
 }

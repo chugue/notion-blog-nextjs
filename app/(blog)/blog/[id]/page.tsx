@@ -2,7 +2,6 @@ import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Separator } from '@/shared/components/ui/separator';
-import { diContainer } from '@/shared/di/di-container';
 import { formatDate } from '@/shared/utils/format-date';
 import { CalendarDays, ChevronDown, User } from 'lucide-react';
 import Image from 'next/image';
@@ -10,15 +9,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ColoredBadge from '../../_components/ColoredBadge';
 import NotionPageContent from '../../_components/NotionPageContent';
-
-export async function generateStaticParams() {
-  const postUseCase = diContainer.post.postUseCase;
-  const result = await postUseCase.getPostsWithParams({ pageSize: 12 });
-
-  return result.posts.map((post) => ({
-    id: post.id,
-  }));
-}
+import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -47,7 +38,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     alternates: {
       canonical: `/blog/${post.id}`,
     },
-    // robots 태그 추가
     robots: {
       index: true,
       follow: true,
@@ -63,7 +53,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       publishedTime: post.date,
       authors: post.author || '김성훈',
       tags: post.tag,
-      // 이미지 정보를 객체로 제공
       images: [
         {
           url: post.coverImage || '/images/no-image-dark.png',
@@ -164,7 +153,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
         </section>
 
         {/* 목차 */}
-        {/* <TableOfContentsWrapper toc={data?.toc || []} /> */}
+        <TableOfContentsWrapper />
       </div>
     </div>
   );

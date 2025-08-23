@@ -1,9 +1,8 @@
-import { tagMatchColor } from '@/presentation/utils/match-colors';
+import { toTagInfo } from '@/presentation/utils/to-tag-Info';
 import { Badge } from '@/shared/components/ui/badge';
-import React from 'react';
 
 const CustomBadge = ({ tag }: { tag: string }) => {
-  const color = tagMatchColor(tag);
+  const tagInfo = toTagInfo(tag);
 
   return (
     <Badge
@@ -11,8 +10,8 @@ const CustomBadge = ({ tag }: { tag: string }) => {
       variant="secondary"
       className={`font-medium transition-colors`}
       style={{
-        backgroundColor: `color-mix(in srgb, ${color} 10%, transparent)`,
-        color: color,
+        backgroundColor: `color-mix(in srgb, ${tagInfo.color} 10%, transparent)`,
+        color: tagInfo.color,
       }}
     >
       {tag}

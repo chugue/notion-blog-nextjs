@@ -1,6 +1,6 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { NotionPost, NotionUser } from '../entities/notion.entity';
 import { PostMetadata } from '../entities/post.entity';
-import { NotionUser, NotionPost } from '../entities/notion.entity';
 
 export const convertS3UrlToNotionUrl = (s3Url: string, pageId: string): string | null => {
   try {

@@ -6,27 +6,30 @@ export function useActiveHeading(): string {
   const [activeHeading, setActiveHeading] = useState<string>('');
 
   useEffect(() => {
-    const contentArea = document.querySelector('.prose');
+    const contentArea = document.querySelector('.notion-page');
     if (!contentArea) return;
 
-    const headings = contentArea.querySelectorAll('h1, h2, h3');
+    const headings = contentArea.querySelectorAll('.notion-h1, .notion-h2, .notion-h3');
 
     if (headings.length === 0) return;
 
     const updateActiveHeading = () => {
       const scrollY = window.scrollY;
-      const offset = window.innerHeight * 0.5;
+      const offset = window.innerHeight * 0.6;
 
       let currentHeading = '';
 
       headings.forEach((heading) => {
-        if (!heading.id) return;
+        if (!heading.getAttribute('data-id')) return;
 
         const rect = heading.getBoundingClientRect();
         const elementTop = rect.top + scrollY;
 
         if (elementTop <= scrollY + offset) {
-          currentHeading = heading.id;
+          currentHeading =
+            heading.getAttribute('data-id') ||
+            heading.querySelector('.notion-header-anchor')?.getAttribute('id') ||
+            '';
         }
       });
 

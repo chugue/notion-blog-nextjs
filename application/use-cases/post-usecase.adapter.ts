@@ -1,13 +1,12 @@
-import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
-import { PostRepositoryPort } from '../port/post-repository.port';
 import {
   GetPublishedPostParams,
   Post,
   PostMetadata,
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
-import { revalidateTag, unstable_cache } from 'next/cache';
-import { allPostMetadatasDataCache, getCachedPostById } from '../data-cache/post.data-cache';
+import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
+import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
+import { PostRepositoryPort } from '../port/post-repository.port';
 
 export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
