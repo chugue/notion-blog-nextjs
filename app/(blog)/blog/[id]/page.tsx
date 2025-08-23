@@ -2,6 +2,7 @@ import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Separator } from '@/shared/components/ui/separator';
+import { diContainer } from '@/shared/di/di-container';
 import { formatDate } from '@/shared/utils/format-date';
 import { CalendarDays, ChevronDown, User } from 'lucide-react';
 import Image from 'next/image';
@@ -10,6 +11,15 @@ import { Suspense } from 'react';
 import ColoredBadge from '../../_components/ColoredBadge';
 import NotionPageContent from '../../_components/NotionPageContent';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
+
+export async function generateStaticParams() {
+  const postUseCase = diContainer.post.postUseCase;
+  const result = await postUseCase.getPostsWithParams({ pageSize: 12 });
+
+  return result.posts.map((post) => ({
+    id: post.id,
+  }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
