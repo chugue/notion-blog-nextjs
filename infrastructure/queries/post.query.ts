@@ -1,9 +1,7 @@
-import { MdBlock } from 'notion-to-md/build/types';
-import { n2m, notion, notionAPI } from '../database/external-api/notion-client';
+import {  notion, notionAPI } from '../database/external-api/notion-client';
 import * as notionType from 'notion-types';
 import {
   BlockObjectResponse,
-  ListBlockChildrenResponse,
   PageObjectResponse,
   QueryDatabaseResponse,
 } from '@notionhq/client/build/src/api-endpoints';
@@ -130,17 +128,12 @@ export const getPublishedPostsQuery = async ({
 
 export const getPostByIdQuery = async (id: string): Promise<Result<Post>> => {
   try {
-    // const [properties, recordMap] = await Promise.all([
-    //   notion.pages.retrieve({
-    //     page_id: id,
-    //   }),
-    //   notionAPI.getPage(id),
-    // ]);
-
-    const recordMap = await notionAPI.getPage(id);
-    const properties = await notion.pages.retrieve({
-      page_id: id,
-    });
+    const [recordMap, properties] = await Promise.all([
+      notionAPI.getPage(id),
+      notion.pages.retrieve({
+        page_id: id,
+      }),
+    ]);
 
     if (!properties || !recordMap) {
       return {
@@ -148,10 +141,6 @@ export const getPostByIdQuery = async (id: string): Promise<Result<Post>> => {
         error: new Error('Post not found'),
       };
     }
-
-    // console.log('👉👉👉👉👉recordMap.signed_urls', recordMap.signed_urls);
-    // console.log('👉👉👉👉👉properties', properties);
-
     const postMetadata = getPostMetadata(properties as PageObjectResponse);
 
     return {
