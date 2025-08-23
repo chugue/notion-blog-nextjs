@@ -1,14 +1,14 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import Link from 'next/link';
-import React, { use } from 'react';
-import { cn } from '@/shared/utils/tailwind-cn';
-import SearchButton from '../search/SearchButton';
 import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
-import { getTagIcon } from '@/domain/utils/tag-info.utils';
+import { toTagInfo } from '@/presentation/utils/to-tag-Info';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { cn } from '@/shared/utils/tailwind-cn';
 import Image from 'next/image';
+import Link from 'next/link';
+import { use } from 'react';
+import SearchButton from '../search/SearchButton';
 
 export interface TagSectionProps {
   tags: Promise<TagFilterItem[]>;
@@ -19,9 +19,6 @@ const TagSection = ({ tags }: TagSectionProps) => {
   const allTags = use(tags);
 
   const { selectedTag, isChanging, ...store } = useSelectedTagStore();
-
-  // 현재 선택된 태그
-  // const currentSelectedTag = selectedTag || '전체';
 
   const handleTagClick = (tagName: string) => {
     store.setSelectedTag(tagName);
@@ -37,6 +34,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
         <SearchButton />
         <div className="mt-3 flex flex-col gap-3 max-md:overflow-y-auto max-md:overscroll-contain">
           {allTags.map((tag) => {
+            const tagInfo = toTagInfo(tag.name);
             const isSelected = selectedTag === tag.name || (!selectedTag && tag.name === '전체');
             return (
               <Link
@@ -55,7 +53,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
                 >
                   <span className="flex items-center gap-2">
                     <Image
-                      src={getTagIcon(tag.name)}
+                      src={tagInfo.icon}
                       alt={tag.name}
                       width={16}
                       height={16}

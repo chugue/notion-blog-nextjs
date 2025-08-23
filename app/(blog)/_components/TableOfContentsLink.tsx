@@ -24,7 +24,7 @@ export function TableOfContentsLink({ item, activeHeading }: TableOfContentsLink
         {item.value}
       </Link>
       {item.children && item.children.length > 0 && (
-        <div className="space-y-2 pl-4">
+        <div className="space-y-2 pl-2">
           {item.children.map((subItem) => (
             <TableOfContentsLink key={subItem.id} item={subItem} activeHeading={activeHeading} />
           ))}
