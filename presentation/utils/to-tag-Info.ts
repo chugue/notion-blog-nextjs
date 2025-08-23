@@ -182,7 +182,7 @@ export const toTagInfo = (tag: string): TagInfo => {
       return {
         name: tag,
         icon: `/icons/${tag}.svg`,
-        color: '#484647',
+        color: '#bfbfbf',
         tagName: 'NextJS',
       };
 
