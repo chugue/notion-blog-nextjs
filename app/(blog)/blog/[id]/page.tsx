@@ -2,6 +2,7 @@ import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Separator } from '@/shared/components/ui/separator';
+import { diContainer } from '@/shared/di/di-container';
 import { formatDate } from '@/shared/utils/format-date';
 import { CalendarDays, ChevronDown, User } from 'lucide-react';
 import Image from 'next/image';
@@ -9,6 +10,15 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ColoredBadge from '../../_components/ColoredBadge';
 import NotionPageContent from '../../_components/NotionPageContent';
+
+export async function generateStaticParams() {
+  const postUseCase = diContainer.post.postUseCase;
+  const result = await postUseCase.getPostsWithParams({ pageSize: 12 });
+
+  return result.posts.map((post) => ({
+    id: post.id,
+  }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -83,35 +93,8 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
   if (!properties) notFound();
 
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: properties.title,
-    description: `${properties.title} - Stephen's 기술블로그`,
-    image: properties.coverImage || '/images/no-image-dark.png',
-    author: {
-      '@type': 'Person',
-      name: properties.author || '김성훈',
-      url: 'https://github.com/chugue',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: "Stephen's 기술블로그",
-      logo: {
-        '@type': 'ImageObject',
-        url: '/images/main-thumbnail.png', // 블로그 로고 이미지
-      },
-    },
-    datePublished: properties.date,
-    dateModified: properties.date, // 수정 날짜가 있다면 해당 필드를 사용
-  };
-
   return (
     <div className="container mx-auto py-6 sm:py-12">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
         <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
         <section className="min-w-0 px-4">

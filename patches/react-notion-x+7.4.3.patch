@@ -1,0 +1,59 @@
+diff --git a/node_modules/react-notion-x/build/index.js b/node_modules/react-notion-x/build/index.js
+index 4403ab4..772ea54 100644
+--- a/node_modules/react-notion-x/build/index.js
++++ b/node_modules/react-notion-x/build/index.js
+@@ -784,9 +784,12 @@ function Asset({
+       }
+     }
+   } else if (block.type === "image") {
+-    if (source.includes("file.notion.so")) {
+-      source = (_k = (_j = (_i = block.properties) == null ? void 0 : _i.source) == null ? void 0 : _j[0]) == null ? void 0 : _k[0];
++    if (!source.includes(".gif")) {
++      if (source.includes("file.notion.so")) {
++        source = (_k = (_j = (_i = block.properties) == null ? void 0 : _i.source) == null ? void 0 : _j[0]) == null ? void 0 : _k[0];
++      }
+     }
++
+     const src = mapImageUrl(source, block);
+     const caption = getTextContent((_l = block.properties) == null ? void 0 : _l.caption);
+     const alt = caption || "notion image";
+@@ -1668,7 +1671,9 @@ var useNotionContext = () => {
+ };
+ 
+ // src/icons/search-icon.tsx
++import { getBlockParentPage, getBlockTitle as getBlockTitle3 } from "notion-utils";
+ import "react";
++import React14 from "react";
+ import { jsx as jsx18 } from "react/jsx-runtime";
+ function SearchIcon(props) {
+   const { className, ...rest } = props;
+@@ -1677,8 +1682,6 @@ function SearchIcon(props) {
+ 
+ // src/components/search-dialog.tsx
+ var import_lodash = __toESM(require_lodash(), 1);
+-import { getBlockParentPage, getBlockTitle as getBlockTitle3 } from "notion-utils";
+-import React14 from "react";
+ 
+ // src/icons/clear-icon.tsx
+ import "react";
+@@ -2133,7 +2136,9 @@ function File({
+ 
+ // src/components/google-drive.tsx
+ import "notion-types";
+-import { jsx as jsx26, jsxs as jsxs12 } from "react/jsx-runtime";
++import { uuidToId } from "notion-utils";
++import React17 from "react";
++import { jsx as jsx26, jsx as jsx27, jsxs as jsxs12, jsxs as jsxs13 } from "react/jsx-runtime";
+ function GoogleDrive({
+   block,
+   className
+@@ -2186,9 +2191,6 @@ function GoogleDrive({
+ 
+ // src/components/page-aside.tsx
+ var import_lodash2 = __toESM(require_lodash(), 1);
+-import { uuidToId } from "notion-utils";
+-import React17 from "react";
+-import { jsx as jsx27, jsxs as jsxs13 } from "react/jsx-runtime";
+ function PageAside({
+   toc,
+   activeSection,
