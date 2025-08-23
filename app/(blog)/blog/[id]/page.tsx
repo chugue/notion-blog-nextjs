@@ -1,16 +1,13 @@
-export const maxDuration = 300;
-export const dynamic = 'force-dynamic';
-
-import { Separator } from '@/shared/components/ui/separator';
-import { CalendarDays, User, ChevronDown } from 'lucide-react';
-import { formatDate } from '@/shared/utils/format-date';
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
-import { Suspense } from 'react';
-import LoadingSpinner from '@/shared/components/LoadingSpinner';
-import Image from 'next/image';
-import ColoredBadge from '../../_components/ColoredBadge';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
+import LoadingSpinner from '@/shared/components/LoadingSpinner';
+import { Separator } from '@/shared/components/ui/separator';
+import { formatDate } from '@/shared/utils/format-date';
+import { CalendarDays, ChevronDown, User } from 'lucide-react';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import ColoredBadge from '../../_components/ColoredBadge';
 import NotionPageContent from '../../_components/NotionPageContent';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {

@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx'], // mdx 제거
+  pageExtensions: ['ts', 'tsx', 'mdx', 'js', 'jsx', 'md'],
   reactStrictMode: true,
   experimental: {
     optimizeCss: false,
