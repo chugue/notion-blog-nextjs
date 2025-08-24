@@ -9,6 +9,7 @@ export const useHeaderPosition = () => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const mobileWidth = 768;
 
   useEffect(() => {
     setIsMounted(true);
@@ -26,7 +27,7 @@ export const useHeaderPosition = () => {
       const screenWidth = window.innerWidth;
 
       // 모바일에서만 헤더가 숨겨짐 (376px 이하)
-      if (screenWidth <= 376) {
+      if (screenWidth <= mobileWidth) {
         const shouldHideHeader = currentScrollY > 100 && currentScrollY > lastScrollY;
         setIsHeaderVisible(!shouldHideHeader);
       } else {
@@ -52,7 +53,7 @@ export const useHeaderPosition = () => {
 
   // 목차의 top 위치 계산
   const getTocTopPosition = () => {
-    if (window.innerWidth > 640) {
+    if (window.innerWidth > mobileWidth) {
       // 데스크톱에서는 헤더가 항상 보임
       return headerHeight + 4; // 헤더 높이 + 16px
     } else {

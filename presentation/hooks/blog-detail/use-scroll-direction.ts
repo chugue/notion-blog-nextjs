@@ -6,6 +6,7 @@ interface UseHeaderScrollAnimationProps {
 }
 
 export const useHeaderScrollAnimation = ({ headerRef }: UseHeaderScrollAnimationProps) => {
+  const mobileWidth = 768;
   useEffect(() => {
     if (!headerRef.current) return;
 
@@ -16,7 +17,7 @@ export const useHeaderScrollAnimation = ({ headerRef }: UseHeaderScrollAnimation
       const currentScrollY = window.scrollY;
       const screenWidth = window.innerWidth;
 
-      if (screenWidth > 376) {
+      if (screenWidth > mobileWidth) {
         gsap.set(header, { y: '0%' });
         return;
       }
