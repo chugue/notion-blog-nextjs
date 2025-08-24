@@ -52,7 +52,7 @@ export const useHeaderPosition = () => {
 
   // 목차의 top 위치 계산
   const getTocTopPosition = () => {
-    if (window.innerWidth > 376) {
+    if (window.innerWidth > 640) {
       // 데스크톱에서는 헤더가 항상 보임
       return headerHeight + 4; // 헤더 높이 + 16px
     } else {
