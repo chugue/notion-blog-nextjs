@@ -121,10 +121,10 @@
 }
 
 .dark {
-  /* --background: #5c6887; */
   --background: #030712;
   --foreground: oklch(0.985 0 0);
   --card: #1c212a;
+  --code-block-background:#1e1e2e;
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
@@ -250,7 +250,7 @@
   display: none;
 }
 .notion-h1 {
-  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-[2.7rem] font-bold before:absolute before:-left-12 max-md:before:opacity-0 md:before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-[2.7rem] font-bold before:absolute before:-left-12 max-sm:before:opacity-0 sm:before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
   font-family: var(--font-family-maplestory);
 }
 .notion-h3 {
@@ -258,11 +258,11 @@
   font-family: var(--font-family-maplestory);
 }
 .notion-text {
-  @apply leading-[2] font-extralight text-neutral-300 sm:text-xl;
+  @apply leading-[2] font-extralight text-neutral-300/90 sm:text-xl;
   font-family: var(--font-family-maplestory);
 }
 .notion-quote {
-  @apply border-primary border-l-4 px-8 text-neutral-400 [&>*]:my-0 mt-8;
+  @apply border-primary border-l-4 px-8 text-neutral-300/80 [&>*]:my-0 mt-8;
   font-family: var(--font-family-maplestory);
 }
 .notion-inline-code {
@@ -394,7 +394,7 @@ figure [class^='code_module_codeLanLabel'] {
 }
 
 .notion-list-numbered > li{
-  @apply list-decimal text-xl;
+  @apply list-decimal text-xl text-neutral-300/90;
   font-family: var(--font-family-maplestory);
 }
 

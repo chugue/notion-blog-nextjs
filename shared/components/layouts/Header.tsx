@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import Link from 'next/link';
-import ThemeToggle from '../ThemeToggle';
-import Image from 'next/image';
 import SearchModal from '@/app/(main)/_components/search/SearchModal';
+import { useHeaderScrollAnimation } from '@/presentation/hooks/blog-detail/use-scroll-direction';
+import { Button } from '@/shared/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,12 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
-import { Github, Instagram, Linkedin, MenuIcon } from 'lucide-react';
-import { Button } from '@/shared/components/ui/button';
-import { Separator } from '../ui/separator';
-import { useHeaderScrollAnimation } from '@/presentation/hooks/blog-detail/use-scroll-direction';
 import { cn } from '@/shared/utils/tailwind-cn';
+import { Github, Instagram, Linkedin, MenuIcon } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRef, useState } from 'react';
 import Threads from '../Threads';
+import { Separator } from '../ui/separator';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,7 +51,7 @@ const Header = () => {
   return (
     <header
       ref={headerRef}
-      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out sm:px-0"
+      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out"
     >
       <div className="container mx-auto flex items-center justify-between">
         {/* 로고 */}

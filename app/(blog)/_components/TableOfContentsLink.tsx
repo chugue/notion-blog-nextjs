@@ -7,16 +7,17 @@ import Link from 'next/link';
 interface TableOfContentsLinkProps {
   item: TocEntry;
   activeHeading?: string;
+  className?: string;
 }
 
-export function TableOfContentsLink({ item, activeHeading }: TableOfContentsLinkProps) {
+export function TableOfContentsLink({ item, activeHeading, className }: TableOfContentsLinkProps) {
   const isActive = activeHeading === item.id;
   return (
-    <div className="space-y-2 pl-2">
+    <div className={cn('space-y-2 max-md:text-center md:pl-2', className)}>
       <Link
         key={item.id}
         href={`#${item.id}`}
-        className={cn('block pl-4 font-bold transition-all duration-300', {
+        className={cn('block px-2 font-bold transition-all duration-300 md:pl-4', {
           'text-primary scale-105': isActive,
           'text-muted-foreground hover:text-foreground': !isActive,
         })}
@@ -24,7 +25,7 @@ export function TableOfContentsLink({ item, activeHeading }: TableOfContentsLink
         {item.value}
       </Link>
       {item.children && item.children.length > 0 && (
-        <div className="space-y-2 pl-2">
+        <div className={cn('space-y-2 max-md:text-center md:pl-2')}>
           {item.children.map((subItem) => (
             <TableOfContentsLink key={subItem.id} item={subItem} activeHeading={activeHeading} />
           ))}

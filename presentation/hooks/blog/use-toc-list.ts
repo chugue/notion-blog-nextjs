@@ -44,8 +44,6 @@ export const useTocList = () => {
           children: [],
         };
 
-        console.log('Created item:', item);
-
         // 계층 구조 생성
         if (level === 1 || level === 2) {
           tocItems.push(item);

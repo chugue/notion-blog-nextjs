@@ -4,11 +4,12 @@ import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Separator } from '@/shared/components/ui/separator';
 import { diContainer } from '@/shared/di/di-container';
 import { formatDate } from '@/shared/utils/format-date';
-import { CalendarDays, ChevronDown, User } from 'lucide-react';
+import { CalendarDays, User } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ColoredBadge from '../../_components/ColoredBadge';
+import MobileToc from '../../_components/MobileToc';
 import NotionPageContent from '../../_components/NotionPageContent';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
@@ -100,7 +101,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="my-4 space-y-4">
-              <h1 className="my-10 text-4xl font-bold sm:text-[3.5rem]">{properties.title}</h1>
+              <h1 className="my-10 text-4xl font-bold">{properties.title}</h1>
             </div>
 
             <div className="relative my-8 aspect-video w-full">
@@ -136,20 +137,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <Separator className="my-6" />
 
           {/* 모바일 블로그 목차 */}
-          <div className="mb-6 md:hidden">
-            <details className="bg-muted/60 group rounded-lg p-4 backdrop-blur-sm">
-              <summary className="flex cursor-pointer list-none items-center justify-between text-lg font-semibold transition-all duration-300 ease-out [&::-webkit-details-marker]:hidden">
-                목차
-                <ChevronDown
-                  className="h-5 w-5 transition-transform duration-300 ease-out group-open:rotate-180"
-                  strokeWidth={3}
-                />
-              </summary>
-              <nav className="mt-3 space-y-3 text-sm">
-                {/* <TableOfContentsWrapper toc={data?.toc || []} /> */}
-              </nav>
-            </details>
-          </div>
+          <MobileToc />
 
           {/* 블로그 본문 */}
           <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
@@ -163,7 +151,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
         </section>
 
         {/* 목차 */}
-        <TableOfContentsWrapper />
+        <TableOfContentsWrapper className="md:block" />
       </div>
     </div>
   );
