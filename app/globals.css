@@ -250,7 +250,7 @@
   display: none;
 }
 .notion-h1 {
-  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-[2.7rem] font-bold before:absolute before:-left-12 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-[2.7rem] font-bold before:absolute before:-left-12 max-md:before:opacity-0 md:before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
   font-family: var(--font-family-maplestory);
 }
 .notion-h3 {
@@ -266,8 +266,13 @@
   font-family: var(--font-family-maplestory);
 }
 .notion-inline-code {
-  @apply bg-primary/10 text-primary rounded px-[0.3rem] py-[0.3rem] font-semibold;
+  @apply bg-primary/10 text-primary rounded px-[0.3rem] py-[0.3rem] font-light;
   letter-spacing: 0.08rem;
+  font-family: var(--font-family-maplestory);
+}
+
+.notion-page {
+  @apply px-0;
 }
 
 figure {
@@ -333,7 +338,10 @@ figure [class^='code_module_codeLanLabel'] {
 }
 
 .notion-text-children {
-  @apply pl-4;
+  @apply pl-0 mt-2 sm:pl-4 sm:mt-2;
+}
+.notion-text {
+  @apply text-xl;
 }
 
 
@@ -403,3 +411,4 @@ ol ul li {
 .notion-text-children > ul > ul {
   @apply ml-8 text-gray-400 ;
 }
+
