@@ -55,28 +55,16 @@ const Header = () => {
       className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out"
     >
       <meta name="google-adsense-account" content="ca-pub-7428195998895873"></meta>
+
+      {/* Google Tag Manager */}
       <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-D9PLBNRGPH"
-        strategy="afterInteractive"
-      />
-      <Script
-        id="gtag-init"
+        id="gtm-init"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-D9PLBNRGPH');
-    `,
+          __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-57LHHL2Z');`,
         }}
       />
-
-      <Script
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7428195998895873"
-        strategy="afterInteractive"
-        crossOrigin="anonymous"
-      />
+      {/* End Google Tag Manager */}
 
       <div className="container mx-auto flex items-center justify-between">
         {/* 로고 */}

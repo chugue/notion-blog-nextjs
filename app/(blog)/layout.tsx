@@ -11,6 +11,15 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
     <>
       <Header />
       {children}
+      <noscript>
+        <iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-57LHHL2Z"
+          height={0}
+          width={0}
+          style={{ display: 'none', visibility: 'hidden' }}
+        />
+      </noscript>
+      {/* End Google Tag Manager (noscript) */}
       <Footer />
     </>
   );
