@@ -98,7 +98,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="my-4 space-y-4">
-              <h1 className="my-10 text-4xl font-bold">{properties?.title}</h1>
+              <h1 className="my-10 text-5xl font-bold">{properties?.title}</h1>
             </div>
 
             <div className="relative my-8 aspect-video w-full">

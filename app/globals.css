@@ -163,6 +163,7 @@
     @apply bg-background text-foreground;
     font-family: var(--font-family-maplestory);
   }
+
 }
 
 .search-button-glow:hover {
@@ -250,15 +251,17 @@
   display: none;
 }
 .notion-h1 {
-  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-[2.7rem] font-bold before:absolute before:-left-12 max-sm:before:opacity-0 sm:before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 max-sm:before:opacity-0 sm:before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
   font-family: var(--font-family-maplestory);
+  scroll-margin-top: var(--sticky-top);
 }
 .notion-h3 {
   @apply before:text-primary scroll-m-20 text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
   font-family: var(--font-family-maplestory);
+  scroll-margin-top: var(--sticky-top);
 }
 .notion-text {
-  @apply leading-[2] font-extralight text-neutral-300/90 sm:text-xl;
+  @apply leading-[2] font-extralight text-neutral-200/90 text-lg;
   font-family: var(--font-family-maplestory);
 }
 .notion-quote {
@@ -340,9 +343,6 @@ figure [class^='code_module_codeLanLabel'] {
 .notion-text-children {
   @apply pl-0 mt-2 sm:pl-4 sm:mt-2;
 }
-.notion-text {
-  @apply text-xl;
-}
 
 
 .notion-asset-wrapper-image > div {
@@ -386,25 +386,26 @@ figure [class^='code_module_codeLanLabel'] {
 /* 리스트 스타일 추가 */
 .notion-list > ol,
 .notion-list > ul {
-  @apply my-0 px-0 text-xl;
+  @apply my-0 px-0 text-lg text-neutral-300/70;
 }
 
 .notion-list > li {
-  @apply text-xl;
+  @apply text-lg text-neutral-200/90 ;
+  font-family: var(--font-family-maplestory);
 }
 
 .notion-list-numbered > li{
-  @apply list-decimal text-xl text-neutral-300/90;
+  @apply list-decimal text-neutral-200/90 text-lg;
   font-family: var(--font-family-maplestory);
 }
 
 
 ol .notion-text {
-  @apply text-gray-400 text-xl;
+  @apply text-neutral-300/70 text-lg;
 }
 
 ol ul li {
-  @apply text-gray-400 ml-6 text-xl;
+  @apply text-neutral-300/70  ml-6 text-lg;
   font-family: var(--font-family-maplestory);
 }
 
