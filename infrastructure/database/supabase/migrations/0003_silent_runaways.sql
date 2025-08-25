@@ -1,0 +1,2 @@
+ALTER TABLE "visitor_info" DROP CONSTRAINT "visitor_info_ip_hash_unique";--> statement-breakpoint
+CREATE UNIQUE INDEX "visitor_info_ip_hash_date_unique" ON "visitor_info" USING btree ("ip_hash","date");

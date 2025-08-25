@@ -1,6 +1,6 @@
 {
-  "id": "436ff0ae-7e1f-42d9-b0e5-18130f4fdf2a",
-  "prevId": "c895666d-463a-446c-822d-090b33a1392e",
+  "id": "12336c82-fb54-495e-93a2-fffd192b1bb8",
+  "prevId": "4d741bc5-8a1e-480a-9023-d1f0bc1de82e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -151,7 +151,7 @@
         },
         "date": {
           "name": "date",
-          "type": "date",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -327,19 +327,32 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "visitor_info_ip_hash_date_unique": {
+          "name": "visitor_info_ip_hash_date_unique",
+          "columns": [
+            {
+              "expression": "ip_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "visitor_info_ip_hash_unique": {
-          "name": "visitor_info_ip_hash_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "ip_hash"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

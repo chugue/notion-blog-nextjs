@@ -13,6 +13,7 @@ interface HomeProps {
     tag?: string;
     sort?: string;
   }>;
+  request: Request;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
@@ -31,7 +32,6 @@ export default async function Home({ searchParams }: HomeProps) {
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[250px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center max-md:px-4 md:order-none">
-          {/* 검색버튼 (md 이상에서만) */}
           <Suspense fallback={<TagSectionSkeleton />}>
             <TagSection tags={tags} />
           </Suspense>

@@ -1,0 +1,1 @@
+ALTER TABLE "site_metrics" ALTER COLUMN "date" SET DATA TYPE text;

@@ -8,6 +8,27 @@
       "when": 1755088920071,
       "tag": "0000_rare_adam_destine",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756122407770,
+      "tag": "0001_brief_guardsmen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756122502493,
+      "tag": "0002_sudden_gauntlet",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756123753453,
+      "tag": "0003_silent_runaways",
+      "breakpoints": true
     }
   ]
 }

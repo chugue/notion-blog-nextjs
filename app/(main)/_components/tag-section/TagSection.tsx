@@ -16,9 +16,8 @@ export interface TagSectionProps {
 }
 
 const TagSection = ({ tags }: TagSectionProps) => {
-  const allTags = use(tags);
-
   const { selectedTag, isChanging, ...store } = useSelectedTagStore();
+  const allTags = use(tags);
 
   const handleTagClick = (tagName: string) => {
     store.setSelectedTag(tagName);
