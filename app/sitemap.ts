@@ -5,7 +5,7 @@ import { MetadataRoute } from 'next';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const postUseCase = diContainer.post.postUseCase;
   // 기본 URL
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://notion-blog-nextjs-brown.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
   // 정적 페이지 목록
   const staticPages = [
@@ -16,12 +16,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily',
@@ -30,9 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ] as const;
 
   // 블로그 게시물 가져오기
-  const result = await postUseCase.getPostsWithParams({ pageSize: 100 });
-
-  const posts = result.posts;
+  const posts = await postUseCase.getAllPublishedPostMetadatas();
 
   // 블로그 게시물 URL 생성
   const blogPosts = posts.map((post: PostMetadata) => ({
