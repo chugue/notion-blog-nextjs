@@ -18,21 +18,32 @@ export const createPageViewUseCaseAdapter = (
       const hashedIp = crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
       const todayKST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(
         new Date()
-      ); // "YYYY-MM-DD"
+      );
 
       // 1-1. 크롤링 봇 검증
       const isCrawlingBot = crawlingBotCheck(userAgent);
 
       if (isCrawlingBot) return;
 
-      // 2. 사용자 정보 오늘 날짜 조회
-      const visitorInfo = await visitorInfoRepo.getVisitorInfo(hashedIp.toString(), todayKST);
+      // 2. 사용자 정보 오늘 날짜 조회 - 없으면 생성
+      const visitorInfo = await visitorInfoRepo.getVisitorInfo(
+        hashedIp.toString(),
+        todayKST,
+        'main',
+        userAgent
+      );
 
-      // 2-1. 사용자 정보 없으면 오늘 날짜로 생성
-      // 3. 오늘 날짜에 현재 방문 페이지 없으면 페이지 path 추가
-      // 4. 오늘 날짜 현재 페이지 뷰 조회
-      // 4-1. 현재 페이지 뷰가 없으면 오늘 날짜로 생성
-      // 5. 오늘 날짜 방문자 수 증가
+      if (!visitorInfo.success) return;
+
+      // 3. 오늘 날짜 현재 페이지 뷰 조회 - 없으면 생성
+      pageViewRepo.getPageViewIfNotCreate(todayKST, 'main', '/');
+      // 3-1. 현재 페이지 뷰가 없으면 오늘 날짜로 생성
+      // 4. 오늘 날짜 방문자 수 증가
+
+
+      const { visitedPathnames } = visitorInfo.data;
+
+      if (!visitedPathnames.includes('main')) {
 
       const mainPageView = await pageViewRepo.getMainPageView();
 
@@ -42,7 +53,7 @@ export const createPageViewUseCaseAdapter = (
         viewCount: 1,
       };
 
-      await pageViewRepository.addMainPageView(pageView);
+      await pageViewRepo.addMainPageView(pageView);
     },
     // TODO: 상세 페이지 뷰 추가
     addDetailPageView: async (pageId: string): Promise<void> => {

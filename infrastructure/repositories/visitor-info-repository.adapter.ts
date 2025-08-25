@@ -12,12 +12,17 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
         });
 
         if (!record) {
-          await db.insert(visitorInfo).values({
-            ipHash,
-            date,
-            visitedPathnames: [pathname],
-            userAgent: userAgent,
-          });
+          const newRecord = await db
+            .insert(visitorInfo)
+            .values({
+              ipHash,
+              date,
+              visitedPathnames: [pathname],
+              userAgent: userAgent,
+            })
+            .returning();
+
+          return { success: true, data: visitorInfoToDomain(newRecord[0] as VisitorInfoSelect) };
         }
 
         return { success: true, data: visitorInfoToDomain(record as VisitorInfoSelect) };

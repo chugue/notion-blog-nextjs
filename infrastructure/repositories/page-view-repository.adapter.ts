@@ -1,5 +1,9 @@
+'use server';
+
 import { PageViewRepositoryPort } from '@/application/port/page-view-repository.port';
 import { PageView } from '@/domain/entities/page-view.entity';
+import { Result } from '@/shared/types/result';
+import { pageViewQuery } from '../queries/page-views.query';
 
 export const createPageViewRepositoryAdapter = (): PageViewRepositoryPort => {
   return {
@@ -9,12 +13,16 @@ export const createPageViewRepositoryAdapter = (): PageViewRepositoryPort => {
 
     addAboutPageView: async (pageId: string): Promise<void> => {},
 
-    getMainPageView: async (): Promise<PageView> => {
-      return {
-        notionPageId: 'main',
-        pathname: '/',
-        viewCount: 0,
-      };
+    getPageViewIfNotCreate: async (
+      date: string,
+      pageId: string,
+      pathname: string
+    ): Promise<Result<PageView, Error>> => {
+      try {
+        pageViewQuery;
+      } catch (error) {
+        console.log(error);
+      }
     },
   };
 };
