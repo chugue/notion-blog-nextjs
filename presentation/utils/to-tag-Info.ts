@@ -7,7 +7,7 @@ export const toTagInfo = (tag: string): TagInfo => {
         name: '전체',
         icon: `/icons/all.svg`,
         color: '#12d5b0',
-        tagName: 'All',
+        tagName: '전체',
       };
 
     case 'java':

@@ -1,6 +1,9 @@
 'use client';
 
 import { TechStackItem } from '@/domain/entities/hex-tech-stack';
+import useCardAnimation from '@/presentation/hooks/main/use-card-animation';
+import useFlipped from '@/presentation/hooks/main/use-flipped';
+import useMounted from '@/presentation/hooks/main/use-mounted';
 import { cn } from '@/shared/utils/tailwind-cn';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
@@ -8,7 +11,7 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 interface HexCardProps {
   tech: TechStackItem;
@@ -31,65 +34,16 @@ const HexCard: React.FC<HexCardProps> = ({
   selectedTag,
   setSelectedTag,
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const [isFlipped, setIsFlipped] = useState(false);
+  const { isFlipped, setIsFlipped } = useFlipped(selectedTag, tech);
+  const { cardRef, zIndex } = useCardAnimation(index, hoveredId, tech, row);
   const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const router = useRouter();
-
-  const isHovered = hoveredId === tech.name;
-  const isOtherHovered = hoveredId && hoveredId !== tech.name;
-
-  // 1,3열은 z-10, 2,4열은 z-20
-  const zIndex = row % 2 === 0 ? 10 : 20;
-
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    // 진입 애니메이션
-    gsap.fromTo(
-      cardRef.current,
-      {
-        scale: 0,
-        opacity: 0,
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.8,
-      }
-    );
-  }, [index]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (selectedTag === tech.name) {
-      setIsFlipped(true);
-    } else {
-      setIsFlipped(false);
-    }
-  }, [selectedTag, tech.name]);
-
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    // 호버 상태에 따른 스케일 애니메이션
-    gsap.to(cardRef.current, {
-      scale: isHovered ? 1.15 : isOtherHovered ? 0.95 : 1,
-      zIndex: isHovered ? 50 : zIndex,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
-  }, [isHovered, isOtherHovered, zIndex]);
 
   const handleClick = () => {
     setIsFlipped(true);
     setSelectedTag(tech.name);
-    router.push(`?tag=${encodeURIComponent(tech.name)}`);
+    router.push(`?tag=${encodeURIComponent(tech.tagName)}`);
   };
 
   return (
