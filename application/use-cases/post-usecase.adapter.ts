@@ -21,7 +21,7 @@ export const createPostUseCaseAdapter = (
     },
 
     getPostsWithParams: async (params: GetPublishedPostParams): Promise<PostMetadataResp> => {
-      const { tag, sort } = params;
+      // const { tag, sort } = params;
 
       // if (tag === '전체' && sort === 'latest') {
       //   const cachedFn = unstable_cache(

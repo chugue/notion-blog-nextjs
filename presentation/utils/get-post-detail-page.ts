@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 const getPostDetailPage = async (id: string) => {
   const postUseCase = diContainer.post.postUseCase;
+
   const result = await postUseCase.getPostById(id);
 
   if (!result) notFound();

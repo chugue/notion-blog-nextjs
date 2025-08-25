@@ -1,6 +1,3 @@
-import { Result } from '@/shared/types/result';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { getPostByIdQuery, getPublishedPostsQuery, postQuery } from '../queries/post.query';
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
 import {
   GetPublishedPostParams,
@@ -9,8 +6,10 @@ import {
   PostMetadataResp,
 } from '@/domain/entities/post.entity';
 import { getPostMetadata } from '@/domain/utils/post.utils';
-
-// UI가 원하는 데이터 형식으로 가공
+import { Result } from '@/shared/types/result';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import * as notionType from 'notion-types';
+import { postQuery } from '../queries/post.query';
 
 export const createPostRepositoryAdapter = (): PostRepositoryPort => {
   return {
@@ -66,7 +65,7 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
       startCursor = undefined,
     }: GetPublishedPostParams): Promise<Result<PostMetadataResp>> => {
       try {
-        const response = await getPublishedPostsQuery({
+        const response = await postQuery.getPublishedPosts({
           tag,
           sort,
           pageSize,
@@ -95,9 +94,34 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
     },
 
     getPostById: async (id: string): Promise<Result<Post>> => {
-      const result = await getPostByIdQuery(id);
+      const result = await postQuery.getPostByIdQuery(id);
 
-      return result;
+      if (!result.success) {
+        return {
+          success: false,
+          error: result.error,
+        };
+      }
+
+      const allPostMetadatas = await postQuery.getAllPostMetadataCache();
+      const property = allPostMetadatas.results.find((page) => {
+        return page.id === id;
+      });
+
+      if (!property) {
+        return {
+          success: false,
+          error: new Error('Post not found'),
+        };
+      }
+
+      return {
+        success: true,
+        data: {
+          recordMap: result.data as unknown as notionType.ExtendedRecordMap,
+          properties: getPostMetadata(property as PageObjectResponse),
+        },
+      };
     },
   };
 };

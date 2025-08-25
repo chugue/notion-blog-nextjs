@@ -1,10 +1,9 @@
 'use client';
 
-import React, { use } from 'react';
-import * as notionType from 'notion-types';
-import { NotionRenderer } from 'react-notion-x';
 import Image from 'next/image';
 import Link from 'next/link';
+import * as notionType from 'notion-types';
+import { NotionRenderer } from 'react-notion-x';
 import CustomCodeBlock from './CustomCodeBlock';
 
 const NotionPageContent = ({ recordMap }: { recordMap: notionType.ExtendedRecordMap }) => {
@@ -15,6 +14,7 @@ const NotionPageContent = ({ recordMap }: { recordMap: notionType.ExtendedRecord
         fullPage={false}
         darkMode={true}
         disableHeader={true}
+        previewImages={true}
         mapPageUrl={() => '#'}
         components={{
           nextImage: Image,

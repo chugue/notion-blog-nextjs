@@ -6,7 +6,6 @@ import { diContainer } from '@/shared/di/di-container';
 import { formatDate } from '@/shared/utils/format-date';
 import { CalendarDays, User } from 'lucide-react';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ColoredBadge from '../../_components/ColoredBadge';
 import MobileToc from '../../_components/MobileToc';
@@ -15,9 +14,9 @@ import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
 export async function generateStaticParams() {
   const postUseCase = diContainer.post.postUseCase;
-  const result = await postUseCase.getPostsWithParams({ pageSize: 12 });
+  const result = await postUseCase.getAllPublishedPostMetadatas();
 
-  return result.posts.map((post) => ({
+  return result.map((post) => ({
     id: post.id,
   }));
 }
@@ -91,8 +90,6 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
   const { properties, recordMap } = await getPostDetailPage(id);
 
-  if (!properties) notFound();
-
   return (
     <div className="container mx-auto py-6 sm:py-12">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
@@ -101,13 +98,13 @@ export default async function BlogPost({ params }: BlogPostProps) {
           {/* 블로그 헤더 */}
           <div className="space-y-4">
             <div className="my-4 space-y-4">
-              <h1 className="my-10 text-4xl font-bold">{properties.title}</h1>
+              <h1 className="my-10 text-4xl font-bold">{properties?.title}</h1>
             </div>
 
             <div className="relative my-8 aspect-video w-full">
               <Image
-                src={properties.coverImage || '/images/no-image-dark.png'}
-                alt={properties.title}
+                src={properties?.coverImage || '/images/no-image-dark.png'}
+                alt={properties?.title || ''}
                 fill
                 className="rounded-lg object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -117,18 +114,18 @@ export default async function BlogPost({ params }: BlogPostProps) {
             {/* 메타 정보 */}
             <div className="text-muted-foreground flex flex-col gap-4 text-lg">
               <div className="flex flex-wrap gap-2">
-                {properties.tag.map((tag) => (
+                {properties?.tag.map((tag) => (
                   <ColoredBadge key={tag} tag={tag} />
                 ))}
               </div>
               <div className="flex items-center justify-end gap-4">
                 <div className="flex items-center gap-1">
                   <User className="h-4 w-4" />
-                  <span>{properties.author}</span>
+                  <span>{properties?.author}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <CalendarDays className="h-4 w-4" />
-                  <span>{properties.date ? formatDate(properties.date) : ''}</span>
+                  <span>{properties?.date ? formatDate(properties?.date) : ''}</span>
                 </div>
               </div>
             </div>
