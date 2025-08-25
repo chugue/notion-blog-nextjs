@@ -1,9 +1,9 @@
-import type { Metadata } from 'next';
-import localFont from 'next/font/local';
-import React from 'react';
 import '@/app/globals.css';
 import TanstackProvider from '@/presentation/providers/TanstackProvider';
 import { ThemeProvider } from '@/presentation/providers/ThemeProvider';
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import React from 'react';
 import { Toaster } from 'sonner';
 
 const maplestory = localFont({

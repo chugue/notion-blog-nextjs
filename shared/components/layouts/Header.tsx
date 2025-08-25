@@ -14,6 +14,7 @@ import { cn } from '@/shared/utils/tailwind-cn';
 import { Github, Instagram, Linkedin, MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import { useRef, useState } from 'react';
 import Threads from '../Threads';
 import { Separator } from '../ui/separator';
@@ -53,6 +54,30 @@ const Header = () => {
       ref={headerRef}
       className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out"
     >
+      <meta name="google-adsense-account" content="ca-pub-7428195998895873"></meta>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-D9PLBNRGPH"
+        strategy="afterInteractive"
+      />
+      <Script
+        id="gtag-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-D9PLBNRGPH');
+    `,
+        }}
+      />
+
+      <Script
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7428195998895873"
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
+      />
+
       <div className="container mx-auto flex items-center justify-between">
         {/* 로고 */}
         <Link href="/" className="text-md flex flex-nowrap items-center gap-2">
@@ -131,11 +156,6 @@ const Header = () => {
 
       {/* 검색 모달 */}
       <SearchModal />
-      <script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7428195998895873"
-        crossOrigin="anonymous"
-      />
     </header>
   );
 };
