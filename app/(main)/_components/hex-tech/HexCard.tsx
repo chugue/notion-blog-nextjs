@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { useTheme } from 'next-themes';
-import Link from 'next/link';
+import { TechStackItem } from '@/domain/entities/hex-tech-stack';
 import { cn } from '@/shared/utils/tailwind-cn';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
-import { TechStackItem } from '@/domain/entities/hex-tech-stack';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface HexCardProps {
   tech: TechStackItem;
@@ -144,7 +144,7 @@ const HexCard: React.FC<HexCardProps> = ({
           border: `2px solid ${tech.color}`,
         }}
       >
-        <Link href={`?tag=${encodeURIComponent(tech.tagName)}`}>
+        <Link href={`?tag=${encodeURIComponent(tech.name)}`}>
           <p className="cursor-pointer text-center text-sm font-bold text-white">{tech.tagName}</p>
         </Link>
       </div>
