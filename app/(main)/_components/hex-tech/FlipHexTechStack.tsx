@@ -1,16 +1,15 @@
 'use client';
 
-import React, { use, useRef, useState } from 'react';
 import { cn } from '@/shared/utils/tailwind-cn';
+import { use, useRef, useState } from 'react';
 
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import HexCard from './HexCard';
-import { useRefCenter } from '../../../../presentation/hooks/main/use-ref-center';
+import { toHexTechStackItem } from '@/domain/utils/hex-tech-stack.utils';
+import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
 import { useHoneycombInit } from '../../../../presentation/hooks/main/use-honeycomb-init';
 import { useHoneycombMemo } from '../../../../presentation/hooks/main/use-honeycomb-memo';
-import { toHexTechStackItem } from '@/domain/utils/hex-tech-stack.utils';
-import { useSearchParams } from 'next/navigation';
-import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
+import { useRefCenter } from '../../../../presentation/hooks/main/use-ref-center';
+import HexCard from './HexCard';
 
 export function FlipHexTechStack({ tags }: { tags: Promise<TagFilterItem[]> }) {
   const resizeRef = useRef<HTMLDivElement>(null);
@@ -18,16 +17,10 @@ export function FlipHexTechStack({ tags }: { tags: Promise<TagFilterItem[]> }) {
   const allTags = use(tags);
 
   const { selectedTag, setSelectedTag } = useSelectedTagStore();
-
   const techStacks = toHexTechStackItem(allTags);
 
-  // 태그 갯수가 바뀔 시에만 업데이트 되도록 최적화 -> 허니콤 전체 가로 길이 계산
   const { positions, honeycombWidth } = useHoneycombMemo(techStacks);
-
-  // 허니콤 길이와 부모길의를 계산해서 중앙값 계산
   const centerX = useRefCenter(resizeRef, honeycombWidth);
-
-  // 허니콤 초기화 완료 체크
   const isInitialized = useHoneycombInit(centerX, resizeRef);
 
   return (

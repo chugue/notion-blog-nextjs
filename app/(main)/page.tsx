@@ -1,12 +1,12 @@
-import HeaderSection from './_components/HeaderSection';
+import getMainPageData from '@/presentation/utils/get-main-page-data';
 import { Suspense } from 'react';
-import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
-import TagSection from './_components/tag-section/TagSection';
+import HeaderSection from './_components/HeaderSection';
 import { VisitStats } from './_components/VisitStats';
+import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
-import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
-import getMainPageData from '@/presentation/utils/get-main-page-data';
+import TagSection from './_components/tag-section/TagSection';
+import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
 
 interface HomeProps {
   searchParams: Promise<{
