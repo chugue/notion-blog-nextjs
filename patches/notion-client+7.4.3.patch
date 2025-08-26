@@ -1,71 +1,8 @@
 diff --git a/node_modules/notion-client/build/index.js b/node_modules/notion-client/build/index.js
-index 2ad4eba..c94599c 100644
+index 2ad4eba..6419b9e 100644
 --- a/node_modules/notion-client/build/index.js
 +++ b/node_modules/notion-client/build/index.js
-@@ -1,5 +1,4 @@
- // src/notion-api.ts
--import ky from "ky";
- import {
-   getBlockCollectionId,
-   getPageContentBlockIds,
-@@ -52,6 +51,8 @@ var NotionAPI = class {
-     recordMap.notion_user = recordMap.notion_user ?? {};
-     recordMap.collection_query = {};
-     recordMap.signed_urls = {};
-+
-+
-     if (fetchMissingBlocks) {
-       while (true) {
-         const pendingBlockIds = getPageContentBlockIds(recordMap).filter(
-@@ -67,6 +68,7 @@ var NotionAPI = class {
-       }
-     }
-     const contentBlockIds = getPageContentBlockIds(recordMap);
-+
-     if (fetchCollections) {
-       const allCollectionInstances = contentBlockIds.flatMap((blockId) => {
-         const block = recordMap.block[blockId]?.value;
-@@ -251,6 +253,7 @@ var NotionAPI = class {
-     chunkLimit = 100,
-     chunkNumber = 0
-   } = {}) {
-+
-     const parsedPageId = parsePageId(pageId);
-     if (!parsedPageId) {
-       throw new Error(`invalid notion pageId "${pageId}"`);
-@@ -262,11 +265,17 @@ var NotionAPI = class {
-       cursor: { stack: [] },
-       verticalColumns: false
-     };
--    return this.fetch({
--      endpoint: "loadPageChunk",
--      body,
--      kyOptions
--    });
-+    
-+    try {
-+      const result = await this.fetch({
-+        endpoint: "loadPageChunk",
-+        body,
-+        kyOptions
-+      });
-+      return result;
-+    } catch (error) {
-+      throw error;
-+    }
-   }
-   async getCollectionData(collectionId, collectionViewId, collectionView, {
-     limit = 999,
-@@ -432,7 +441,7 @@ var NotionAPI = class {
-   }
-   async getBlocks(blockIds, kyOptions) {
-     return this.fetch({
--      endpoint: "syncRecordValues",
-+      endpoint: "syncRecordValuesMain",
-       body: {
-         requests: blockIds.map((blockId) => ({
-           // TODO: when to use table 'space' vs 'block'?
-@@ -502,14 +511,16 @@ var NotionAPI = class {
+@@ -502,12 +502,13 @@ var NotionAPI = class {
        headers["x-notion-active-user-header"] = this._activeUser;
      }
      const url = `${this._apiBaseUrl}/${endpoint}`;
@@ -75,18 +12,13 @@ index 2ad4eba..c94599c 100644
 -      ...kyOptions,
 -      json: body,
 -      headers
--    });
--    return res.json();
-+    try {
-+      const res = await fetch(url, {
-+        method: 'POST',
-+        headers: { 'Content-Type': 'application/json', ...headers },
-+        body: JSON.stringify(body),
-+      });
-+      return await res.json();
-+    } catch (error) {
-+      throw error;
-+    }
++    const res = await fetch(url, {
++      method: 'POST',                
++      headers: {
++        'Content-Type': 'application/json',
++        ...headers,
++      },
++      body: JSON.stringify(body),    
+     });
+     return res.json();
    }
- };
- export {
