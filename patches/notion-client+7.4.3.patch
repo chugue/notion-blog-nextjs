@@ -1,8 +1,8 @@
 diff --git a/node_modules/notion-client/build/index.js b/node_modules/notion-client/build/index.js
-index 2ad4eba..6419b9e 100644
+index 2ad4eba..98a688b 100644
 --- a/node_modules/notion-client/build/index.js
 +++ b/node_modules/notion-client/build/index.js
-@@ -502,12 +502,13 @@ var NotionAPI = class {
+@@ -502,13 +502,14 @@ var NotionAPI = class {
        headers["x-notion-active-user-header"] = this._activeUser;
      }
      const url = `${this._apiBaseUrl}/${endpoint}`;
@@ -12,6 +12,7 @@ index 2ad4eba..6419b9e 100644
 -      ...kyOptions,
 -      json: body,
 -      headers
+-    });
 +    const res = await fetch(url, {
 +      method: 'POST',                
 +      headers: {
@@ -19,6 +20,7 @@ index 2ad4eba..6419b9e 100644
 +        ...headers,
 +      },
 +      body: JSON.stringify(body),    
-     });
++           });
      return res.json();
    }
+ };
