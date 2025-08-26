@@ -1,5 +1,5 @@
 diff --git a/node_modules/notion-client/build/index.js b/node_modules/notion-client/build/index.js
-index 2ad4eba..98a688b 100644
+index 2ad4eba..7019ca6 100644
 --- a/node_modules/notion-client/build/index.js
 +++ b/node_modules/notion-client/build/index.js
 @@ -502,13 +502,14 @@ var NotionAPI = class {
@@ -20,7 +20,7 @@ index 2ad4eba..98a688b 100644
 +        ...headers,
 +      },
 +      body: JSON.stringify(body),    
-+           });
++     });
      return res.json();
    }
  };
