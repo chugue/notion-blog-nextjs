@@ -47,8 +47,17 @@ export const postQuery = {
 
   getPostByIdQuery: async (id: string): Promise<Result<notionType.ExtendedRecordMap>> => {
     try {
-      const result = await notionAPI.getPage(id);
+      const fetchWithTimeout = <T>(promise: Promise<T>) =>
+        Promise.race([
+          promise,
+          new Promise<T>((_, rej) =>
+            setTimeout(() => rej(new Error('Notion request timeout')), 30000)
+          ),
+        ]);
 
+      const result = await fetchWithTimeout(notionAPI.getPage(id)).catch((err) => {
+        throw err;
+      });
       if (!result) {
         return {
           success: false,
