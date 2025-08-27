@@ -47,17 +47,17 @@ export const postQuery = {
 
   getPostByIdQuery: async (id: string): Promise<Result<notionType.ExtendedRecordMap>> => {
     try {
-      const fetchWithTimeout = <T>(promise: Promise<T>) =>
-        Promise.race([
-          promise,
-          new Promise<T>((_, rej) =>
-            setTimeout(() => rej(new Error('Notion request timeout')), 30000)
-          ),
-        ]);
+      const cachedFn = unstable_cache(
+        async () => {
+          return await notionAPI.getPage(id);
+        },
+        [`post-${id}`],
+        {
+          tags: [`post-${id}`, `all-posts`],
+        }
+      );
+      const result = await cachedFn();
 
-      const result = await fetchWithTimeout(notionAPI.getPage(id)).catch((err) => {
-        throw err;
-      });
       if (!result) {
         return {
           success: false,
