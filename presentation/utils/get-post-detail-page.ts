@@ -6,7 +6,9 @@ const getPostDetailPage = async (id: string) => {
 
   const result = await postUseCase.getPostById(id);
 
-  if (!result) notFound();
+  if (!result) {
+    notFound();
+  }
 
   return {
     recordMap: result.recordMap,

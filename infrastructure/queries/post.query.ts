@@ -47,7 +47,16 @@ export const postQuery = {
 
   getPostByIdQuery: async (id: string): Promise<Result<notionType.ExtendedRecordMap>> => {
     try {
-      const result = await notionAPI.getPage(id);
+      const cachedFn = unstable_cache(
+        async () => {
+          return await notionAPI.getPage(id);
+        },
+        [`post-${id}`],
+        {
+          tags: [`post-${id}`, `all-posts`],
+        }
+      );
+      const result = await cachedFn();
 
       if (!result) {
         return {

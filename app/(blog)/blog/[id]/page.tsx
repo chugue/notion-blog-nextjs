@@ -1,3 +1,5 @@
+export const dynamicParams = true;
+
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
@@ -88,68 +90,73 @@ interface BlogPostProps {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
 
-  const { properties, recordMap } = await getPostDetailPage(id);
+  try {
+    const { properties, recordMap } = await getPostDetailPage(id);
 
-  return (
-    <div className="container mx-auto py-6 sm:py-12">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
-        <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
-        <section className="min-w-0 px-4">
-          {/* 블로그 헤더 */}
-          <div className="space-y-4">
-            <div className="my-4 space-y-4">
-              <h1 className="my-10 text-5xl font-bold">{properties?.title}</h1>
-            </div>
-
-            <div className="relative my-8 aspect-video w-full">
-              <Image
-                src={properties?.coverImage || '/images/no-image-dark.png'}
-                alt={properties?.title || ''}
-                fill
-                className="rounded-lg object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-            </div>
-
-            {/* 메타 정보 */}
-            <div className="text-muted-foreground flex flex-col gap-4 text-lg">
-              <div className="flex flex-wrap gap-2">
-                {properties?.tag.map((tag) => (
-                  <ColoredBadge key={tag} tag={tag} />
-                ))}
+    return (
+      <div className="container mx-auto py-6 sm:py-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
+          <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
+          <section className="min-w-0 px-4">
+            {/* 블로그 헤더 */}
+            <div className="space-y-4">
+              <div className="my-4 space-y-4">
+                <h1 className="my-10 text-5xl font-bold">{properties?.title}</h1>
               </div>
-              <div className="flex items-center justify-end gap-4">
-                <div className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
-                  <span>{properties?.author}</span>
+
+              <div className="relative my-8 aspect-video w-full">
+                <Image
+                  src={properties?.coverImage || '/images/no-image-dark.png'}
+                  alt={properties?.title || ''}
+                  fill
+                  className="rounded-lg object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+
+              {/* 메타 정보 */}
+              <div className="text-muted-foreground flex flex-col gap-4 text-lg">
+                <div className="flex flex-wrap gap-2">
+                  {properties?.tag.map((tag) => (
+                    <ColoredBadge key={tag} tag={tag} />
+                  ))}
                 </div>
-                <div className="flex items-center gap-1">
-                  <CalendarDays className="h-4 w-4" />
-                  <span>{properties?.date ? formatDate(properties?.date) : ''}</span>
+                <div className="flex items-center justify-end gap-4">
+                  <div className="flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    <span>{properties?.author}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <CalendarDays className="h-4 w-4" />
+                    <span>{properties?.date ? formatDate(properties?.date) : ''}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <Separator className="my-6" />
+            <Separator className="my-6" />
 
-          {/* 모바일 블로그 목차 */}
-          <MobileToc />
+            {/* 모바일 블로그 목차 */}
+            <MobileToc />
 
-          {/* 블로그 본문 */}
-          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-            <NotionPageContent recordMap={recordMap} />
-          </div>
+            {/* 블로그 본문 */}
+            <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
+              <NotionPageContent recordMap={recordMap} />
+            </div>
 
-          <Separator className="my-16" />
-          <Suspense fallback={<LoadingSpinner />}>
-            <GiscusComments term={`blog-${id}`} />
-          </Suspense>
-        </section>
+            <Separator className="my-16" />
+            <Suspense fallback={<LoadingSpinner />}>
+              <GiscusComments term={`blog-${id}`} />
+            </Suspense>
+          </section>
 
-        {/* 목차 */}
-        <TableOfContentsWrapper className="md:block" />
+          {/* 목차 */}
+          <TableOfContentsWrapper className="md:block" />
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }

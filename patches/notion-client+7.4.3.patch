@@ -1,13 +1,26 @@
 diff --git a/node_modules/notion-client/build/index.js b/node_modules/notion-client/build/index.js
-index 2ad4eba..0377544 100644
+index 2ad4eba..7019ca6 100644
 --- a/node_modules/notion-client/build/index.js
 +++ b/node_modules/notion-client/build/index.js
-@@ -432,7 +432,7 @@ var NotionAPI = class {
+@@ -502,13 +502,14 @@ var NotionAPI = class {
+       headers["x-notion-active-user-header"] = this._activeUser;
+     }
+     const url = `${this._apiBaseUrl}/${endpoint}`;
+-    const res = await ky.post(url, {
+-      mode: "no-cors",
+-      ...this._kyOptions,
+-      ...kyOptions,
+-      json: body,
+-      headers
+-    });
++    const res = await fetch(url, {
++      method: 'POST',                
++      headers: {
++        'Content-Type': 'application/json',
++        ...headers,
++      },
++      body: JSON.stringify(body),    
++     });
+     return res.json();
    }
-   async getBlocks(blockIds, kyOptions) {
-     return this.fetch({
--      endpoint: "syncRecordValues",
-+      endpoint: "syncRecordValuesMain",
-       body: {
-         requests: blockIds.map((blockId) => ({
-           // TODO: when to use table 'space' vs 'block'?
+ };

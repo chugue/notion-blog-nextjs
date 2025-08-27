@@ -1,3 +1,5 @@
+'use client';
+
 import { PostMetadata } from '@/domain/entities/post.entity';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import Image from 'next/image';
