@@ -27,39 +27,35 @@ const TableOfContentsWrapper = ({ isMobile, className }: TableOfContentsWrapperP
 
   useGSAP(() => {
     if (toc.length === 0 || !containerRef.current) return;
+    const links = gsap.utils.toArray('.items');
 
-    const ctx = gsap.context(() => {
-      const links = gsap.utils.toArray('.items');
-      if (!links.length) return;
-
-      gsap.fromTo(
-        links,
-        {
-          opacity: 0,
-          x: 50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          stagger: 0.05,
-          duration: 1,
-          ease: 'power4.out',
-        }
-      );
-      gsap.fromTo(
-        containerRef.current,
-        {
-          opacity: 0,
-          x: 50,
-        },
-        {
-          opacity: 1,
-          duration: 1,
-          x: 0,
-          ease: 'power4.out',
-        }
-      );
-    });
+    gsap.fromTo(
+      links,
+      {
+        opacity: 0,
+        x: 50,
+      },
+      {
+        opacity: 1,
+        x: 0,
+        stagger: 0.05,
+        duration: 1,
+        ease: 'power4.out',
+      }
+    );
+    gsap.fromTo(
+      containerRef.current,
+      {
+        opacity: 0,
+        x: 50,
+      },
+      {
+        opacity: 1,
+        duration: 0.5,
+        x: 0,
+        ease: 'power4.out',
+      }
+    );
   }, [toc.length]);
 
   if (isMobile) {
