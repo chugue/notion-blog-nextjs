@@ -1,13 +1,13 @@
 'use client';
 
-import Link from 'next/link';
-import React, { use, useEffect } from 'react';
-import { PostCard } from './PostCard';
-import { Loader2 } from 'lucide-react';
 import { PostMetadataResp } from '@/domain/entities/post.entity';
+import { useCheckSelectedTag } from '@/presentation/hooks/blog/use-check-selected-tag';
 import { useFetchPost } from '@/presentation/hooks/blog/use-fetch-post';
 import { useInfiniteScroll } from '@/presentation/hooks/blog/use-infinite-scroll';
-import { useCheckSelectedTag } from '@/presentation/hooks/blog/use-check-selected-tag';
+import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { use } from 'react';
+import { PostCard } from './PostCard';
 
 interface PostListProps {
   postsPromise: Promise<PostMetadataResp>;
