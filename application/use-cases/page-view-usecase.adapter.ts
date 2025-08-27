@@ -26,7 +26,7 @@ export const createPageViewUseCaseAdapter = (
       if (isCrawlingBot) return;
 
       // 2. 사용자 정보 오늘 날짜 조회 - 없으면 생성
-      const visitorInfo = await visitorInfoRepo.getVisitorInfo(
+      const visitorInfo = await visitorInfoRepo.getVisitorInfoOrCreate(
         hashedIp.toString(),
         todayKST,
         'main',
@@ -36,7 +36,7 @@ export const createPageViewUseCaseAdapter = (
       if (!visitorInfo.success) return;
 
       // 3. 오늘 날짜 현재 페이지 뷰 조회 - 없으면 생성
-      pageViewRepo.getPageViewIfNotCreate(todayKST, 'main', '/');
+      pageViewRepo.getPageViewOrCreate(todayKST, 'main', '/');
       // 3-1. 현재 페이지 뷰가 없으면 오늘 날짜로 생성
       // 4. 오늘 날짜 방문자 수 증가
 

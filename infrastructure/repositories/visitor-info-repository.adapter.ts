@@ -5,7 +5,12 @@ import { VisitorInfoSelect, visitorInfo, visitorInfoToDomain } from '../database
 
 const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
   return {
-    getVisitorInfo: async (ipHash: string, date: string, pathname: string, userAgent: string) => {
+    getVisitorInfoOrCreate: async (
+      ipHash: string,
+      date: string,
+      pathname: string,
+      userAgent: string
+    ) => {
       try {
         const record = await db.query.visitorInfo.findFirst({
           where: and(eq(visitorInfo.ipHash, ipHash), eq(visitorInfo.date, date)),
