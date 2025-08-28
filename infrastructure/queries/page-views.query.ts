@@ -1,12 +1,12 @@
 import { PageView } from '@/domain/entities/page-view.entity';
-import { db } from '@/infrastructure/database/drizzle/drizzle';
+import { Transaction, db } from '@/infrastructure/database/drizzle/drizzle';
 import {
   PageViewSelect,
   pageViewToDomain,
   pageViews,
 } from '@/infrastructure/database/supabase/schema';
 import { Result } from '@/shared/types/result';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 
 export const pageViewQuery = {
   getMainPageView: async (): Promise<Result<PageView, Error>> => {
@@ -27,16 +27,25 @@ export const pageViewQuery = {
   pageViewQuery: async (
     date: string,
     pageId: string,
-    pathname: string
+    pathname: string,
+    tx: Transaction
   ): Promise<PageViewSelect | undefined> => {
     try {
-      return await db.query.pageViews.findFirst({
-        where: and(
-          eq(pageViews.date, date),
-          eq(pageViews.notionPageId, pageId),
-          eq(pageViews.pathname, pathname)
-        ),
-      });
+      const record = await tx
+        .select()
+        .from(pageViews)
+        .where(
+          and(
+            eq(pageViews.date, date),
+            eq(pageViews.notionPageId, pageId),
+            eq(pageViews.pathname, pathname)
+          )
+        )
+        .limit(1);
+
+      if (record.length === 0) return undefined;
+
+      return record[0];
     } catch (error) {
       console.log(error);
       return undefined;
@@ -46,10 +55,11 @@ export const pageViewQuery = {
   pageViewInsertAndReturn: async (
     date: string,
     pageId: string,
-    pathname: string
+    pathname: string,
+    tx: Transaction
   ): Promise<PageViewSelect[]> => {
     try {
-      return await db
+      return await tx
         .insert(pageViews)
         .values({
           date,
@@ -59,6 +69,37 @@ export const pageViewQuery = {
           likeCount: 0,
         })
         .returning();
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  },
+
+  updatePageView: async (pageView: PageView, tx: Transaction): Promise<Result<PageView, Error>> => {
+    try {
+      const updatedRecord = await tx
+        .update(pageViews)
+        .set({ viewCount: sql`${pageViews.viewCount} + 1` })
+        .where(
+          and(
+            eq(pageViews.notionPageId, pageView.notionPageId),
+            eq(pageViews.date, pageView.date),
+            eq(pageViews.pathname, pageView.pathname)
+          )
+        )
+        .returning();
+
+      return { success: true, data: pageViewToDomain(updatedRecord[0] as PageViewSelect) };
+    } catch (error) {
+      console.log(error);
+      return { success: false, error: error instanceof Error ? error : new Error(String(error)) };
+    }
+  },
+
+  getAllPageViews: async (tx: Transaction): Promise<PageView[]> => {
+    try {
+      const allPageViews = await tx.select().from(pageViews);
+      return allPageViews.map((pageView) => pageViewToDomain(pageView as PageViewSelect));
     } catch (error) {
       console.log(error);
       return [];
