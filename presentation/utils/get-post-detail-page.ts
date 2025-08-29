@@ -7,8 +7,9 @@ const getPostDetailPage = async (id: string) => {
   const pageViewUseCase = diContainer.pageView.pageViewUseCase;
   const request = headers();
 
-  const result = await postUseCase.getPostById(id);
   pageViewUseCase.addDetailPageView(request, id);
+
+  const result = await postUseCase.getPostById(id);
 
   if (!result) {
     notFound();

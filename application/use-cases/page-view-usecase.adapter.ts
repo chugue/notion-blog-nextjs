@@ -45,12 +45,6 @@ export const createPageViewUseCaseAdapter = (
           throw foundVisitor.error;
         }
 
-        /**
-         *  - 사용자가 페이지를 방문하면 페이지 뷰는 증가하되 총 방문자수는 증가하면 안됨
-         *  - 접속자 정보로 페이지뷰를 먼저 증가시키고, 만약에 오늘 접속한 방문자라면은
-         *  - site metrics은 업데이트 하면 안됨, 오늘 방문 안한 사용자만 업데이트
-         *  - 그럼 방문자 수를 페이지 뷰로 계산하지말고, 그날의 조회된 visitor info로 계산하면 되겠다!
-         * */
         const updatedVisitor = await visitorInfoRepo.updateVisitorPathname(
           foundVisitor.data,
           '/',

@@ -69,7 +69,7 @@ const TableOfContentsWrapper = ({ isMobile, className }: TableOfContentsWrapperP
                   key={item.id}
                   item={item}
                   activeHeading={activeHeading}
-                  className="justify-center opacity-0"
+                  className="justify-center"
                 />
               ))}
           </nav>

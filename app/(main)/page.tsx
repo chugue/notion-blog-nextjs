@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  const { tags, postsPromise } = getMainPageData({ selectedTag, selectedSort });
+  const { tags, postsPromise } = await getMainPageData({ selectedTag, selectedSort });
 
   return (
     <div className="container mx-auto py-5 sm:py-8">

@@ -6,7 +6,7 @@ interface MainPageDataProps {
   selectedSort: string;
 }
 
-const getMainPageData = ({ selectedTag, selectedSort }: MainPageDataProps) => {
+const getMainPageData = async ({ selectedTag, selectedSort }: MainPageDataProps) => {
   const tagInfoUseCase = diContainer.tagInfo.tagInfoUseCase;
   const postUseCase = diContainer.post.postUseCase;
   const pageViewUseCase = diContainer.pageView.pageViewUseCase;
@@ -14,6 +14,7 @@ const getMainPageData = ({ selectedTag, selectedSort }: MainPageDataProps) => {
   const request = headers();
 
   pageViewUseCase.addMainPageView(request);
+
   const tags = tagInfoUseCase.getAllTags();
   const postsPromise = postUseCase.getPostsWithParams({
     tag: selectedTag,
