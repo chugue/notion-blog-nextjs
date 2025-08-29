@@ -26,26 +26,19 @@ export const pageViewQuery = {
 
   pageViewQuery: async (
     date: string,
-    pageId: string,
     pathname: string,
     tx: Transaction
-  ): Promise<PageViewSelect | undefined> => {
+  ): Promise<PageView | undefined> => {
     try {
       const record = await tx
         .select()
         .from(pageViews)
-        .where(
-          and(
-            eq(pageViews.date, date),
-            eq(pageViews.notionPageId, pageId),
-            eq(pageViews.pathname, pathname)
-          )
-        )
+        .where(and(eq(pageViews.date, date), eq(pageViews.pathname, pathname)))
         .limit(1);
 
       if (record.length === 0) return undefined;
 
-      return record[0];
+      return pageViewToDomain(record[0] as PageViewSelect);
     } catch (error) {
       console.log(error);
       return undefined;
@@ -65,7 +58,7 @@ export const pageViewQuery = {
           date,
           notionPageId: pageId,
           pathname,
-          viewCount: 1,
+          viewCount: 0,
           likeCount: 0,
         })
         .returning();
@@ -79,7 +72,7 @@ export const pageViewQuery = {
     try {
       const updatedRecord = await tx
         .update(pageViews)
-        .set({ viewCount: sql`${pageViews.viewCount} + 1` })
+        .set({ viewCount: sql`${pageViews.viewCount} + 1`, likeCount: sql`${pageViews.likeCount}` })
         .where(
           and(
             eq(pageViews.notionPageId, pageView.notionPageId),
@@ -99,6 +92,9 @@ export const pageViewQuery = {
   getAllPageViews: async (tx: Transaction): Promise<PageView[]> => {
     try {
       const allPageViews = await tx.select().from(pageViews);
+
+      if (allPageViews.length === 0) return [];
+
       return allPageViews.map((pageView) => pageViewToDomain(pageView as PageViewSelect));
     } catch (error) {
       console.log(error);

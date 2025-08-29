@@ -5,24 +5,24 @@ import { Result } from '@/shared/types/result';
 export type GetVisitorInfoParams = {
   ipHash: string;
   todayKST: string;
-  pathName: string;
+  pathname: string;
   userAgent: string;
 };
 
 export interface VisitorInfoRepositoryPort {
   getVisitorInfoOrCreate: (
-    { ipHash, todayKST, pathName, userAgent }: GetVisitorInfoParams,
+    { ipHash, todayKST, pathname, userAgent }: GetVisitorInfoParams,
     tx: Transaction
   ) => Promise<Result<VisitorInfo, Error>>;
 
   createVisitorInfo: (
-    { ipHash, todayKST, pathName, userAgent }: GetVisitorInfoParams,
+    { ipHash, todayKST, pathname, userAgent }: GetVisitorInfoParams,
     tx: Transaction
   ) => Promise<Result<VisitorInfo, Error>>;
 
   updateVisitorPathname(
     data: VisitorInfo,
-    pathName: string,
+    pathname: string,
     todayKST: string,
     tx: Transaction
   ): Promise<Result<VisitorInfo, Error>>;

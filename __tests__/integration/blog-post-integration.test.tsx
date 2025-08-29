@@ -1,7 +1,6 @@
-import React from 'react';
-import { render, screen, waitFor } from '../../utils/test-utils';
 import BlogPost from '../../../app/(blog)/blog/[id]/page';
 import { diContainer } from '../../../shared/di/di-container';
+import { render, screen, waitFor } from '../../utils/test-utils';
 
 // Mock dependencies
 jest.mock('../../../shared/di/di-container', () => ({

@@ -1,6 +1,5 @@
-import React from 'react';
-import { render, screen, waitFor, fireEvent } from '../../utils/test-utils';
 import { diContainer } from '../../shared/di/di-container';
+import { fireEvent, render, screen, waitFor } from '../../utils/test-utils';
 
 // Mock dependencies
 jest.mock('../../shared/di/di-container', () => ({

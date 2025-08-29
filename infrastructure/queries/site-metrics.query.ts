@@ -44,7 +44,7 @@ export const siteMetricsQuery = {
         .where(eq(siteMetrics.date, date))
         .limit(1);
 
-      // 오늘 날짜 데이터가 있으면 조회수 추가
+      // 오늘 날짜 데이터가
       if (siteMetricData.length === 0) return null;
 
       return siteMetricToDomain(siteMetricData[0] as SiteMetricSelect);
@@ -58,11 +58,11 @@ export const siteMetricsQuery = {
   createSiteMetrics: async (
     date: string,
     tx: Transaction,
-    totalVisits?: number
+    totalVisits: number
   ): Promise<SiteMetric | null> => {
     const newSiteMetrics = await tx
       .insert(siteMetrics)
-      .values({ date, totalVisits: totalVisits ? totalVisits + 1 : 1, dailyVisits: 1 })
+      .values({ date, totalVisits: sql`${totalVisits} + 1`, dailyVisits: 1 })
       .returning();
 
     if (!newSiteMetrics) return null;
@@ -78,8 +78,8 @@ export const siteMetricsQuery = {
       const updatedMetrics = await db
         .update(siteMetrics)
         .set({
-          totalVisits: totalVisits + 1,
-          dailyVisits: dailyVisits + 1,
+          totalVisits: sql`${totalVisits} + 1`,
+          dailyVisits: sql`${dailyVisits} + 1`,
         })
         .where(and(eq(siteMetrics.id, id), eq(siteMetrics.date, date)))
         .returning();

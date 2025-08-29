@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { PostMetadata } from '../../domain/entities/post.entity';
-import { toast } from 'sonner';
 
 interface SearchState {
   // 모달 상태

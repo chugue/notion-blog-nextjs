@@ -30,7 +30,7 @@ export interface Post {
 export interface PostMetadataResp {
   posts: PostMetadata[];
   hasMore: boolean;
-  nextCursor: string;
+  nextCursor: string | null;
 }
 
 export interface GetPublishedPostParams {

@@ -3,5 +3,8 @@ import { Transaction } from '@/infrastructure/database/drizzle/drizzle';
 import { Result } from '@/shared/types/result';
 
 export interface SiteMetricsRepositoryPort {
-  readonly updateSiteMetric: (date: string, tx: Transaction) => Promise<Result<SiteMetric, Error>>;
+  readonly updateSiteMetric: (
+    todayKST: string,
+    tx: Transaction
+  ) => Promise<Result<SiteMetric, Error>>;
 }

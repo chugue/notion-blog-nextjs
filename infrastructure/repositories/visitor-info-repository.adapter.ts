@@ -10,7 +10,7 @@ import { VisitorInfoSelect, visitorInfo, visitorInfoToDomain } from '../database
 const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
   return {
     getVisitorInfoOrCreate: async (
-      { ipHash, todayKST, pathName, userAgent }: GetVisitorInfoParams,
+      { ipHash, todayKST, pathname, userAgent }: GetVisitorInfoParams,
       tx: Transaction
     ) => {
       try {
@@ -28,7 +28,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
             .values({
               ipHash,
               date: todayKST,
-              visitedPathnames: [pathName],
+              visitedPathnames: [pathname],
               userAgent: userAgent,
             })
             .returning();
@@ -37,7 +37,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
         }
 
         // 3. 방문자 정보 있을 때 중복 방문 체크
-        if (record[0].visitedPathnames.includes(pathName)) {
+        if (record[0].visitedPathnames.includes(pathname)) {
           return {
             success: false,
             error: new Error('Visitor already visited this page'),
@@ -52,7 +52,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
     },
 
     createVisitorInfo: async (
-      { ipHash, todayKST, pathName, userAgent }: GetVisitorInfoParams,
+      { ipHash, todayKST, pathname, userAgent }: GetVisitorInfoParams,
       tx: Transaction
     ) => {
       try {
@@ -61,7 +61,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
           .values({
             ipHash,
             date: todayKST,
-            visitedPathnames: [pathName],
+            visitedPathnames: [pathname],
             userAgent: userAgent,
           })
           .returning();

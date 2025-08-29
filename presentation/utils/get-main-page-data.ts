@@ -13,14 +13,13 @@ const getMainPageData = ({ selectedTag, selectedSort }: MainPageDataProps) => {
 
   const request = headers();
 
+  pageViewUseCase.addMainPageView(request);
   const tags = tagInfoUseCase.getAllTags();
   const postsPromise = postUseCase.getPostsWithParams({
     tag: selectedTag,
     sort: selectedSort,
     pageSize: 12,
   });
-
-  pageViewUseCase.addMainPageView(request);
 
   return {
     tags,

@@ -10,7 +10,7 @@ export interface PageViewRepositoryPort {
   readonly getPageViewOrCreate: (
     date: string,
     pageId: string,
-    pathname: string,
+    pathName: string,
     tx: Transaction
   ) => Promise<Result<PageView, Error>>;
   readonly updatePageView: (
