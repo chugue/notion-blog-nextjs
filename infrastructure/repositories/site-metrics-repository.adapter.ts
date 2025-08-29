@@ -4,6 +4,7 @@ import { SiteMetric } from '@/domain/entities/site-metric.entity';
 import { Result } from '@/shared/types/result';
 import { dateToKoreaDateString } from '@/shared/utils/format-date';
 import { Transaction } from '../database/drizzle/drizzle';
+import { pageViewQuery } from '../queries/page-views.query';
 import { siteMetricsQuery } from './../queries/site-metrics.query';
 
 const createSiteMetricRepositoryAdapter = (
@@ -27,18 +28,34 @@ const createSiteMetricRepositoryAdapter = (
 
           // 3. 어제 날짜 데이터가 없으면 페이지 전체 조회후 SiteMetric 생성
           if (!yesterdayMetrics) {
-            const pageViews = await pageViewRepo.getAllPageViews(tx);
+            const pageViews = await pageViewQuery.getAllPageViews(tx);
 
-            if (!pageViews.success) return { success: false, error: pageViews.error };
+            if (pageViews.length === 0)
+              return { success: false, error: new Error('Failed to get page views') };
 
-            const totalVisits = pageViews.data.reduce((acc, curr) => acc + curr.viewCount, 0);
-            const newSiteMetrics = await siteMetricsQuery.createSiteMetrics(todayKST, totalVisits);
+            const totalVisits = pageViews.reduce((acc, curr) => acc + curr.viewCount, 0);
+            const newSiteMetrics = await siteMetricsQuery.createSiteMetrics(
+              todayKST,
+              tx,
+              totalVisits
+            );
 
             if (!newSiteMetrics)
               return { success: false, error: new Error('Failed to create site metrics') };
 
             return { success: true, data: newSiteMetrics };
           }
+
+          const newFromYesterday = await siteMetricsQuery.createWithYesterdayMetrics(
+            yesterdayMetrics,
+            todayKST,
+            tx
+          );
+
+          if (!newFromYesterday)
+            return { success: false, error: new Error('Failed to update site metrics') };
+
+          return { success: true, data: newFromYesterday };
         }
 
         const result = await siteMetricsQuery.updateMetrics(todayMetrics as SiteMetric);

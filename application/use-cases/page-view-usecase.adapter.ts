@@ -15,7 +15,8 @@ export const createPageViewUseCaseAdapter = (
       const headers = await request;
 
       // 1. 사용자 정보 추출
-      const ip = headers.get('x-forwarded-for') ?? 'unknown';
+      const ipHeader = headers.get('x-forwarded-for') ?? '';
+      const ip = ipHeader.split(',')[0].trim() || 'unknown';
       const userAgent = headers.get('user-agent') ?? 'unknown';
 
       // 1-1. 크롤링 봇 검증
@@ -42,7 +43,7 @@ export const createPageViewUseCaseAdapter = (
         // 2. 사용자 정보 오늘 날짜 조회 - 없으면 생성
         const foundVisitor = await visitorInfoRepo.getVisitorInfoOrCreate(visitor, tx);
         if (!foundVisitor.success) {
-          if (foundVisitor.error.message === 'Visitor already visited this page') return;
+          if (foundVisitor.statusCode && foundVisitor.statusCode === 400) return;
           throw foundVisitor.error;
         }
 

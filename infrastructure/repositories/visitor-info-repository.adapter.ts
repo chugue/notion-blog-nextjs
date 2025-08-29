@@ -18,13 +18,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
         const record = await tx
           .select()
           .from(visitorInfo)
-          .where(
-            and(
-              eq(visitorInfo.ipHash, ipHash),
-              eq(visitorInfo.date, todayKST),
-              eq(visitorInfo.userAgent, userAgent)
-            )
-          )
+          .where(and(eq(visitorInfo.ipHash, ipHash), eq(visitorInfo.date, todayKST)))
           .limit(1);
 
         // 2. 방문자 정보 없으면 생성
@@ -44,7 +38,11 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
 
         // 3. 방문자 정보 있을 때 중복 방문 체크
         if (record[0].visitedPathnames.includes(pathName)) {
-          return { success: false, error: new Error('Visitor already visited this page') };
+          return {
+            success: false,
+            error: new Error('Visitor already visited this page'),
+            statusCode: 400,
+          };
         }
 
         return { success: true, data: visitorInfoToDomain(record[0] as VisitorInfoSelect) };

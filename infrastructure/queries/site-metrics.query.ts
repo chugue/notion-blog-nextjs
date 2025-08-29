@@ -1,9 +1,23 @@
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { Transaction, db } from '../database/drizzle/drizzle';
 import { SiteMetricSelect, siteMetricToDomain, siteMetrics } from '../database/supabase/schema';
 
 export const siteMetricsQuery = {
+  createWithYesterdayMetrics: async (
+    yesterdayMetrics: SiteMetric,
+    todayKST: string,
+    tx: Transaction
+  ): Promise<SiteMetric | null> => {
+    const newTodayMetrics = await tx.insert(siteMetrics).values({
+      date: todayKST,
+      totalVisits: sql`${yesterdayMetrics.totalVisits} + 1`,
+      dailyVisits: 1,
+    });
+    return siteMetricToDomain(newTodayMetrics[0] as SiteMetricSelect);
+  },
+
+  // 어제 날짜 데이터 조회
   getYesterDaySiteMetrics: async (): Promise<SiteMetric | null> => {
     try {
       const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
@@ -20,6 +34,7 @@ export const siteMetricsQuery = {
     }
   },
 
+  // 오늘 날짜 데이터 조회
   getSiteMetricsByDate: async (date: string, tx: Transaction): Promise<SiteMetric | null> => {
     try {
       // 오늘 날짜 데이터 조회
@@ -39,8 +54,13 @@ export const siteMetricsQuery = {
     }
   },
 
-  createSiteMetrics: async (date: string, totalVisits?: number): Promise<SiteMetric | null> => {
-    const newSiteMetrics = await db
+  // 페이지 전체 조회후 SiteMetric 생성
+  createSiteMetrics: async (
+    date: string,
+    tx: Transaction,
+    totalVisits?: number
+  ): Promise<SiteMetric | null> => {
+    const newSiteMetrics = await tx
       .insert(siteMetrics)
       .values({ date, totalVisits: totalVisits ? totalVisits + 1 : 1, dailyVisits: 1 })
       .returning();
