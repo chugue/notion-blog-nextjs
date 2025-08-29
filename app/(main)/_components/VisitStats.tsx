@@ -1,6 +1,6 @@
 'use client';
 
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
@@ -14,38 +14,6 @@ import { MainPageChartData } from '@/shared/types/main-page-chartdata';
 import { cn } from '@/shared/utils/tailwind-cn';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-// const chartData = [
-//   { date: '2024-06-01', daily: 178, total: 200 },
-//   { date: '2024-06-02', daily: 470, total: 410 },
-//   { date: '2024-06-03', daily: 103, total: 160 },
-//   { date: '2024-06-04', daily: 439, total: 380 },
-//   { date: '2024-06-05', daily: 88, total: 140 },
-//   { date: '2024-06-06', daily: 294, total: 250 },
-//   { date: '2024-06-07', daily: 323, total: 370 },
-//   { date: '2024-06-08', daily: 385, total: 320 },
-//   { date: '2024-06-09', daily: 438, total: 480 },
-//   { date: '2024-06-10', daily: 155, total: 200 },
-//   { date: '2024-06-11', daily: 92, total: 150 },
-//   { date: '2024-06-12', daily: 492, total: 420 },
-//   { date: '2024-06-13', daily: 81, total: 130 },
-//   { date: '2024-06-14', daily: 426, total: 380 },
-//   { date: '2024-06-15', daily: 307, total: 350 },
-//   { date: '2024-06-16', daily: 371, total: 310 },
-//   { date: '2024-06-17', daily: 475, total: 520 },
-//   { date: '2024-06-18', daily: 107, total: 170 },
-//   { date: '2024-06-19', daily: 341, total: 290 },
-//   { date: '2024-06-20', daily: 408, total: 450 },
-//   { date: '2024-06-21', daily: 169, total: 210 },
-//   { date: '2024-06-22', daily: 317, total: 270 },
-//   { date: '2024-06-23', daily: 480, total: 530 },
-//   { date: '2024-06-24', daily: 132, total: 180 },
-//   { date: '2024-06-25', daily: 141, total: 190 },
-//   { date: '2024-06-26', daily: 434, total: 380 },
-//   { date: '2024-06-27', daily: 448, total: 490 },
-//   { date: '2024-06-28', daily: 149, total: 200 },
-//   { date: '2024-06-29', daily: 103, total: 160 },
-//   { date: '2024-06-30', daily: 446, total: 400 },
-// ];
 
 const chartConfig = {
   daily: {
@@ -131,7 +99,9 @@ export function VisitStats({ className }: { className?: string }) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  padding={{ left: 0, right: 0 }}
                   minTickGap={32}
+                  width={100}
                   tickFormatter={(value) => {
                     const date = new Date(value);
                     return date.toLocaleDateString('en-US', {
@@ -139,6 +109,20 @@ export function VisitStats({ className }: { className?: string }) {
                       day: 'numeric',
                     });
                   }}
+                />
+                <YAxis
+                  dataKey="daily"
+                  width={0}
+                  tickMargin={8}
+                  // dataMax이 차트 높이의 70% 위치에 오도록 상단을 dataMax / 0.7으로 설정
+                  domain={[
+                    0,
+                    (dataMax: number) =>
+                      // 소수점 3자리로 반올림해 정밀도 유지
+                      Number((dataMax / 0.7).toFixed(3)),
+                  ]}
+                  tickFormatter={(v) => v.toLocaleString()}
+                  allowDecimals={false}
                 />
                 <ChartTooltip
                   content={
