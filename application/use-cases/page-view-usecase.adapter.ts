@@ -1,3 +1,4 @@
+import { hashIp } from '@/domain/utils/crypto.utils';
 import { crawlingBotCheck } from '@/domain/utils/page-view.utils';
 import { db } from '@/infrastructure/database/drizzle/drizzle';
 import { PageViewUseCasePort } from '@/presentation/ports/page-view-usecase.port';
@@ -24,10 +25,7 @@ export const createPageViewUseCaseAdapter = (
       if (isCrawlingBot) return;
 
       // 1-2. IP 해시 생성
-      const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
-      const ipHash = Array.from(new Uint8Array(buffer))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('');
+      const ipHash = await hashIp(ip);
       const todayKST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(
         new Date()
       );
