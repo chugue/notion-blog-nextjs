@@ -1,16 +1,13 @@
+import { jest } from '@jest/globals';
 import { NextRequest } from 'next/server';
-import { diContainer } from '../../shared/di/di-container';
+import { GET as notionGET } from '../../../app/api/notion/route';
+import { GET as searchGET } from '../../../app/api/search/route';
+import { mockDiContainer, mockPostUseCase, resetAllMocks } from '../shared/di-mock';
+// import { diContainer } from '../../shared/di/di-container'; // 👈 diContainer 직접 import 제거
 
 // Mock dependencies
 jest.mock('../../shared/di/di-container', () => ({
-  diContainer: {
-    post: {
-      postUseCase: {
-        getPostsWithParams: jest.fn(),
-        getAllPublishedPostMetadatas: jest.fn(),
-      },
-    },
-  },
+  diContainer: mockDiContainer, // 👈 mockDiContainer 사용
 }));
 
 jest.mock('next/server', () => ({
@@ -23,12 +20,11 @@ jest.mock('next/server', () => ({
 }));
 
 describe('API Integration Tests', () => {
-  const mockPostUseCase = diContainer.post.postUseCase as jest.Mocked<
-    typeof diContainer.post.postUseCase
-  >;
+  // const actualMockPostUseCase = diContainer.post.postUseCase as jest.Mocked<typeof mockPostUseCase>; // 더 이상 필요 없음
+  // const actualMockTagInfoUseCase = diContainer.tagInfo.tagInfoUseCase as jest.Mocked<typeof mockTagInfoUseCase>; // 더 이상 필요 없음
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    resetAllMocks(); // 👈 resetAllMocks 사용
   });
 
   describe('/api/notion - GET Posts with Parameters', () => {
@@ -52,10 +48,7 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(mockPosts);
 
       const request = new NextRequest('http://localhost:3000/api/notion');
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
@@ -65,7 +58,6 @@ describe('API Integration Tests', () => {
         startCursor: undefined,
       });
 
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: true,
         data: mockPosts,
@@ -94,10 +86,7 @@ describe('API Integration Tests', () => {
       const request = new NextRequest(
         'http://localhost:3000/api/notion?tag=React&sort=date&pageSize=10&startCursor=cursor-123'
       );
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
@@ -107,8 +96,7 @@ describe('API Integration Tests', () => {
         startCursor: 'cursor-123',
       });
 
-      const { NextResponse: NextResponse2 } = require('next/server');
-      expect(NextResponse2.json).toHaveBeenCalledWith({
+      expect(NextResponse.json).toHaveBeenCalledWith({
         success: true,
         data: mockPosts,
       });
@@ -125,13 +113,9 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(mockEmptyPosts);
 
       const request = new NextRequest('http://localhost:3000/api/notion');
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: true,
         data: mockEmptyPosts,
@@ -143,13 +127,9 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(null);
 
       const request = new NextRequest('http://localhost:3000/api/notion');
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: false,
         error: new Error('Failed to get published posts'),
@@ -167,10 +147,7 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(mockPosts);
 
       const request = new NextRequest('http://localhost:3000/api/notion?pageSize=invalid');
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
@@ -206,14 +183,10 @@ describe('API Integration Tests', () => {
 
       mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue(mockMetadatas);
 
-      const { GET } = require('../../../app/api/search/route');
-
-      // Act
-      const response = await GET();
+      const response = await searchGET();
 
       // Assert
       expect(mockPostUseCase.getAllPublishedPostMetadatas).toHaveBeenCalled();
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: true,
         data: mockMetadatas,
@@ -224,13 +197,9 @@ describe('API Integration Tests', () => {
       // Arrange
       mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue([]);
 
-      const { GET } = require('../../../app/api/search/route');
-
-      // Act
-      const response = await GET();
+      const response = await searchGET();
 
       // Assert
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: true,
         data: [],
@@ -241,13 +210,9 @@ describe('API Integration Tests', () => {
       // Arrange
       mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue(null);
 
-      const { GET } = require('../../../app/api/search/route');
-
-      // Act
-      const response = await GET();
+      const response = await searchGET();
 
       // Assert
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: false,
         error: new Error('Failed to get posts'),
@@ -290,10 +255,6 @@ describe('API Integration Tests', () => {
       const notionRequest = new NextRequest('http://localhost:3000/api/notion');
       const searchRequest = {};
 
-      const { GET: notionGET } = require('../../../app/api/notion/route');
-      const { GET: searchGET } = require('../../../app/api/search/route');
-
-      // Act
       const notionResponse = await notionGET(notionRequest);
       const searchResponse = await searchGET(searchRequest);
 
@@ -302,7 +263,6 @@ describe('API Integration Tests', () => {
       expect(mockPostUseCase.getAllPublishedPostMetadatas).toHaveBeenCalled();
 
       // Verify that both APIs return consistent data structure
-      const { NextResponse } = require('next/server');
       expect(NextResponse.json).toHaveBeenCalledWith({
         success: true,
         data: mockPosts,
@@ -328,10 +288,6 @@ describe('API Integration Tests', () => {
       const notionRequest = new NextRequest('http://localhost:3000/api/notion');
       const searchRequest = {};
 
-      const { GET: notionGET } = require('../../../app/api/notion/route');
-      const { GET: searchGET } = require('../../../app/api/search/route');
-
-      // Act
       const [notionResponse, searchResponse] = await Promise.all([
         notionGET(notionRequest),
         searchGET(searchRequest),
@@ -357,10 +313,7 @@ describe('API Integration Tests', () => {
       const request = new NextRequest(
         'http://localhost:3000/api/notion?tag=&sort=&pageSize=&startCursor='
       );
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
@@ -382,10 +335,7 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(mockPosts);
 
       const request = new NextRequest('http://localhost:3000/api/notion?pageSize=999999');
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
@@ -409,10 +359,7 @@ describe('API Integration Tests', () => {
       const request = new NextRequest(
         'http://localhost:3000/api/notion?tag=React%20%26%20TypeScript&sort=date%20desc'
       );
-      const { GET } = require('../../../app/api/notion/route');
-
-      // Act
-      const response = await GET(request);
+      const response = await notionGET(request);
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({

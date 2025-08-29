@@ -1,5 +1,5 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { NotionPost, NotionUser } from '../entities/notion.entity';
+import { NotionUser } from '../entities/notion.entity';
 import { PostMetadata } from '../entities/post.entity';
 
 export const convertS3UrlToNotionUrl = (s3Url: string, pageId: string): string | null => {
@@ -62,26 +62,6 @@ export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
         : '',
     date:
       properties.createdAt.type === 'created_time' ? (properties.createdAt.created_time ?? '') : '',
-  };
-};
-
-// 테스트에서 기대하는 함수들 추가
-export const toPost = (notionPost: NotionPost) => {
-  const metadata = toPostMetadata(notionPost);
-  return {
-    content: '', // 테스트에서 기대하는 필드명
-    metadata,
-  };
-};
-
-export const toPostMetadata = (notionPost: NotionPost): PostMetadata => {
-  const { properties } = notionPost;
-  return {
-    id: notionPost.id,
-    title: properties.title?.title?.[0]?.plain_text ?? '',
-    author: properties.author?.rich_text?.[0]?.plain_text ?? '',
-    date: properties.date?.date?.start ?? '',
-    tag: properties.tag?.multi_select?.map((tag) => tag.name) ?? [],
   };
 };
 

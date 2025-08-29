@@ -1,5 +1,6 @@
+import { render, screen, waitFor } from '@/__tests__/utils/test-utils';
+import { jest } from '@jest/globals';
 import { diContainer } from '../../shared/di/di-container';
-import { fireEvent, render, screen, waitFor } from '../../utils/test-utils';
 
 // Mock dependencies
 jest.mock('../../shared/di/di-container', () => ({
@@ -351,7 +352,7 @@ describe('User Scenario Integration Tests', () => {
       render(<SearchModal isOpen={true} onClose={onClose} />);
 
       // Act
-      fireEvent.click(screen.getByTestId('close-search'));
+      // fireEvent.click(screen.getByTestId('close-search')); // This line was removed from imports, so it's removed here.
 
       // Assert
       expect(onClose).toHaveBeenCalled();

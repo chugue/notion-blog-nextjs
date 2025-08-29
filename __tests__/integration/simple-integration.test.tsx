@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, screen } from '../utils/test-utils';
-import NotionPageContent from '../../app/(blog)/_components/NotionPageContent';
 import CustomCodeBlock from '../../app/(blog)/_components/CustomCodeBlock';
+import NotionPageContent from '../../app/(blog)/_components/NotionPageContent';
+import { render, screen } from '../utils/test-utils';
 
 // Mock external dependencies
 jest.mock('react-notion-x', () => ({

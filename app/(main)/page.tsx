@@ -13,7 +13,6 @@ interface HomeProps {
     tag?: string;
     sort?: string;
   }>;
-  request: Request;
 }
 
 export default async function Home({ searchParams }: HomeProps) {

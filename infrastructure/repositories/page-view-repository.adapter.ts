@@ -1,5 +1,3 @@
-'use server';
-
 import { PageViewRepositoryPort } from '@/application/port/page-view-repository.port';
 import { PageView } from '@/domain/entities/page-view.entity';
 import { Result } from '@/shared/types/result';

@@ -1,5 +1,5 @@
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, gte, lte, sql } from 'drizzle-orm';
 import { Transaction, db } from '../database/drizzle/drizzle';
 import { SiteMetricSelect, siteMetricToDomain, siteMetrics } from '../database/supabase/schema';
 
@@ -44,13 +44,31 @@ export const siteMetricsQuery = {
         .where(eq(siteMetrics.date, date))
         .limit(1);
 
-      // 오늘 날짜 데이터가
+      // 오늘 날짜 데이터가 있으면 조회수 추가
       if (siteMetricData.length === 0) return null;
 
       return siteMetricToDomain(siteMetricData[0] as SiteMetricSelect);
     } catch (error) {
       console.log(error);
       return null;
+    }
+  },
+
+  // 메인페이지 30일 데이터 조회
+  getSiteMetricsByDateRange: async (startDate: string, endDate: string): Promise<SiteMetric[]> => {
+    try {
+      const siteMetricData = await db
+        .select()
+        .from(siteMetrics)
+        .where(and(gte(siteMetrics.date, startDate), lte(siteMetrics.date, endDate)))
+        .limit(1);
+
+      if (siteMetricData.length === 0) return [];
+
+      return siteMetricData.map(siteMetricToDomain);
+    } catch (error) {
+      console.log(error);
+      return [];
     }
   },
 

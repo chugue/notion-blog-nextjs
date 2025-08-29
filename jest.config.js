@@ -11,8 +11,23 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
+    '^@/__tests__/utils/(.*)$': '<rootDir>/__tests__/utils/$1',
+    '^@/app/\\(blog\\)/blog/\[id\]/page$': '<rootDir>/app/(blog)/blog/[id]/page.tsx',
+    '^../../../app/api/notion/route$': '<rootDir>/app/api/notion/route.ts',
+    '^../../../app/api/search/route$': '<rootDir>/app/api/search/route.ts',
+    '^../../../app/(blog)/_components/NotionPageContent$':
+      '<rootDir>/app/(blog)/_components/NotionPageContent.tsx',
     '^react-notion-x-code-block$': '<rootDir>/node_modules/react-notion-x-code-block/dist/index.js',
   },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
+  },
+  transformIgnorePatterns: [
+    '<rootDir>/node_modules/(?!notion-client|ky|gsap|@gsap/react|gsap/dist|gsap/src|gsap/all|gsap/Observer)/', // 👈 gsap 관련 모듈 추가 및 확장
+  ],
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',

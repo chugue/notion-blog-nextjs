@@ -1,15 +1,32 @@
 import { SiteMetricsRepositoryPort } from '@/application/port/site-metrics-repository.port';
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
+import { VisitorInfo } from '@/domain/entities/visitor-info.entity';
 import { Result } from '@/shared/types/result';
 import { dateToKoreaDateString } from '@/shared/utils/format-date';
 import { Transaction } from '../database/drizzle/drizzle';
-import { pageViewQuery } from '../queries/page-views.query';
+import visitorInfoQuery from '../queries/visitor-info.query';
 import { siteMetricsQuery } from './../queries/site-metrics.query';
 
 const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
   return {
+    getSiteMetricsByDateRange: async (
+      startDate: string,
+      endDate: string
+    ): Promise<Result<SiteMetric[], Error>> => {
+      try {
+        const siteMetricsData = await siteMetricsQuery.getSiteMetricsByDateRange(
+          startDate,
+          endDate
+        );
+        return { success: true, data: siteMetricsData };
+      } catch (error) {
+        console.log(error);
+        return { success: false, error: error as Error };
+      }
+    },
     updateSiteMetric: async (
       todayKST: string,
+      sameDayVisitor: VisitorInfo,
       tx: Transaction
     ): Promise<Result<SiteMetric, Error>> => {
       try {
@@ -26,12 +43,13 @@ const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
 
           // 3. 어제 날짜 데이터가 없으면 페이지 전체 조회후 SiteMetric 생성
           if (!yesterdayMetrics) {
-            const pageViews = await pageViewQuery.getAllPageViews(tx);
-            const hasPageViews = pageViews.length > 0;
+            const visitors = await visitorInfoQuery.getAllVisitorsByDate(todayKST, tx);
 
-            const totalVisits = hasPageViews
-              ? pageViews.reduce((acc, curr) => acc + curr.viewCount, 0)
-              : 0;
+            const filteredVisitors = visitors.filter(
+              (visitor) => visitor.ipHash !== sameDayVisitor.ipHash
+            );
+
+            const totalVisits = filteredVisitors.length;
 
             const newSiteMetrics = await siteMetricsQuery.createSiteMetrics(
               todayKST,
