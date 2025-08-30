@@ -24,16 +24,12 @@ export const pageViewQuery = {
     }
   },
 
-  pageViewQuery: async (
-    date: string,
-    pathname: string,
-    tx: Transaction
-  ): Promise<PageView | undefined> => {
+  pageViewQuery: async (pathname: string, tx: Transaction): Promise<PageView | undefined> => {
     try {
       const record = await tx
         .select()
         .from(pageViews)
-        .where(and(eq(pageViews.date, date), eq(pageViews.pathname, pathname)))
+        .where(and(eq(pageViews.pathname, pathname)))
         .limit(1);
 
       if (record.length === 0) return undefined;
@@ -46,7 +42,6 @@ export const pageViewQuery = {
   },
 
   pageViewInsertAndReturn: async (
-    date: string,
     pageId: string,
     pathname: string,
     tx: Transaction
@@ -55,7 +50,6 @@ export const pageViewQuery = {
       return await tx
         .insert(pageViews)
         .values({
-          date,
           notionPageId: pageId,
           pathname,
           viewCount: 0,
@@ -76,7 +70,6 @@ export const pageViewQuery = {
         .where(
           and(
             eq(pageViews.notionPageId, pageView.notionPageId),
-            eq(pageViews.date, pageView.date),
             eq(pageViews.pathname, pageView.pathname)
           )
         )

@@ -34,7 +34,7 @@ export const createPageViewRepositoryAdapter = (): PageViewRepositoryPort => {
       tx: Transaction
     ): Promise<Result<PageView, Error>> => {
       try {
-        const queryResult = await pageViewQuery.pageViewQuery(date, pathname, tx);
+        const queryResult = await pageViewQuery.pageViewQuery(pathname, tx);
 
         if (!queryResult) {
           const newRecord = await pageViewQuery.pageViewInsertAndReturn(date, pageId, pathname, tx);
