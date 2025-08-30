@@ -35,7 +35,6 @@ export function VisitStats({ className }: { className?: string }) {
 
       return res.data as MainPageChartData[];
     },
-    staleTime: 1000 * 60 * 5, // 5분
   });
 
   const total = React.useMemo(
@@ -47,8 +46,8 @@ export function VisitStats({ className }: { className?: string }) {
   );
 
   return (
-    <Card className={cn('p-0', className)}>
-      <CardContent className="flex flex-col gap-0">
+    <Card className={cn('items-center justify-center p-0', className)}>
+      <CardContent className="flex w-full flex-col gap-0">
         {isFetching ? (
           <div className="flex h-[250px] items-center justify-center">
             <LoadingSpinner />
