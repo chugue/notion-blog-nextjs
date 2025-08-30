@@ -118,7 +118,6 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
 
     getPostById: async (id: string): Promise<Result<Post>> => {
       const result = await postQuery.getPostByIdQuery(id);
-
       if (!result.success) {
         return {
           success: false,

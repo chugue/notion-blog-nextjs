@@ -8,6 +8,7 @@ export const GET = async () => {
   revalidateTag('image-proxy');
   revalidateTag('mainPageDefault');
   revalidateTag('allPostMetadatas');
+  revalidateTag('getMainPageDataCache');
 
   return NextResponse.json({ success: true });
 };
