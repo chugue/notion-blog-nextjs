@@ -1,3 +1,6 @@
+import { dateToKoreaDateString } from '@/shared/utils/format-date';
+import { cookies } from 'next/headers';
+
 export const getKstMidnightExpiry = (): { expires: Date; maxAge: number } => {
   const now = new Date();
   // KST 기준 현재 시각 얻기 (구성요소 추출용)
@@ -16,4 +19,32 @@ export const getKstMidnightExpiry = (): { expires: Date; maxAge: number } => {
   if (maxAge < 0) maxAge = 0;
 
   return { expires, maxAge };
+};
+
+export const checkCookies = async () => {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get('visitor-cookie');
+  const todayKST = dateToKoreaDateString(new Date());
+  let isNewVisitor = true;
+
+  if (!cookie || cookie.value !== todayKST) {
+    cookieStore.set({
+      name: 'visitor-cookie',
+      value: todayKST,
+      expires: getKstMidnightExpiry().expires,
+      maxAge: getKstMidnightExpiry().maxAge,
+      httpOnly: true,
+      secure: true,
+      path: '/',
+    });
+    isNewVisitor = true;
+    return isNewVisitor;
+  }
+
+  if (cookie && cookie.value === todayKST) {
+    isNewVisitor = false;
+    return isNewVisitor;
+  }
+
+  return isNewVisitor;
 };

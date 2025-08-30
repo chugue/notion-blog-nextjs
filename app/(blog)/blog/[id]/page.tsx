@@ -1,6 +1,7 @@
 export const dynamicParams = true;
 
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
+import AddPageView from '@/app/(main)/_components/AddPageView';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Separator } from '@/shared/components/ui/separator';
@@ -95,6 +96,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
     return (
       <div className="container mx-auto py-6 sm:py-12">
+        <AddPageView pageId={id} />
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
           <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
           <section className="min-w-0 px-4">

@@ -1,5 +1,6 @@
 import getMainPageData from '@/presentation/utils/get-main-page-data';
 import { Suspense } from 'react';
+import AddPageView from './_components/AddPageView';
 import HeaderSection from './_components/HeaderSection';
 import { VisitStats } from './_components/VisitStats';
 import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
@@ -20,10 +21,11 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedTag = tag ?? '전체';
   const selectedSort = sort ?? 'latest';
 
-  const { tags, postsPromise } = await getMainPageData({ selectedTag, selectedSort });
+  const { tags, postsPromise } = getMainPageData({ selectedTag, selectedSort });
 
   return (
     <div className="container mx-auto py-5 sm:py-8">
+      <AddPageView pageId="main" />
       <section className="mb-6 grid grid-cols-[500px_1fr] max-lg:grid-cols-1 max-md:px-4">
         <VisitStats />
         <FlipHexTechStack tags={tags} />

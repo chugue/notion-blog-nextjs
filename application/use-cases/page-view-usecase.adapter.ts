@@ -2,6 +2,7 @@ import { hashIp } from '@/domain/utils/crypto.utils';
 import { crawlingBotCheck } from '@/domain/utils/page-view.utils';
 import { db } from '@/infrastructure/database/drizzle/drizzle';
 import { PageViewUseCasePort } from '@/presentation/ports/page-view-usecase.port';
+import { checkCookies } from '@/presentation/utils/cookie-utils';
 import { PageViewRepositoryPort } from '../port/page-view-repository.port';
 import { SiteMetricsRepositoryPort } from '../port/site-metrics-repository.port';
 import { VisitorInfoRepositoryPort } from '../port/visitor-info-repository.port';
@@ -61,6 +62,9 @@ export const createPageViewUseCaseAdapter = (
         const updateResult = await pageViewRepo.updatePageView(pageView.data, tx);
         if (!updateResult.success) throw updateResult.error;
 
+        const isNewVisitor = await checkCookies();
+        if (!isNewVisitor) return;
+
         // 5. VisitStats 업데이트
         const siteMetric = await siteMetricRepo.updateSiteMetric(todayKST, foundVisitor.data, tx);
         if (!siteMetric.success) throw siteMetric.error;
@@ -117,6 +121,9 @@ export const createPageViewUseCaseAdapter = (
           tx
         );
         if (!updatedVisitorInfo.success) throw updatedVisitorInfo.error;
+
+        const isNewVisitor = await checkCookies();
+        if (!isNewVisitor) return;
 
         // 5. VisitStats 업데이트
         const siteMetric = await siteMetricRepo.updateSiteMetric(todayKST, visitorInfo.data, tx);
@@ -179,6 +186,9 @@ export const createPageViewUseCaseAdapter = (
           tx
         );
         if (!updatedVisitorInfo.success) throw updatedVisitorInfo.error;
+
+        const isNewVisitor = await checkCookies();
+        if (!isNewVisitor) return;
 
         // 5. VisitStats 업데이트
         const siteMetric = await siteMetricRepo.updateSiteMetric(todayKST, visitorInfo.data, tx);
