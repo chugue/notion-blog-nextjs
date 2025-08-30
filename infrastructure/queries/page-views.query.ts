@@ -11,9 +11,8 @@ import { and, eq, sql } from 'drizzle-orm';
 export const pageViewQuery = {
   getMainPageView: async (): Promise<Result<PageView, Error>> => {
     try {
-      const today = new Date().toISOString().split('T')[0];
       const record = await db.query.pageViews.findFirst({
-        where: and(eq(pageViews.notionPageId, 'main'), eq(pageViews.date, today)),
+        where: and(eq(pageViews.notionPageId, 'main')),
       });
 
       if (!record) return { success: false, error: new Error('page view not found') };
