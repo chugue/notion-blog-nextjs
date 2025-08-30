@@ -50,7 +50,11 @@ export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
 
   return {
     id: page.id,
-    title: properties.title.type === 'title' ? (properties.title.title[0]?.plain_text ?? '') : '',
+    // title: properties.title.type === 'title' ? (properties.title.title[0]?.plain_text ?? '') : '',
+    title:
+      properties.title.type === 'title'
+        ? properties.title.title.map((t) => t.plain_text ?? '').join('')
+        : '',
     coverImage: getCoverImage(page.cover, page.id) ?? undefined,
     tag:
       properties.tag.type === 'multi_select'

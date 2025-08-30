@@ -1,4 +1,3 @@
-import { getMainPageDataCache } from '@/application/data-cache/post.data-cache';
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
 import {
   GetPublishedPostParams,
@@ -66,27 +65,27 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
       startCursor = undefined,
     }: GetPublishedPostParams): Promise<Result<PostMetadataResp>> => {
       try {
-        if (tag === '전체' && sort === 'latest' && !startCursor) {
-          const mainPageData = await getMainPageDataCache();
+        // if (tag === '전체' && sort === 'latest' && !startCursor) {
+        //   const mainPageData = await getMainPageDataCache();
 
-          if (!mainPageData.results.length) {
-            return {
-              success: false,
-              error: new Error('Post not found'),
-            };
-          }
+        //   if (!mainPageData.results.length) {
+        //     return {
+        //       success: false,
+        //       error: new Error('Post not found'),
+        //     };
+        //   }
 
-          return {
-            success: true,
-            data: {
-              posts: mainPageData.results
-                .filter((page): page is PageObjectResponse => 'properties' in page)
-                .map(getPostMetadata),
-              hasMore: mainPageData.has_more,
-              nextCursor: mainPageData.next_cursor || '',
-            },
-          };
-        }
+        //   return {
+        //     success: true,
+        //     data: {
+        //       posts: mainPageData.results
+        //         .filter((page): page is PageObjectResponse => 'properties' in page)
+        //         .map(getPostMetadata),
+        //       hasMore: mainPageData.has_more,
+        //       nextCursor: mainPageData.next_cursor || '',
+        //     },
+        //   };
+        // }
 
         const response = await postQuery.getPublishedPosts({
           tag,
