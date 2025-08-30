@@ -21,14 +21,25 @@ export const siteMetrics = pgTable(
 export type SiteMetricSelect = typeof siteMetrics.$inferSelect;
 export type SiteMetricInsert = typeof siteMetrics.$inferInsert;
 
-export const siteMetricToDomain = (data: SiteMetricSelect): SiteMetric => {
+export const siteMetricToDomain = (data?: SiteMetricSelect): SiteMetric => {
+  if (!data) {
+    return {
+      id: uuid().defaultRandom().toString(),
+      totalVisits: 0,
+      dailyVisits: 0,
+      date: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
+
   return {
-    id: data.id,
-    totalVisits: data.totalVisits,
-    dailyVisits: data.dailyVisits,
+    id: data.id ?? uuid().defaultRandom().toString(),
+    totalVisits: data.totalVisits ?? 0,
+    dailyVisits: data.dailyVisits ?? 0,
     date: data.date,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
+    createdAt: data.createdAt ?? new Date(),
+    updatedAt: data.updatedAt ?? new Date(),
   };
 };
 

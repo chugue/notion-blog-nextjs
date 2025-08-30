@@ -6,8 +6,9 @@ import { NextResponse } from 'next/server';
 export async function GET(req: Request): Promise<NextResponse<Result<MainPageChartData[]>>> {
   try {
     const siteMetricUseCase = diContainer.siteMetric.siteMetricUsecase;
+    console.log('👉👉👉👉👉siteMetricUseCase');
     const data = await siteMetricUseCase.getThirtyDaysSiteMetrics();
-
+    console.log('👉👉👉👉👉data', data);
     return NextResponse.json({ success: true, data });
   } catch (error) {
     return NextResponse.json({

@@ -10,6 +10,7 @@ const createSiteMetricUsecaseAdapter = (
 ): SiteMetricsUsecasePort => {
   return {
     getThirtyDaysSiteMetrics: async (): Promise<MainPageChartData[]> => {
+      console.log('👉👉👉👉👉getThirtyDaysSiteMetrics');
       const today = new Date();
 
       // 지난 30일 날짜 목록 생성 (앞에서부터: 29일 전 -> 오늘)
@@ -21,6 +22,9 @@ const createSiteMetricUsecaseAdapter = (
 
       const startDate = dates[0];
       const endDate = dates[dates.length - 1];
+
+      console.log('👉👉👉👉👉startDate', startDate);
+      console.log('👉👉👉👉👉endDate', endDate);
 
       const result = await siteMetricRepo.getSiteMetricsByDateRange(startDate, endDate);
 

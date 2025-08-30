@@ -18,6 +18,9 @@ const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
           startDate,
           endDate
         );
+
+        console.log('👉👉👉👉👉siteMetricsData', siteMetricsData);
+
         return { success: true, data: siteMetricsData };
       } catch (error) {
         console.log(error);

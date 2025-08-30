@@ -33,6 +33,8 @@ export function VisitStats({ className }: { className?: string }) {
       const res = await fetch('/api/site-metrics').then((res) => res.json());
       if (!res.success) return [];
 
+      console.log(res.data);
+
       return res.data as MainPageChartData[];
     },
     staleTime: 1000 * 60 * 5, // 5분

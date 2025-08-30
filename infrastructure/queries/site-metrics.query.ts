@@ -60,8 +60,7 @@ export const siteMetricsQuery = {
       const siteMetricData = await db
         .select()
         .from(siteMetrics)
-        .where(and(gte(siteMetrics.date, startDate), lte(siteMetrics.date, endDate)))
-        .limit(1);
+        .where(and(gte(siteMetrics.date, startDate), lte(siteMetrics.date, endDate)));
 
       if (siteMetricData.length === 0) return [];
 
