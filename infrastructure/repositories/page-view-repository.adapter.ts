@@ -28,13 +28,12 @@ export const createPageViewRepositoryAdapter = (): PageViewRepositoryPort => {
     },
 
     getPageViewOrCreate: async (
-      date: string,
       pageId: string,
       pathname: string,
       tx: Transaction
     ): Promise<Result<PageView, Error>> => {
       try {
-        const queryResult = await pageViewQuery.pageViewQuery(pathname, tx);
+        const queryResult = await pageViewQuery.pageViewQuery(pageId, tx);
 
         if (!queryResult) {
           const newRecord = await pageViewQuery.pageViewInsertAndReturn(pageId, pathname, tx);

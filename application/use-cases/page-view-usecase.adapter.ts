@@ -55,7 +55,7 @@ export const createPageViewUseCaseAdapter = (
         if (!updatedVisitor.success) throw updatedVisitor.error;
 
         // 3. 오늘 날짜 현재 페이지 뷰 조회 - 없으면 생성
-        const pageView = await pageViewRepo.getPageViewOrCreate(todayKST, 'main', '/', tx);
+        const pageView = await pageViewRepo.getPageViewOrCreate('main', '/', tx);
         if (!pageView.success) throw pageView.error;
 
         // 4. 오늘 날짜 방문자 수 증가
@@ -107,7 +107,7 @@ export const createPageViewUseCaseAdapter = (
         }
 
         // 3. 페이지 뷰 정보 확인 및 업데이트 (상세 페이지)
-        const pageView = await pageViewRepo.getPageViewOrCreate(todayKST, pageId, pathname, tx);
+        const pageView = await pageViewRepo.getPageViewOrCreate(pageId, pathname, tx);
         if (!pageView.success) throw pageView.error;
 
         const updatedPageView = await pageViewRepo.updatePageView(pageView.data, tx);
@@ -172,7 +172,7 @@ export const createPageViewUseCaseAdapter = (
         }
 
         // 3. 페이지 뷰 정보 확인 및 업데이트 (소개 페이지)
-        const pageView = await pageViewRepo.getPageViewOrCreate(todayKST, pageId, pathname, tx);
+        const pageView = await pageViewRepo.getPageViewOrCreate(pageId, pathname, tx);
         if (!pageView.success) throw pageView.error;
 
         const updatedPageView = await pageViewRepo.updatePageView(pageView.data, tx);
