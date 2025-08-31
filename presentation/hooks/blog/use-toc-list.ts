@@ -82,10 +82,13 @@ export const useTocList = () => {
       setToc(initialToc);
     } else {
       // NotionRenderer가 아직 렌더링되지 않았다면 감시 시작
-      observer.observe(document.querySelector('.notion-page') as Node, {
-        childList: true,
-        subtree: true,
-      });
+      const target = document.querySelector('.notion-page') || document.body;
+      if (target instanceof Node) {
+        observer.observe(target, {
+          childList: true,
+          subtree: true,
+        });
+      }
     }
 
     // cleanup

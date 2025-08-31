@@ -12,6 +12,13 @@ export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
 ): PostUseCasePort => {
   return {
+    getPostPropertiesById: async (id: string): Promise<PostMetadata | null> => {
+      const result = await postRepositoryPort.getPostPropertiesById(id);
+
+      if (!result.success) return null;
+
+      return result.data;
+    },
     getAllPublishedPostMetadatas: async (): Promise<PostMetadata[]> => {
       const result = await allPostMetadatasDataCache(postRepositoryPort);
 

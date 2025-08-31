@@ -65,28 +65,6 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
       startCursor = undefined,
     }: GetPublishedPostParams): Promise<Result<PostMetadataResp>> => {
       try {
-        // if (tag === '전체' && sort === 'latest' && !startCursor) {
-        //   const mainPageData = await getMainPageDataCache();
-
-        //   if (!mainPageData.results.length) {
-        //     return {
-        //       success: false,
-        //       error: new Error('Post not found'),
-        //     };
-        //   }
-
-        //   return {
-        //     success: true,
-        //     data: {
-        //       posts: mainPageData.results
-        //         .filter((page): page is PageObjectResponse => 'properties' in page)
-        //         .map(getPostMetadata),
-        //       hasMore: mainPageData.has_more,
-        //       nextCursor: mainPageData.next_cursor || '',
-        //     },
-        //   };
-        // }
-
         const response = await postQuery.getPublishedPosts({
           tag,
           sort,
@@ -142,6 +120,25 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
           recordMap: result.data as unknown as notionType.ExtendedRecordMap,
           properties: getPostMetadata(property as PageObjectResponse),
         },
+      };
+    },
+
+    getPostPropertiesById: async (id: string): Promise<Result<PostMetadata>> => {
+      const allPostMetadatas = await postQuery.getAllPostMetadataCache();
+      const property = allPostMetadatas.results.find((page) => {
+        return page.id === id;
+      });
+
+      if (!property) {
+        return {
+          success: false,
+          error: new Error('Post Metadata not found'),
+        };
+      }
+
+      return {
+        success: true,
+        data: getPostMetadata(property as PageObjectResponse),
       };
     },
   };

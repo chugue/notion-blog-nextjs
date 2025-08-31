@@ -92,7 +92,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
 
   try {
-    const { properties, recordMap } = await getPostDetailPage(id);
+    const { properties } = await getPostDetailPage(id);
 
     return (
       <div className="container mx-auto py-6 sm:py-12">
@@ -119,7 +119,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
               {/* 메타 정보 */}
               <div className="text-muted-foreground flex flex-col gap-4 text-lg">
                 <div className="flex flex-wrap gap-2">
-                  {properties?.tag.map((tag) => (
+                  {properties?.tag.map((tag: string) => (
                     <ColoredBadge key={tag} tag={tag} />
                   ))}
                 </div>
@@ -143,7 +143,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
             {/* 블로그 본문 */}
             <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-              <NotionPageContent recordMap={recordMap} />
+              <NotionPageContent pageId={id} />
             </div>
 
             <Separator className="my-16" />

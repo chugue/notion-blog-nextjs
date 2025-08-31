@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: false,
   },
+
   webpack: (config: any, { isServer }: { isServer: boolean }) => {
     // CSS 최소화 비활성화
     if (!isServer) {

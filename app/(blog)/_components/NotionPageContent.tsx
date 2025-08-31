@@ -1,16 +1,45 @@
 'use client';
 
+import LoadingSpinner from '@/shared/components/LoadingSpinner';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import * as notionType from 'notion-types';
+import { ExtendedRecordMap } from 'notion-types';
 import { NotionRenderer } from 'react-notion-x';
 import CustomCodeBlock from './CustomCodeBlock';
 
-const NotionPageContent = ({ recordMap }: { recordMap: notionType.ExtendedRecordMap }) => {
+const NotionPageContent = ({ pageId }: { pageId: string }) => {
+  const {
+    data: recordMap,
+    isFetched,
+    error,
+  } = useQuery<ExtendedRecordMap | null>({
+    queryKey: ['notionPage', pageId],
+    queryFn: async () => {
+      const res = await fetch(`/api/notion/page?pageId=${pageId}`, {
+        next: {
+          revalidate: 60 * 60 * 24,
+        },
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.error?.message);
+      }
+      return json.data as ExtendedRecordMap;
+    },
+    enabled: !!pageId,
+    retry: 1,
+  });
+
+  if (!isFetched) return <LoadingSpinner />;
+  if (error)
+    return <div className="flex items-center justify-center">페이지를 불러오지 못했습니다.</div>;
+
   return (
     <div className="flex">
       <NotionRenderer
-        recordMap={recordMap}
+        recordMap={recordMap as ExtendedRecordMap}
         fullPage={false}
         darkMode={true}
         disableHeader={true}
