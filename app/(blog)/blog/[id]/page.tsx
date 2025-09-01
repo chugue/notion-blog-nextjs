@@ -26,7 +26,6 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
   const result = await getPostDetailPage(id);
 
   if (!result.properties) {
@@ -41,16 +40,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const post = result.properties;
-
   return {
     title: post.title,
     description: `${post.title} - Stephen's 기술블로그`,
     keywords: post.tag,
     authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
     publisher: '김성훈',
-    alternates: {
-      canonical: `/blog/${post.id}`,
-    },
+    alternates: { canonical: `/blog/${post.id}` },
     robots: {
       index: true,
       follow: true,

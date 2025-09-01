@@ -102,7 +102,7 @@ export const createPageViewUseCaseAdapter = (
         // 2. 방문자 정보 확인 및 업데이트 - 중복 방문 검사
         const visitorInfo = await visitorInfoRepo.getVisitorInfoOrCreate(visitor, tx);
         if (!visitorInfo.success) {
-          if (visitorInfo.statusCode && visitorInfo.statusCode === 400) return;
+          if (visitorInfo.statusCode === 400) return;
           throw visitorInfo.error;
         }
 

@@ -54,6 +54,7 @@ export const postQuery = {
         [`post-${id}`],
         {
           tags: [`post-${id}`, `all-posts`],
+          revalidate: 60 * 60 * 24,
         }
       );
       const result = await cachedFn();
@@ -81,28 +82,31 @@ export const postQuery = {
   getAllPostMetadataCache: async (): Promise<QueryDatabaseResponse> => {
     const cachedFn = unstable_cache(
       async () => {
-        return await notion.databases.query({
-          database_id: process.env.NOTION_DATABASE_ID!,
-          filter: {
-            and: [
-              {
-                property: 'isPublic',
-                select: {
-                  equals: 'Public',
-                },
-              },
-            ],
-          },
-        });
+        // 최초 요청
+        let allResults: QueryDatabaseResponse['results'] = [];
+        let startCursor: string | undefined = undefined;
+        let hasMore = true;
+
+        while (hasMore) {
+          const res = await notion.databases.query({
+            database_id: process.env.NOTION_DATABASE_ID!,
+            filter: {
+              and: [{ property: 'isPublic', select: { equals: 'Public' } }],
+            },
+            start_cursor: startCursor,
+          });
+
+          allResults = [...allResults, ...(res.results || [])];
+          hasMore = !!res.has_more;
+          startCursor = res.next_cursor || undefined;
+        }
+
+        return { results: allResults } as QueryDatabaseResponse;
       },
       ['allPostMetadatas'],
-      {
-        tags: ['allPostMetadatas'],
-      }
+      { tags: ['allPostMetadatas'] }
     );
 
-    const result = await cachedFn();
-
-    return result;
+    return await cachedFn();
   },
 };

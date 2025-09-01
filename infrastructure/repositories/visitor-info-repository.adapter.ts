@@ -22,7 +22,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
           .limit(1);
 
         // 2. 방문자 정보 없으면 생성
-        if (record.length === 0) {
+        if (!record || record.length === 0) {
           const newRecord = await tx
             .insert(visitorInfo)
             .values({

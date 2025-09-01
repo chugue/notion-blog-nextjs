@@ -9,6 +9,8 @@ const AddPageView = ({ pageId }: { pageId: string }) => {
         case 'main':
           fetch(`/api/page-view/main`, { method: 'POST' });
           break;
+        case 'about':
+          break;
         default:
           fetch(`/api/page-view/blog/${pageId}`, { method: 'POST' });
           break;
