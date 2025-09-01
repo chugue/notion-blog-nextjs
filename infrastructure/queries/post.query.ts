@@ -57,6 +57,7 @@ export const postQuery = {
           revalidate: 60 * 60 * 24,
         }
       );
+
       const result = await cachedFn();
 
       if (!result) {

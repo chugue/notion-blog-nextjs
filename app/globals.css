@@ -124,7 +124,7 @@
   --background: #030712;
   --foreground: oklch(0.985 0 0);
   --card: #1c212a;
-  --code-block-background:#1e1e2e;
+  --code-block-background: #1e1e2e;
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
@@ -163,7 +163,6 @@
     @apply bg-background text-foreground;
     font-family: var(--font-family-maplestory);
   }
-
 }
 
 .search-button-glow:hover {
@@ -251,7 +250,7 @@
   display: none;
 }
 .notion-h1 {
-  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 max-sm:before:opacity-0 sm:before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100 max-sm:before:opacity-0 sm:before:opacity-10;
   font-family: var(--font-family-maplestory);
   scroll-margin-top: var(--sticky-top);
 }
@@ -261,11 +260,11 @@
   scroll-margin-top: var(--sticky-top);
 }
 .notion-text {
-  @apply leading-[2] font-extralight text-neutral-200/90 text-lg;
+  @apply text-lg leading-[2] font-extralight text-neutral-200/90;
   font-family: var(--font-family-maplestory);
 }
 .notion-quote {
-  @apply border-primary border-l-4 px-8 text-neutral-300/80 [&>*]:my-0 mt-8;
+  @apply border-primary mt-8 border-l-4 px-8 text-neutral-300/80 [&>*]:my-0;
   font-family: var(--font-family-maplestory);
 }
 .notion-inline-code {
@@ -279,17 +278,18 @@
 }
 
 figure {
+  @apply block;
   position: relative;
   margin: 0 !important;
   padding: 0 !important;
 }
 
 figure:has(pre.shiki) {
-  @apply overflow-hidden rounded-lg;
+  @apply block overflow-hidden rounded-lg;
 }
 
 pre.shiki {
-  @apply overflow-x-auto text-[1rem];
+  @apply block overflow-x-auto text-[1rem];
   margin: 0 !important;
   padding: 3rem 3rem 3rem 2rem !important;
   overflow-wrap: normal !important;
@@ -335,22 +335,20 @@ figure [class^='code_module_codeLanLabel'] {
   font-family: var(--font-family-maplestory);
 }
 
-
 .notion-simple-table {
   @apply table w-full border-none;
 }
 
 .notion-text-children {
-  @apply pl-0 mt-2 sm:pl-4 sm:mt-2;
+  @apply mt-2 pl-0 sm:mt-2 sm:pl-4;
 }
-
 
 .notion-asset-wrapper-image > div {
   @apply !h-auto !max-h-none;
 }
 
 .notion-asset-wrapper img {
-  @apply rounded-lg w-full h-auto object-contain;
+  @apply h-auto w-full rounded-lg object-contain;
 }
 
 .notion-asset-caption {
@@ -382,7 +380,6 @@ figure [class^='code_module_codeLanLabel'] {
   @apply text-muted-foreground/80 text-sm;
 }
 
-
 /* 리스트 스타일 추가 */
 .notion-list > ol,
 .notion-list > ul {
@@ -390,26 +387,32 @@ figure [class^='code_module_codeLanLabel'] {
 }
 
 .notion-list > li {
-  @apply text-lg text-neutral-200/90 ;
+  @apply text-lg text-neutral-200/90;
   font-family: var(--font-family-maplestory);
 }
 
-.notion-list-numbered > li{
-  @apply list-decimal text-neutral-200/90 text-lg;
+.notion-list-numbered > li {
+  @apply list-decimal text-lg text-neutral-200/90;
   font-family: var(--font-family-maplestory);
 }
-
 
 ol .notion-text {
-  @apply text-neutral-300/70 text-lg;
+  @apply text-lg text-neutral-300/70;
 }
 
 ol ul li {
-  @apply text-neutral-300/70  ml-6 text-lg;
+  @apply ml-6 text-lg text-neutral-300/70;
   font-family: var(--font-family-maplestory);
 }
 
 .notion-text-children > ul > ul {
-  @apply ml-8 text-gray-400 ;
+  @apply ml-8 text-gray-400;
 }
 
+ol {
+  @apply block w-full;
+}
+
+img {
+  @apply border-1 border-neutral-800;
+}
