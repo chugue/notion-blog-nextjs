@@ -413,6 +413,6 @@ ol {
   @apply block w-full;
 }
 
-img {
+.notion-page img {
   @apply border-1 border-neutral-800;
 }
