@@ -38,7 +38,7 @@ export const createPageViewRepositoryAdapter = (): PageViewRepositoryPort => {
         if (!queryResult) {
           const newRecord = await pageViewQuery.pageViewInsertAndReturn(pageId, pathname, tx);
 
-          if (!newRecord) {
+          if (!newRecord || newRecord.length === 0) {
             return { success: false, error: new Error('Failed to create page view') };
           }
 

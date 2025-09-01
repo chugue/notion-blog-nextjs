@@ -42,7 +42,7 @@ const HexCard: React.FC<HexCardProps> = ({
 
   const handleClick = () => {
     setIsFlipped(true);
-    setSelectedTag(tech.name);
+    setSelectedTag(tech.tagName);
     router.push(`?tag=${encodeURIComponent(tech.tagName)}`);
   };
 
@@ -61,7 +61,7 @@ const HexCard: React.FC<HexCardProps> = ({
       }}
       onMouseLeave={() => {
         onHover(null);
-        if (selectedTag !== tech.name) {
+        if (selectedTag !== tech.tagName) {
           setIsFlipped(false);
         }
       }}
@@ -78,7 +78,7 @@ const HexCard: React.FC<HexCardProps> = ({
         <div className="relative h-10 w-10">
           <Image
             src={tech.icon}
-            alt={tech.name}
+            alt={tech.tagName}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
             className="rounded-sm object-contain"
@@ -98,7 +98,7 @@ const HexCard: React.FC<HexCardProps> = ({
           border: `2px solid ${tech.color}`,
         }}
       >
-        <Link href={`?tag=${encodeURIComponent(tech.name)}`}>
+        <Link href={`?tag=${encodeURIComponent(tech.tagName)}`}>
           <p className="cursor-pointer text-center text-sm font-bold text-white">{tech.tagName}</p>
         </Link>
       </div>
