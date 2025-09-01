@@ -88,7 +88,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const { id } = await params;
 
   try {
-    const { properties } = await getPostDetailPage(id);
+    const { recordMap, properties } = await getPostDetailPage(id);
 
     return (
       <div className="container mx-auto py-6 sm:py-12">
@@ -139,7 +139,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
             {/* 블로그 본문 */}
             <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-              <NotionPageContent pageId={id} />
+              <NotionPageContent recordMap={recordMap} />
             </div>
 
             <Separator className="my-16" />
