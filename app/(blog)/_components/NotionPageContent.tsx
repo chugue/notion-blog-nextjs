@@ -32,7 +32,12 @@ const NotionPageContent = ({ pageId }: { pageId: string }) => {
     retry: 1,
   });
 
-  if (!isFetched) return <LoadingSpinner />;
+  if (!isFetched)
+    return (
+      <div className="flex h-[20vh] items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   if (error)
     return <div className="flex items-center justify-center">페이지를 불러오지 못했습니다.</div>;
 
