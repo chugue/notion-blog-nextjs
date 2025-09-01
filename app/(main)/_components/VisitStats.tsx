@@ -30,7 +30,11 @@ export function VisitStats({ className }: { className?: string }) {
   const { data: siteMetrics, isFetching } = useQuery({
     queryKey: ['site-metrics'],
     queryFn: async () => {
-      const res = await fetch('/api/site-metrics').then((res) => res.json());
+      const res = await fetch('/api/site-metrics', {
+        next: {
+          revalidate: 60,
+        },
+      }).then((res) => res.json());
       if (!res.success) return [];
 
       return res.data as MainPageChartData[];
