@@ -54,7 +54,6 @@ export const postQuery = {
         [`post-${id}`],
         {
           tags: [`post-${id}`, `all-posts`],
-          revalidate: 60 * 60 * 24,
         }
       );
 
