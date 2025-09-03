@@ -1,5 +1,5 @@
 export const dynamicParams = true;
-export const revalidate = 60;
+export const revalidate = 3600;
 
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import AddPageView from '@/app/(main)/_components/AddPageView';

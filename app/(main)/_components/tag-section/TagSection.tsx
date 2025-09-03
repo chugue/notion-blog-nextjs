@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { cn } from '@/shared/utils/tailwind-cn';
 import Image from 'next/image';
 import Link from 'next/link';
-import { use } from 'react';
+import { use, useState } from 'react';
 import SearchButton from '../search/SearchButton';
 
 export interface TagSectionProps {
@@ -18,6 +18,7 @@ export interface TagSectionProps {
 const TagSection = ({ tags }: TagSectionProps) => {
   const { selectedTag, isChanging, ...store } = useSelectedTagStore();
   const allTags = use(tags);
+  const [expanded, setExpanded] = useState(false);
 
   const handleTagClick = (tagName: string) => {
     store.setSelectedTag(tagName);
@@ -29,9 +30,16 @@ const TagSection = ({ tags }: TagSectionProps) => {
       <CardHeader className="flex flex-col items-start">
         <CardTitle>태그목록</CardTitle>
       </CardHeader>
-      <CardContent className="px-2 py-0">
+      <CardContent className="relative px-2 py-0">
         <SearchButton />
-        <div className="mt-3 flex flex-col gap-3 max-md:overflow-y-auto max-md:overscroll-contain">
+        <div
+          className={cn(
+            'mt-3 flex flex-col gap-3 max-md:overflow-y-auto max-md:overscroll-contain',
+            expanded
+              ? 'max-md:h-auto max-md:overflow-y-auto'
+              : 'max-md:h-[50vh] max-md:overflow-hidden'
+          )}
+        >
           {allTags.map((tag) => {
             const tagInfo = toTagInfo(tag.name);
             const isSelected = selectedTag === tag.name || (!selectedTag && tag.name === '전체');
@@ -66,6 +74,21 @@ const TagSection = ({ tags }: TagSectionProps) => {
             );
           })}
         </div>
+        {!expanded && (
+          <div
+            className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 hidden h-14 bg-amber-200 max-md:block"
+            style={{
+              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))',
+              maskImage: 'linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))',
+            }}
+          />
+        )}
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-primary bg-card mb-4 flex w-full text-center text-sm underline max-md:hidden"
+        >
+          {expanded ? '접기' : '더 보기'}
+        </button>
       </CardContent>
     </Card>
   );
