@@ -3,6 +3,7 @@
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
 import { toTagInfo } from '@/presentation/utils/to-tag-Info';
+import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { cn } from '@/shared/utils/tailwind-cn';
 import Image from 'next/image';
@@ -26,7 +27,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
   };
 
   return (
-    <Card>
+    <Card className="max-md:overflow-hidden max-md:py-0 max-md:pt-6">
       <CardHeader className="flex flex-col items-start">
         <CardTitle>태그목록</CardTitle>
       </CardHeader>
@@ -76,19 +77,22 @@ const TagSection = ({ tags }: TagSectionProps) => {
         </div>
         {!expanded && (
           <div
-            className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 hidden h-14 bg-amber-200 max-md:block"
+            className="bg-card pointer-events-none absolute right-0 bottom-0 left-0 z-10 hidden h-16 max-md:block"
             style={{
-              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))',
-              maskImage: 'linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))',
+              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%) ',
+              maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%) ',
             }}
           />
         )}
-        <button
+        <Button
           onClick={() => setExpanded(!expanded)}
-          className="text-primary bg-card mb-4 flex w-full text-center text-sm underline max-md:hidden"
+          className={cn(
+            'bg-card/0 bottom-5 left-0 z-20 flex w-full text-center text-base text-white underline shadow-none',
+            expanded ? 'my-2 block h-10' : 'absolute'
+          )}
         >
           {expanded ? '접기' : '더 보기'}
-        </button>
+        </Button>
       </CardContent>
     </Card>
   );
