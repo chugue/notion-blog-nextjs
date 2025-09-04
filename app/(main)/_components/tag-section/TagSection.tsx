@@ -21,10 +21,10 @@ const TagSection = ({ tags }: TagSectionProps) => {
   const { selectedTag, isChanging, ...store } = useSelectedTagStore();
   const allTags = use(tags);
   const [expanded, setExpanded] = useState(false);
-  const indicator = document.querySelector('.indicator');
-  const tabRow = document.querySelector('.tabs-row');
 
   const updateIndicator = (target: Element) => {
+    const indicator = document.querySelector('.indicator');
+    const tabRow = document.querySelector('.tabs-row');
     if (!indicator || !tabRow) return;
 
     const tagetBounds = target.getBoundingClientRect();
@@ -68,6 +68,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
                   updateIndicator(document.getElementById(tag.name) as Element);
                 }}
                 prefetch={true}
+                scroll={false}
               >
                 <div
                   id={tag.name}
