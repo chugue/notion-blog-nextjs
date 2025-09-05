@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     keywords: post.tag,
     authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
     publisher: '김성훈',
-    alternates: { canonical: `/blog/${post.id}` },
+    alternates: { canonical: `https://www.stephen.dev.blog/blog/${post.id}` },
     robots: {
       index: true,
       follow: true,
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: post.title,
       description: `${post.title} - Stephen's 기술블로그`,
-      url: `/blog/${post.id}`,
+      url: `https://www.stephen.dev.blog/blog/${post.id}`,
       type: 'article',
       publishedTime: post.date,
       authors: post.author || '김성훈',
