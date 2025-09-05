@@ -106,8 +106,8 @@ const TagSection = ({ tags }: TagSectionProps) => {
         <Button
           onClick={() => setExpanded(!expanded)}
           className={cn(
-            'bg-card/0 bottom-5 left-0 z-20 flex w-full text-center text-base text-white underline shadow-none md:hidden',
-            expanded ? 'bg-card/0 my-2 block h-10' : 'bg-card/0 absolute'
+            'bg-card/0 hover:bg-card/0 bottom-5 left-0 z-20 flex w-full text-center text-base text-white underline shadow-none md:hidden',
+            expanded ? 'my-2 block h-10' : 'absolute'
           )}
         >
           {expanded ? '접기' : '더 보기'}
