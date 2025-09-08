@@ -25,15 +25,15 @@ const TagSection = ({ tags }: TagSectionProps) => {
   const updateIndicator = (target: Element) => {
     const indicator = document.querySelector('.indicator');
     const tabRow = document.querySelector('.tabs-row');
+
     if (!indicator || !tabRow) return;
 
     const tagetBounds = target.getBoundingClientRect();
     const rowBounds = tabRow.getBoundingClientRect();
 
-    const height = tagetBounds.height;
     const offset = tagetBounds.top - rowBounds.top;
 
-    gsap.to(indicator, { y: offset, height, duration: 0.4, ease: 'back.out(1)' });
+    gsap.to(indicator, { y: offset, duration: 0.4, ease: 'back.out(1)' });
   };
 
   const handleTagClick = (tagName: string) => {

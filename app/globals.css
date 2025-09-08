@@ -409,8 +409,13 @@ ol ul li {
   @apply ml-8 text-gray-400;
 }
 
-ol {
+.notion-asset-caption > ol {
   @apply block w-full;
+}
+
+.notion-list > ol > li {
+  @apply ml-6;
+  list-style-type: lower-alpha;
 }
 
 .notion-page img {
