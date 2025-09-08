@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     url: '/',
     title: `Stephen's 기술블로그 | 개발 공부 및 튜토리얼`,
     description: '개발과 관련된 다양한 지식과 경험을 공유하는 블로그입니다.',
-    siteName: 'Stephen\'s 기술블로그',
+    siteName: "Stephen's 기술블로그",
     images: [
       {
         url: '/images/main-thumbnail.png',
@@ -78,7 +78,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ko"
       className={`${maplestory.variable} scroll-smooth p-0 antialiased`}
       suppressHydrationWarning
     >
@@ -91,6 +91,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+
             <Toaster richColors />
           </ThemeProvider>
         </TanstackProvider>
