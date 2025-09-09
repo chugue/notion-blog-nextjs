@@ -1,4 +1,5 @@
 import {
+  AboutPost,
   GetPublishedPostParams,
   Post,
   PostMetadata,
@@ -12,6 +13,13 @@ export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
 ): PostUseCasePort => {
   return {
+    getAboutPage: async (): Promise<AboutPost | null> => {
+      const result = await postRepositoryPort.getAboutPage(process.env.NEXT_PUBLIC_ABOUT_PAGE_ID!);
+
+      if (!result.success) return null;
+
+      return result.data;
+    },
     getPostPropertiesById: async (id: string): Promise<PostMetadata | null> => {
       const result = await postRepositoryPort.getPostPropertiesById(id);
 

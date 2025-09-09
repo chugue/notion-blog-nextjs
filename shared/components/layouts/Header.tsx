@@ -26,8 +26,7 @@ const Header = () => {
 
   const navigationItems = [
     { href: '/', label: '홈' },
-    { href: '/blog', label: '포트폴리오' },
-    { href: '/about', label: '개발자 소개' },
+    { href: '/about', label: '이력소개서' },
   ];
 
   const socialLinks = [

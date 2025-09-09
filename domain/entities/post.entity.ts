@@ -27,6 +27,10 @@ export interface Post {
   readonly properties: PostMetadata | null;
 }
 
+export interface AboutPost {
+  readonly recordMap: notionType.ExtendedRecordMap;
+}
+
 export interface PostMetadataResp {
   posts: PostMetadata[];
   hasMore: boolean;

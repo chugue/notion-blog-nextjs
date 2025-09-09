@@ -1,4 +1,5 @@
 import {
+  AboutPost,
   GetPublishedPostParams,
   Post,
   PostMetadata,
@@ -13,4 +14,5 @@ export interface PostRepositoryPort {
     params: GetPublishedPostParams
   ) => Promise<Result<PostMetadataResp>>;
   readonly getPostById: (id: string) => Promise<Result<Post>>;
+  readonly getAboutPage: (id: string) => Promise<Result<AboutPost>>;
 }

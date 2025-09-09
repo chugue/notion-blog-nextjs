@@ -1,5 +1,6 @@
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
 import {
+  AboutPost,
   GetPublishedPostParams,
   Post,
   PostMetadata,
@@ -139,6 +140,21 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
       return {
         success: true,
         data: getPostMetadata(property as PageObjectResponse),
+      };
+    },
+    getAboutPage: async (id: string): Promise<Result<AboutPost>> => {
+      const result = await postQuery.getPostByIdQuery(id);
+      if (!result.success) {
+        return {
+          success: false,
+          error: result.error,
+        };
+      }
+      return {
+        success: true,
+        data: {
+          recordMap: result.data as unknown as notionType.ExtendedRecordMap,
+        },
       };
     },
   };

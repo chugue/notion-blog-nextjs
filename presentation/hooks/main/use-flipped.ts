@@ -6,8 +6,6 @@ const useFlipped = (selectedTag: string, tech: TechStackItem) => {
 
   useEffect(() => {
     if (selectedTag === tech.tagName) {
-      console.log('selectedTag', selectedTag);
-      console.log('tech.tagName', tech.tagName);
       setIsFlipped(true);
     } else {
       setIsFlipped(false);

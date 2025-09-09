@@ -62,8 +62,6 @@ export const siteMetricsQuery = {
         .from(siteMetrics)
         .where(and(gte(siteMetrics.date, startDate), lte(siteMetrics.date, endDate)));
 
-      if (siteMetricData.length === 0) return [];
-
       return siteMetricData.map(siteMetricToDomain);
     } catch (error) {
       console.log(error);
