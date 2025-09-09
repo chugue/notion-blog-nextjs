@@ -13,8 +13,8 @@ export const createPostUseCaseAdapter = (
   postRepositoryPort: PostRepositoryPort
 ): PostUseCasePort => {
   return {
-    getAboutPage: async (): Promise<AboutPost | null> => {
-      const result = await postRepositoryPort.getAboutPage(process.env.NEXT_PUBLIC_ABOUT_PAGE_ID!);
+    getAboutPage: async (id: string): Promise<AboutPost | null> => {
+      const result = await postRepositoryPort.getAboutPage(id);
 
       if (!result.success) return null;
 
