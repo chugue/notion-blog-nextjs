@@ -430,7 +430,6 @@ ol ul li {
   }
 
   & .notion-simple-table {
-    @apply table-auto;
     font-family: var(--font-family-maplestory);
   }
 
