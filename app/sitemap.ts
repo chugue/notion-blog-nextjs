@@ -1,9 +1,9 @@
 import { PostMetadata } from '@/domain/entities/post.entity';
-import { diContainer } from '@/shared/di/di-container';
+import { getDiContainer } from '@/shared/di/di-container';
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const postUseCase = diContainer.post.postUseCase;
+  const postUseCase = getDiContainer().post.postUseCase;
   // 기본 URL
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
@@ -14,12 +14,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
     },
   ] as const;
 
