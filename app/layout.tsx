@@ -3,6 +3,7 @@ import TanstackProvider from '@/presentation/providers/TanstackProvider';
 import { ThemeProvider } from '@/presentation/providers/ThemeProvider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import React from 'react';
 import { Toaster } from 'sonner';
 
@@ -82,6 +83,20 @@ export default function RootLayout({
       className={`${maplestory.variable} scroll-smooth p-0 antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-HDPMS3VZS2"></Script>
+        <Script
+          id="gtag-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){window.dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-HDPMS3VZS2');
+            `,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning={true} className="overflow-x-hidden">
         <TanstackProvider>
           <ThemeProvider
