@@ -11,19 +11,21 @@ export const dateToKoreaDateString = (date: Date) => {
 
 export const getKST = () => {
   const now = new Date();
-  // 한국 시간대로 변환된 새로운 Date 객체 생성
-  const kstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  return kstDate;
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const kst = new Date(utc + 9 * 3600000); // UTC+9 (한국 시간)
+  return kst;
 };
 
 export const getStartEndOfDay = (date: Date) => {
-  const startOfDay = date;
+  const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = date;
+  const endOfDay = new Date(date);
   endOfDay.setHours(23, 59, 59, 999);
   return { startOfDay, endOfDay };
 };
 
 export const getYesterday = (date: Date) => {
-  return new Date(date.setDate(date.getDate() - 1));
+  const yesterday = new Date(date);
+  yesterday.setDate(date.getDate() - 1);
+  return yesterday;
 };
