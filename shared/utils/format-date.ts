@@ -6,7 +6,7 @@ export const formatDate = (date: string) => {
 };
 
 export const dateToKoreaDateString = (date: Date) => {
-  return date.toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' });
+  return date.toLocaleDateString('en-CA');
 };
 
 export const getKST = () => {
