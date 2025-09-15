@@ -5,11 +5,11 @@ import { Result } from '@/shared/types/result';
 
 export interface SiteMetricsRepositoryPort {
   readonly getSiteMetricsByDateRange: (
-    startDate: string,
-    endDate: string
+    startDate: Date,
+    endDate: Date
   ) => Promise<Result<SiteMetric[], Error>>;
   readonly updateSiteMetric: (
-    todayKST: string,
+    todayKST: Date,
     sameDayVisitor: VisitorInfo,
     tx: Transaction
   ) => Promise<Result<SiteMetric, Error>>;

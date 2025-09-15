@@ -1,5 +1,5 @@
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
-import { index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { index, integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 // 페이지별 조회수 추적
 export const siteMetrics = pgTable(
@@ -8,7 +8,7 @@ export const siteMetrics = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     totalVisits: integer('total_visits').default(0).notNull(),
     dailyVisits: integer('daily_visits').default(0).notNull(),
-    date: text('date').notNull().unique(),
+    date: timestamp('date').notNull().unique(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
@@ -27,7 +27,7 @@ export const siteMetricToDomain = (data?: SiteMetricSelect): SiteMetric => {
       id: uuid().defaultRandom().toString(),
       totalVisits: 0,
       dailyVisits: 0,
-      date: new Date().toISOString(),
+      date: new Date(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -28,18 +28,14 @@ const chartConfig = {
 
 export function VisitStats({ className }: { className?: string }) {
   const { data: siteMetrics, isFetching } = useQuery({
-    queryKey: ['site-metrics'],
+    queryKey: ['site-metrics-client'],
     queryFn: async () => {
-      const res = await fetch('/api/site-metrics', {
-        next: {
-          tags: ['site-metrics'],
-          revalidate: 60,
-        },
-      }).then((res) => res.json());
+      const res = await fetch('/api/site-metrics').then((res) => res.json());
       if (!res.success) return [];
 
       return res.data as MainPageChartData[];
     },
+    staleTime: 1000 * 60,
   });
 
   const total = React.useMemo(

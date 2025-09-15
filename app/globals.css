@@ -51,17 +51,16 @@
   --font-family-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;
   --font-family-maplestory: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
 
-  /* 타이포그래피 크기 설정 */
-  --font-size-title: 3rem; /* 48px */
-  --font-size-sub-title: 2.25rem; /* 36px */
-  --font-size-h1: 2rem; /* 32px */
-  --font-size-h2: 1.75rem; /* 28px */
-  --font-size-h3: 1.5rem; /* 24px */
-  --font-size-heading: 1.25rem; /* 20px */
-  --font-size-subheading: 1.125rem; /* 18px */
-  --font-size-body: 1rem; /* 16px */
-  --font-size-quote: 1.125rem; /* 18px */
-  --font-size-caption: 0.875rem; /* 14px */
+  --font-size-title: 3rem;
+  --font-size-sub-title: 2.25rem;
+  --font-size-h1: 2rem;
+  --font-size-h2: 1.75rem;
+  --font-size-h3: 1.5rem;
+  --font-size-heading: 1.25rem;
+  --font-size-subheading: 1.125rem;
+  --font-size-body: 1rem;
+  --font-size-quote: 1.125rem;
+  --font-size-caption: 0.875rem;
 
   /* 라인 하이트 설정 */
   --line-height-title: 1.1;
@@ -425,6 +424,8 @@ ol ul li {
 
 /* about-page */
 .about-page {
+  background: linear-gradient(223.17deg, #1c1627 0%, var(--color-background) 25.63%);
+
   & img {
     @apply border-none;
   }

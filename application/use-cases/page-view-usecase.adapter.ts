@@ -3,6 +3,7 @@ import { crawlingBotCheck } from '@/domain/utils/page-view.utils';
 import { db } from '@/infrastructure/database/drizzle/drizzle';
 import { PageViewUseCasePort } from '@/presentation/ports/page-view-usecase.port';
 import { checkCookies } from '@/presentation/utils/cookie-utils';
+import { getKST } from '@/shared/utils/format-date';
 import { PageViewRepositoryPort } from '../port/page-view-repository.port';
 import { SiteMetricsRepositoryPort } from '../port/site-metrics-repository.port';
 import { VisitorInfoRepositoryPort } from '../port/visitor-info-repository.port';
@@ -27,9 +28,7 @@ export const createPageViewUseCaseAdapter = (
 
       // 1-2. IP 해시 생성
       const ipHash = await hashIp(ip);
-      const todayKST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(
-        new Date()
-      );
+      const todayKST = getKST();
 
       const visitor = {
         ipHash: ipHash.toString(),
@@ -87,9 +86,7 @@ export const createPageViewUseCaseAdapter = (
 
       // 1-2. IP 해시 생성
       const ipHash = await hashIp(ip);
-      const todayKST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(
-        new Date()
-      );
+      const todayKST = getKST();
 
       const visitor = {
         ipHash: ipHash.toString(),
@@ -133,7 +130,6 @@ export const createPageViewUseCaseAdapter = (
       });
     },
 
-    // TODO: 소개 페이지 뷰 추가 - 검증 하기
     addAboutPageView: async (
       request: Promise<Headers>,
       pageId: string = 'about'
@@ -152,9 +148,7 @@ export const createPageViewUseCaseAdapter = (
 
       // 1-2. IP 해시 생성
       const ipHash = await hashIp(ip);
-      const todayKST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(
-        new Date()
-      );
+      const todayKST = getKST();
 
       const visitor = {
         ipHash: ipHash.toString(),

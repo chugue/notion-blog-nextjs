@@ -2,7 +2,7 @@ import { SiteMetricsRepositoryPort } from '@/application/port/site-metrics-repos
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
 import { VisitorInfo } from '@/domain/entities/visitor-info.entity';
 import { Result } from '@/shared/types/result';
-import { dateToKoreaDateString } from '@/shared/utils/format-date';
+import { getYesterday } from '@/shared/utils/format-date';
 import { unstable_cache } from 'next/cache';
 import { Transaction } from '../database/drizzle/drizzle';
 import visitorInfoQuery from '../queries/visitor-info.query';
@@ -11,15 +11,15 @@ import { siteMetricsQuery } from './../queries/site-metrics.query';
 const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
   return {
     getSiteMetricsByDateRange: async (
-      startDate: string,
-      endDate: string
+      startDate: Date,
+      endDate: Date
     ): Promise<Result<SiteMetric[], Error>> => {
       try {
         const cachedFn = unstable_cache(
           async () => {
             return await siteMetricsQuery.getSiteMetricsByDateRange(startDate, endDate);
           },
-          ['site-metrics'],
+          [`site-metrics-${startDate.toISOString()}-${endDate.toISOString()}`],
           { tags: ['site-metrics'], revalidate: 60 }
         );
 
@@ -36,7 +36,7 @@ const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
       }
     },
     updateSiteMetric: async (
-      todayKST: string,
+      todayKST: Date,
       sameDayVisitor: VisitorInfo,
       tx: Transaction
     ): Promise<Result<SiteMetric, Error>> => {
@@ -46,9 +46,7 @@ const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
 
         if (!todayMetrics) {
           // 2. 오늘 날짜 데이터가 없으면 어제 날짜 데이터 조회
-          const yesterday = dateToKoreaDateString(
-            new Date(new Date(todayKST).setDate(new Date(todayKST).getDate() - 1))
-          );
+          const yesterday = getYesterday(todayKST);
 
           const yesterdayMetrics = await siteMetricsQuery.getSiteMetricsByDate(yesterday, tx);
 

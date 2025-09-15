@@ -19,7 +19,7 @@ import { useRef, useState } from 'react';
 import Threads from '../Threads';
 import { Separator } from '../ui/separator';
 
-const Header = () => {
+const Header = ({ className }: { className?: string }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   useHeaderScrollAnimation({ headerRef });
@@ -51,7 +51,10 @@ const Header = () => {
   return (
     <header
       ref={headerRef}
-      className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out"
+      className={cn(
+        'supports-[backdrop-filter]:bg-background/60 sticky top-0 z-100 flex items-center border-b px-4 py-3 backdrop-blur transition-all duration-300 ease-out',
+        className
+      )}
     >
       <meta name="google-adsense-account" content="ca-pub-7428195998895873"></meta>
 
@@ -67,7 +70,7 @@ const Header = () => {
 
       <div className="container mx-auto flex items-center justify-between">
         {/* 로고 */}
-        <Link href="/" className="text-md flex flex-nowrap items-center gap-2">
+        <Link href="/" className="text-md flex flex-nowrap items-center gap-3">
           <Image src="/images/profile.png" alt="logo" width={32} height={32} />
           <span className="font-medium whitespace-nowrap">Stephen&apos;s 기술블로그</span>
         </Link>

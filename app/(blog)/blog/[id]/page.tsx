@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const post = result.properties;
   return {
     title: post.title,
-    description: `${post.title} - Stephen's 기술블로그`,
+    description: `${post.tag.join(', ')} - ${post.title} - Stephen's 기술블로그`,
     keywords: post.tag,
     authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
     publisher: '김성훈',
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     openGraph: {
       title: post.title,
-      description: `${post.title} - Stephen's 기술블로그`,
+      description: `${post.tag.join(', ')} - ${post.title} - Stephen's 기술블로그`,
       url: `https://www.stephen.dev.blog/blog/${post.id}`,
       type: 'article',
       publishedTime: post.date,

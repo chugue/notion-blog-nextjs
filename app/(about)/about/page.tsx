@@ -21,7 +21,7 @@ export default async function About() {
   const { recordMap } = result;
 
   return (
-    <div className="about-page container mx-auto sm:py-12">
+    <div className="container mx-auto sm:py-12">
       <AddPageView pageId={process.env.NEXT_PUBLIC_ABOUT_PAGE_ID || ''} />
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
         <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
@@ -29,7 +29,7 @@ export default async function About() {
           <Separator className="my-6" />
 
           {/* 블로그 본문 */}
-          <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
+          <div className="prose prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
             <Suspense fallback={<LoadingSpinner />}>
               <AboutPageContent recordMap={recordMap} />
             </Suspense>

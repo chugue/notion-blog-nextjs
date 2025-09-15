@@ -56,11 +56,13 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
       tx: Transaction
     ) => {
       try {
+        const date = new Date(todayKST);
+
         const newRecord = await tx
           .insert(visitorInfo)
           .values({
             ipHash,
-            date: todayKST,
+            date,
             visitedPathnames: [pathname],
             userAgent: userAgent,
           })
@@ -75,7 +77,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
     updateVisitorPathname: async (
       data: VisitorInfo,
       pathName: string,
-      todayKST: string,
+      todayKST: Date,
       tx: Transaction
     ) => {
       try {

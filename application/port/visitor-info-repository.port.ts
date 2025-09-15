@@ -4,7 +4,7 @@ import { Result } from '@/shared/types/result';
 
 export type GetVisitorInfoParams = {
   ipHash: string;
-  todayKST: string;
+  todayKST: Date;
   pathname: string;
   userAgent: string;
 };
@@ -23,7 +23,7 @@ export interface VisitorInfoRepositoryPort {
   updateVisitorPathname(
     data: VisitorInfo,
     pathname: string,
-    todayKST: string,
+    todayKST: Date,
     tx: Transaction
   ): Promise<Result<VisitorInfo, Error>>;
 }

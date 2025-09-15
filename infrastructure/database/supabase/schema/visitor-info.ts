@@ -7,7 +7,7 @@ export const visitorInfo = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     ipHash: text('ip_hash').notNull(),
     userAgent: text('user_agent').notNull(),
-    date: text('date').notNull(),
+    date: timestamp('date').notNull(),
     visitedPathnames: text('visited_pathnames').array().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
