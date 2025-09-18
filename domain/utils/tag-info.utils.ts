@@ -104,6 +104,8 @@ export const getTagIcon = (tag: string) => {
       return '/icons/linux.svg';
     case 'nextjs':
       return '/icons/nextjs.svg';
+    case 'portfolio':
+      return '/icons/portfolio.svg';
     default:
       return '/icons/default.svg';
   }

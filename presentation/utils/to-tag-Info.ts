@@ -201,6 +201,13 @@ export const toTagInfo = (tag: string): TagInfo => {
         color: '#817dfe',
         tagName: 'CodingTest',
       };
+    case 'portfolio':
+      return {
+        name: tag,
+        icon: `/icons/${tag}.svg`,
+        color: '#fc64b7',
+        tagName: 'Portfolio',
+      };
 
     default:
       return {
