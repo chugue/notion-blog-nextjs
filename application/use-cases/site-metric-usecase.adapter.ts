@@ -2,7 +2,7 @@ import { SiteMetric } from '@/domain/entities/site-metric.entity';
 import { SiteMetricsUsecasePort } from '@/presentation/ports/site-metrics-usecase.port';
 import { MainPageChartData } from '@/shared/types/main-page-chartdata';
 import { dateToKoreaDateString, getKST } from '@/shared/utils/format-date';
-import { uuid } from 'drizzle-orm/pg-core';
+import crypto from 'crypto';
 import { SiteMetricsRepositoryPort } from '../port/site-metrics-repository.port';
 
 const createSiteMetricUsecaseAdapter = (
@@ -28,7 +28,7 @@ const createSiteMetricUsecaseAdapter = (
       // 조회 실패 시에도 30일 배열 반환 (모두 0)
       if (!result.success) {
         return dates.map((date) => ({
-          id: uuid().defaultRandom().toString(),
+          id: crypto.randomUUID(),
           date: dateToKoreaDateString(date),
           daily: 0,
           total: 0,
