@@ -59,7 +59,18 @@ const createSiteMetricUsecaseAdapter = (
         };
       });
 
-      console.log(merged);
+      console.log(
+        'dates:',
+        dates.map((d) => ({ iso: d.toISOString(), kst: dateToKoreaDateString(d) }))
+      );
+      console.log(
+        'fetched:',
+        result.data.map((m) => ({
+          iso: m.date?.toISOString(),
+          kst: dateToKoreaDateString(new Date(m.date)),
+          id: m.id,
+        }))
+      );
 
       return merged;
     },
