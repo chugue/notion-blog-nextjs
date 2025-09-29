@@ -1,4 +1,4 @@
-import { getKST } from '@/shared/utils/format-date';
+import { dateToKoreaDateString } from '@/shared/utils/format-date';
 import { cookies } from 'next/headers';
 
 export const getKstMidnightExpiry = (): { expires: Date; maxAge: number } => {
@@ -24,7 +24,7 @@ export const getKstMidnightExpiry = (): { expires: Date; maxAge: number } => {
 export const checkCookies = async () => {
   const cookieStore = await cookies();
   const cookie = cookieStore.get('visitor-cookie');
-  const todayKST = getKST().toISOString();
+  const todayKST = dateToKoreaDateString(new Date());
   let isNewVisitor = true;
 
   if (!cookie || cookie.value !== todayKST) {

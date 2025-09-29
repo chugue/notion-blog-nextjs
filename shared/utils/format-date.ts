@@ -6,7 +6,16 @@ export const formatDate = (date: string) => {
 };
 
 export const dateToKoreaDateString = (date: Date) => {
-  return date.toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' });
+  // UTC ms
+  const utc = date.getTime() + date.getTimezoneOffset() * 60000;
+  // KST(UTC+9)
+  const kst = new Date(utc + 9 * 3600000);
+
+  const y = kst.getFullYear();
+  const m = String(kst.getMonth() + 1).padStart(2, '0');
+  const d = String(kst.getDate()).padStart(2, '0');
+
+  return `${y}-${m}-${d}`;
 };
 
 export const getKST = () => {
