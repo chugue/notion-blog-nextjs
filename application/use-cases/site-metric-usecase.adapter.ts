@@ -52,12 +52,14 @@ const createSiteMetricUsecaseAdapter = (
           };
         }
         return {
-          id: uuid().defaultRandom().toString(),
+          id: crypto.randomUUID(),
           date: dateToKoreaDateString(date),
           daily: 0,
           total: 0,
         };
       });
+
+      console.log(merged);
 
       return merged;
     },
