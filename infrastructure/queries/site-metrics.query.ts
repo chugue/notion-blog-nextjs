@@ -10,8 +10,9 @@ export const siteMetricsQuery = {
     todayKST: Date,
     tx: Transaction
   ): Promise<SiteMetric | null> => {
+    const { startOfDay } = getStartEndOfDay(todayKST);
     const newTodayMetrics = await tx.insert(siteMetrics).values({
-      date: todayKST,
+      date: startOfDay,
       totalVisits: sql`${yesterdayMetrics.totalVisits} + 1`,
       dailyVisits: 1,
     });
@@ -78,9 +79,10 @@ export const siteMetricsQuery = {
     tx: Transaction,
     totalVisits: number
   ): Promise<SiteMetric | null> => {
+    const { startOfDay } = getStartEndOfDay(date);
     const newSiteMetrics = await tx
       .insert(siteMetrics)
-      .values({ date, totalVisits: sql`${totalVisits} + 1`, dailyVisits: 1 })
+      .values({ date: startOfDay, totalVisits: sql`${totalVisits} + 1`, dailyVisits: 1 })
       .returning();
 
     if (!newSiteMetrics) return null;
