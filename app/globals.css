@@ -357,7 +357,7 @@ figure [class^='code_module_codeLanLabel'] {
 }
 
 .notion-external {
-  @apply items-center rounded-md border-gray-400 p-5 text-base;
+  @apply items-center rounded-md border-gray-400 p-2 text-base;
 }
 
 .notion-external svg path {
@@ -468,5 +468,19 @@ ol ul li {
 
   & .notion-simple-table-header-row td {
     @apply bg-muted/50 font-bold;
+  }
+}
+
+.notion-file {
+  @apply bg-muted/50 border-border rounded-md border hover:bg-[#474c50];
+}
+
+.notion-toggle {
+  @apply mt-4;
+
+  & .notion-h3::before {
+    content: none !important;
+    opacity: 0 !important;
+    pointer-events: none;
   }
 }
