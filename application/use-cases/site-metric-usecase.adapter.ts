@@ -16,6 +16,7 @@ const createSiteMetricUsecaseAdapter = (
       const dates = Array.from({ length: 30 }, (_, i) => {
         const d = new Date(today);
         d.setDate(today.getDate() - (29 - i));
+        d.setHours(0, 0, 0, 0);
         return d;
       });
 
@@ -51,7 +52,7 @@ const createSiteMetricUsecaseAdapter = (
           };
         }
         return {
-          id: crypto.randomUUID(),
+          id: uuid().defaultRandom().toString(),
           date: dateToKoreaDateString(date),
           daily: 0,
           total: 0,
