@@ -1,5 +1,5 @@
 import { VisitorInfo } from '@/domain/entities/visitor-info.entity';
-import { index, pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { date, index, pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
 export const visitorInfo = pgTable(
   'visitor_info',
@@ -7,7 +7,7 @@ export const visitorInfo = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     ipHash: text('ip_hash').notNull(),
     userAgent: text('user_agent').notNull(),
-    date: timestamp('date').notNull(),
+    date: date('date', { mode: 'string' }).notNull(),
     visitedPathnames: text('visited_pathnames').array().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),

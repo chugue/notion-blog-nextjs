@@ -2,7 +2,7 @@ export interface VisitorInfo {
   id: string;
   ipHash: string;
   userAgent: string;
-  date: Date;
+  date: string;
   visitedPathnames: string[];
   createdAt: Date;
   updatedAt: Date;

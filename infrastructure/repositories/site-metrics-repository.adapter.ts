@@ -2,8 +2,7 @@ import { SiteMetricsRepositoryPort } from '@/application/port/site-metrics-repos
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
 import { VisitorInfo } from '@/domain/entities/visitor-info.entity';
 import { Result } from '@/shared/types/result';
-import { getYesterday } from '@/shared/utils/format-date';
-import { unstable_cache } from 'next/cache';
+import { getADayBefore } from '@/shared/utils/format-date';
 import { Transaction } from '../database/drizzle/drizzle';
 import visitorInfoQuery from '../queries/visitor-info.query';
 import { siteMetricsQuery } from './../queries/site-metrics.query';
@@ -11,19 +10,24 @@ import { siteMetricsQuery } from './../queries/site-metrics.query';
 const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
   return {
     getSiteMetricsByDateRange: async (
-      startDate: Date,
-      endDate: Date
+      startDate: string,
+      endDate: string
     ): Promise<Result<SiteMetric[], Error>> => {
       try {
-        const cachedFn = unstable_cache(
-          async () => {
-            return await siteMetricsQuery.getSiteMetricsByDateRange(startDate, endDate);
-          },
-          [`site-metrics-${startDate.toISOString()}-${endDate.toISOString()}`],
-          { tags: ['site-metrics'], revalidate: 60 }
-        );
+        // const cachedFn = unstable_cache(
+        //   async () => {
+        //     return await siteMetricsQuery.getSiteMetricsByDateRange(startDate, endDate);
+        //   },
+        //   [`site-metrics-${startDate.toISOString()}-${endDate.toISOString()}`],
+        //   { tags: ['site-metrics'], revalidate: 60 }
+        // );
 
-        const siteMetricsData = await cachedFn();
+        // const siteMetricsData = await cachedFn();
+
+        const siteMetricsData = await siteMetricsQuery.getSiteMetricsByDateRange(
+          startDate,
+          endDate
+        );
 
         if (siteMetricsData.length === 0) {
           return { success: false, error: new Error('No site metrics data') };
@@ -46,7 +50,7 @@ const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
 
         if (!todayMetrics) {
           // 2. 오늘 날짜 데이터가 없으면 어제 날짜 데이터 조회
-          const yesterday = getYesterday(todayKST);
+          const yesterday = getADayBefore(todayKST);
 
           const yesterdayMetrics = await siteMetricsQuery.getSiteMetricsByDate(yesterday, tx);
 

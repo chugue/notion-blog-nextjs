@@ -1,7 +1,7 @@
 import { db } from '@/infrastructure/database/drizzle/drizzle';
 import { BatchUsecasePort } from '@/presentation/ports/batch-usecase-port';
 import { Result } from '@/shared/types/result';
-import { getKstDate, getYesterday } from '@/shared/utils/format-date';
+import { getADayBefore, getKstDate } from '@/shared/utils/format-date';
 import { BatchRepositoryPort } from '../port/batch-repository.port';
 
 export const createBatchUsecaseAdapter = (
@@ -19,7 +19,7 @@ export const createBatchUsecaseAdapter = (
             return { success: true, data: undefined };
           }
 
-          const yesterday = getYesterday(todayKST);
+          const yesterday = getADayBefore(todayKST);
           const yesterdayMetrics = await batchRepository.getSiteMetricsByDate(yesterday, tx);
 
           if (!yesterdayMetrics.success) {

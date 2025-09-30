@@ -50,6 +50,20 @@
       "when": 1757916660716,
       "tag": "0006_thin_misty_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1759215581254,
+      "tag": "0007_huge_molly_hayes",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1759237641214,
+      "tag": "0008_thankful_iron_fist",
+      "breakpoints": true
     }
   ]
 }

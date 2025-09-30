@@ -5,8 +5,8 @@ import { Result } from '@/shared/types/result';
 
 export interface SiteMetricsRepositoryPort {
   readonly getSiteMetricsByDateRange: (
-    startDate: Date,
-    endDate: Date
+    startDate: string,
+    endDate: string
   ) => Promise<Result<SiteMetric[], Error>>;
   readonly updateSiteMetric: (
     todayKST: Date,

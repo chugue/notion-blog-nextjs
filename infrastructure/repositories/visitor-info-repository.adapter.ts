@@ -3,6 +3,7 @@ import {
   VisitorInfoRepositoryPort,
 } from '@/application/port/visitor-info-repository.port';
 import { VisitorInfo } from '@/domain/entities/visitor-info.entity';
+import { dateToStringYYYYMMDD } from '@/shared/utils/format-date';
 import { and, eq } from 'drizzle-orm';
 import { Transaction } from '../database/drizzle/drizzle';
 import { VisitorInfoSelect, visitorInfo, visitorInfoToDomain } from '../database/supabase/schema';
@@ -18,7 +19,12 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
         const record = await tx
           .select()
           .from(visitorInfo)
-          .where(and(eq(visitorInfo.ipHash, ipHash), eq(visitorInfo.date, todayKST)))
+          .where(
+            and(
+              eq(visitorInfo.ipHash, ipHash),
+              eq(visitorInfo.date, dateToStringYYYYMMDD(todayKST))
+            )
+          )
           .limit(1);
 
         // 2. 방문자 정보 없으면 생성
@@ -27,7 +33,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
             .insert(visitorInfo)
             .values({
               ipHash,
-              date: todayKST,
+              date: dateToStringYYYYMMDD(todayKST),
               visitedPathnames: [pathname],
               userAgent: userAgent,
             })
@@ -62,7 +68,7 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
           .insert(visitorInfo)
           .values({
             ipHash,
-            date,
+            date: dateToStringYYYYMMDD(todayKST),
             visitedPathnames: [pathname],
             userAgent: userAgent,
           })
@@ -88,7 +94,12 @@ const createVisitorInfoRepositoryAdapter = (): VisitorInfoRepositoryPort => {
         const record = await tx
           .update(visitorInfo)
           .set({ visitedPathnames: updatedVisitedPathnames })
-          .where(and(eq(visitorInfo.ipHash, data.ipHash), eq(visitorInfo.date, todayKST)))
+          .where(
+            and(
+              eq(visitorInfo.ipHash, data.ipHash),
+              eq(visitorInfo.date, dateToStringYYYYMMDD(todayKST))
+            )
+          )
           .returning();
 
         if (record.length === 0) {
