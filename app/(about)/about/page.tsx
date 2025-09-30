@@ -1,4 +1,5 @@
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 import AboutPageContent from '@/app/(blog)/_components/AboutPageContent';
 import TableOfContentsWrapper from '@/app/(blog)/_components/TableOfContentsWrapper';

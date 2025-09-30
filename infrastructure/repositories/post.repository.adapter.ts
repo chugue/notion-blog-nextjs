@@ -9,6 +9,7 @@ import {
 import { getPostMetadata } from '@/domain/utils/post.utils';
 import { Result } from '@/shared/types/result';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { unstable_cache } from 'next/cache';
 import * as notionType from 'notion-types';
 import { postQuery } from '../queries/post.query';
 
@@ -143,7 +144,15 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
       };
     },
     getAboutPage: async (id: string): Promise<Result<AboutPost>> => {
-      const result = await postQuery.getPostByIdQuery(id);
+      const cachedFn = unstable_cache(
+        async () => {
+          return await postQuery.getPostByIdQuery(id);
+        },
+        [`about-page`],
+        { tags: [`about-page`], revalidate: false }
+      );
+      const result = await cachedFn();
+
       if (!result.success) {
         return {
           success: false,
