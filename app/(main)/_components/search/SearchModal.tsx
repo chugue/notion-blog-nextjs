@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui/command';
-import { useSearchStore } from '@/presentation/stores/use-search.store';
-import SearchResults from './SearchResults';
-import { useDebounce } from '@/presentation/hooks/main/use-debounce';
 import useSearchResults from '@/presentation/hooks/get-search-results';
+import { useDebounce } from '@/presentation/hooks/main/use-debounce';
+import { useSearchStore } from '@/presentation/stores/use-search.store';
+import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui/command';
+import { useGSAP } from '@gsap/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import SearchResults from './SearchResults';
 
 const SearchModal = () => {
   const router = useRouter();
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const { isOpen, searchQuery, closeModal, setSearchQuery } = useSearchStore();
   const debouncedQuery = useDebounce(searchQuery, 0);
@@ -34,21 +36,24 @@ const SearchModal = () => {
     closeModal();
   };
 
+  useGSAP(() => {});
+
   return (
     <CommandDialog
       open={isOpen}
       onOpenChange={closeModal}
       title="포스트 검색"
       description="제목, 태그로 포스트를 검색해보세요"
-      className="top-1/4 min-h-0 translate-y-0 max-md:max-w-2xl max-sm:max-w-xs md:max-w-3xl"
+      className="bg-card top-1/4 min-h-0 translate-y-0 max-md:max-w-2xl max-sm:max-w-xs md:max-w-3xl"
       shouldFilter={false}
     >
       <CommandInput
         placeholder="포스트를 검색해보세요... "
         value={searchQuery}
         onValueChange={setSearchQuery}
+        className="bg-card"
       />
-      <CommandList className="max-h-[50vh] min-h-0 flex-1 overflow-y-auto">
+      <CommandList className="bg-card max-h-[50vh] min-h-0 flex-1 overflow-y-auto">
         <SearchResults
           searchQuery={searchQuery}
           searchResults={filteredList}
