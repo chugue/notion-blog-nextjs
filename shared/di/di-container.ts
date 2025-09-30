@@ -1,3 +1,4 @@
+import { BatchDependencies, createBatchDependencies } from './batch-dependencies';
 import { PageViewDependencies, createPageViewDependencies } from './page-view-dependencies';
 import { PostDependencies, createPostDependencies } from './post-dependencies';
 import { SiteMetricDependencies, createSiteMetricDependencies } from './site-metric-dependencies';
@@ -8,6 +9,7 @@ export interface DiContainer {
   post: PostDependencies;
   pageView: PageViewDependencies;
   siteMetric: SiteMetricDependencies;
+  batch: BatchDependencies;
 }
 
 // 전역 타입 선언
@@ -20,12 +22,13 @@ export const createDiContainer = (): DiContainer => {
   const tagInfoDependencies = createTagInfoDependencies(postDependencies.postRepository);
   const pageViewDependencies = createPageViewDependencies();
   const siteMetricDependencies = createSiteMetricDependencies();
-
+  const batchDependencies = createBatchDependencies();
   return {
     tagInfo: tagInfoDependencies,
     post: postDependencies,
     pageView: pageViewDependencies,
     siteMetric: siteMetricDependencies,
+    batch: batchDependencies,
   };
 };
 

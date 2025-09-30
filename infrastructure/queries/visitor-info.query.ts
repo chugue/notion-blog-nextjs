@@ -3,7 +3,7 @@ import {
   visitorInfo,
   visitorInfoToDomain,
 } from '@/infrastructure/database/supabase/schema';
-import { getStartEndOfDay } from '@/shared/utils/format-date';
+import { getStartEndOfUTC } from '@/shared/utils/format-date';
 import { and, between, eq } from 'drizzle-orm';
 import { Transaction, db } from '../database/drizzle/drizzle';
 
@@ -26,7 +26,7 @@ const visitorInfoQuery = {
 
   getAllVisitorsByDate: async (todayKST: Date, tx: Transaction) => {
     try {
-      const { startOfDay, endOfDay } = getStartEndOfDay(todayKST);
+      const { startOfDay, endOfDay } = getStartEndOfUTC(todayKST);
 
       const record = await tx
         .select()

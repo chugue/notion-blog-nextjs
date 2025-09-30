@@ -1,18 +1,29 @@
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
-import { getStartEndOfDay } from '@/shared/utils/format-date';
+import { getKstDate, getStartEndOfUTC, getYesterday } from '@/shared/utils/format-date';
 import { and, between, eq, gte, lte, sql } from 'drizzle-orm';
 import { Transaction, db } from '../database/drizzle/drizzle';
 import { SiteMetricSelect, siteMetricToDomain, siteMetrics } from '../database/supabase/schema';
 
 export const siteMetricsQuery = {
+  createTodayMetrics: async (
+    yesterdayMetrics: SiteMetric,
+    todayKST: Date,
+    tx: Transaction
+  ): Promise<SiteMetric | null> => {
+    const newTodayMetrics = await tx.insert(siteMetrics).values({
+      date: todayKST,
+      totalVisits: yesterdayMetrics.totalVisits,
+      dailyVisits: 0,
+    });
+    return siteMetricToDomain(newTodayMetrics[0] as SiteMetricSelect);
+  },
   createWithYesterdayMetrics: async (
     yesterdayMetrics: SiteMetric,
     todayKST: Date,
     tx: Transaction
   ): Promise<SiteMetric | null> => {
-    const { startOfDay } = getStartEndOfDay(todayKST);
     const newTodayMetrics = await tx.insert(siteMetrics).values({
-      date: startOfDay,
+      date: todayKST,
       totalVisits: sql`${yesterdayMetrics.totalVisits} + 1`,
       dailyVisits: 1,
     });
@@ -20,17 +31,25 @@ export const siteMetricsQuery = {
   },
 
   // 어제 날짜 데이터 조회
-  getYesterDaySiteMetrics: async (): Promise<SiteMetric | null> => {
+  getYesterDaySiteMetrics: async (tx?: Transaction): Promise<SiteMetric | null> => {
     try {
-      const now = new Date();
-      const kstOffset = 9 * 60; // KST는 UTC+9
-      const kstTime = new Date(now.getTime() + kstOffset * 60 * 1000);
-      const yesterday = new Date(kstTime.setDate(kstTime.getDate() - 1));
+      const kstTime = getKstDate();
+      const yesterday = getYesterday(kstTime);
 
-      const yesterdaySiteMetrics = await db.query.siteMetrics.findFirst({
-        where: eq(siteMetrics.date, yesterday),
-      });
-      return siteMetricToDomain(yesterdaySiteMetrics as SiteMetricSelect);
+      if (!tx) {
+        const yesterdaySiteMetrics = await db
+          .select()
+          .from(siteMetrics)
+          .where(eq(siteMetrics.date, yesterday))
+          .limit(1);
+        return siteMetricToDomain(yesterdaySiteMetrics[0]);
+      }
+      const yesterdaySiteMetrics = await tx
+        .select()
+        .from(siteMetrics)
+        .where(eq(siteMetrics.date, yesterday))
+        .limit(1);
+      return siteMetricToDomain(yesterdaySiteMetrics[0]);
     } catch (error) {
       console.log(error);
       return null;
@@ -40,7 +59,7 @@ export const siteMetricsQuery = {
   // 오늘 날짜 데이터 조회
   getSiteMetricsByDate: async (date: Date, tx: Transaction): Promise<SiteMetric | null> => {
     try {
-      const { startOfDay, endOfDay } = getStartEndOfDay(date);
+      const { startOfDay, endOfDay } = getStartEndOfUTC(date);
       // 오늘 날짜 데이터 조회
       const siteMetricData = await tx
         .select()
@@ -79,10 +98,9 @@ export const siteMetricsQuery = {
     tx: Transaction,
     totalVisits: number
   ): Promise<SiteMetric | null> => {
-    const { startOfDay } = getStartEndOfDay(date);
     const newSiteMetrics = await tx
       .insert(siteMetrics)
-      .values({ date: startOfDay, totalVisits: sql`${totalVisits} + 1`, dailyVisits: 1 })
+      .values({ date, totalVisits: sql`${totalVisits} + 1`, dailyVisits: 1 })
       .returning();
 
     if (!newSiteMetrics) return null;
@@ -93,7 +111,7 @@ export const siteMetricsQuery = {
   updateMetrics: async (siteMetric: SiteMetric): Promise<SiteMetric | null> => {
     try {
       const { id, date, totalVisits, dailyVisits } = siteMetric;
-      const { startOfDay, endOfDay } = getStartEndOfDay(date);
+      const { startOfDay, endOfDay } = getStartEndOfUTC(date);
 
       // 3. 있으면 조회수 증가 : 오늘 날짜 + 총 방문수
       const updatedMetrics = await db

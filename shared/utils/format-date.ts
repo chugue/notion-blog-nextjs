@@ -6,9 +6,7 @@ export const formatDate = (date: string) => {
 };
 
 export const dateToKoreaDateString = (date: Date) => {
-  // UTC ms
   const utc = date.getTime() + date.getTimezoneOffset() * 60000;
-  // KST(UTC+9)
   const kst = new Date(utc + 9 * 3600000);
 
   const y = kst.getFullYear();
@@ -18,14 +16,14 @@ export const dateToKoreaDateString = (date: Date) => {
   return `${y}-${m}-${d}`;
 };
 
-export const getKST = () => {
+export const getKstDate = () => {
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  const kst = new Date(utc + 9 * 3600000); // UTC+9 (한국 시간)
+  const kst = new Date(utc + 9 * 3600000);
   return kst;
 };
 
-export const getStartEndOfDay = (date: Date) => {
+export const getStartEndOfUTC = (date: Date) => {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
   const endOfDay = new Date(date);
