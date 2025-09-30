@@ -3,20 +3,18 @@ import {
   visitorInfo,
   visitorInfoToDomain,
 } from '@/infrastructure/database/supabase/schema';
-import { getStartEndOfUTC } from '@/shared/utils/format-date';
-import { and, between, eq } from 'drizzle-orm';
+import { dateToStringYYYYMMDD } from '@/shared/utils/format-date';
+import { and, eq } from 'drizzle-orm';
 import { Transaction, db } from '../database/drizzle/drizzle';
 
 const visitorInfoQuery = {
   getVisitorInfo: async (ipHash: string, date: Date) => {
     try {
-      const startOfDay = date;
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = date;
-      endOfDay.setHours(23, 59, 59, 999);
-
       const record = await db.query.visitorInfo.findFirst({
-        where: and(eq(visitorInfo.ipHash, ipHash), between(visitorInfo.date, startOfDay, endOfDay)),
+        where: and(
+          eq(visitorInfo.ipHash, ipHash),
+          eq(visitorInfo.date, dateToStringYYYYMMDD(date))
+        ),
       });
       return { success: true, data: record };
     } catch (error) {
@@ -24,14 +22,12 @@ const visitorInfoQuery = {
     }
   },
 
-  getAllVisitorsByDate: async (todayKST: Date, tx: Transaction) => {
+  getAllVisitorsByDate: async (date: Date, tx: Transaction) => {
     try {
-      const { startOfDay, endOfDay } = getStartEndOfUTC(todayKST);
-
       const record = await tx
         .select()
         .from(visitorInfo)
-        .where(between(visitorInfo.date, startOfDay, endOfDay));
+        .where(eq(visitorInfo.date, dateToStringYYYYMMDD(date)));
       return record.map((visitor) => visitorInfoToDomain(visitor as VisitorInfoSelect));
     } catch (error) {
       console.log(error);

@@ -2,7 +2,8 @@ import { SiteMetricsRepositoryPort } from '@/application/port/site-metrics-repos
 import { SiteMetric } from '@/domain/entities/site-metric.entity';
 import { VisitorInfo } from '@/domain/entities/visitor-info.entity';
 import { Result } from '@/shared/types/result';
-import { getADayBefore } from '@/shared/utils/format-date';
+import { dateToStringYYYYMMDD, getADayBefore, getKstDate } from '@/shared/utils/format-date';
+import { unstable_cache } from 'next/cache';
 import { Transaction } from '../database/drizzle/drizzle';
 import visitorInfoQuery from '../queries/visitor-info.query';
 import { siteMetricsQuery } from './../queries/site-metrics.query';
@@ -14,20 +15,15 @@ const createSiteMetricRepositoryAdapter = (): SiteMetricsRepositoryPort => {
       endDate: string
     ): Promise<Result<SiteMetric[], Error>> => {
       try {
-        // const cachedFn = unstable_cache(
-        //   async () => {
-        //     return await siteMetricsQuery.getSiteMetricsByDateRange(startDate, endDate);
-        //   },
-        //   [`site-metrics-${startDate.toISOString()}-${endDate.toISOString()}`],
-        //   { tags: ['site-metrics'], revalidate: 60 }
-        // );
-
-        // const siteMetricsData = await cachedFn();
-
-        const siteMetricsData = await siteMetricsQuery.getSiteMetricsByDateRange(
-          startDate,
-          endDate
+        const cachedFn = unstable_cache(
+          async () => {
+            return await siteMetricsQuery.getSiteMetricsByDateRange(startDate, endDate);
+          },
+          [`site-metrics-${dateToStringYYYYMMDD(getKstDate())}`],
+          { tags: ['site-metrics'], revalidate: 60 }
         );
+
+        const siteMetricsData = await cachedFn();
 
         if (siteMetricsData.length === 0) {
           return { success: false, error: new Error('No site metrics data') };
