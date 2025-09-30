@@ -24,8 +24,6 @@ const createSiteMetricUsecaseAdapter = (
 
       const result = await siteMetricRepo.getSiteMetricsByDateRange(startDateUTC, endDateUTC);
 
-      console.log('result:', result);
-
       // 조회 실패 시에도 30일 배열 반환 (모두 0)
       if (!result.success) {
         return dateStrings.map((dateString) => ({
@@ -59,8 +57,6 @@ const createSiteMetricUsecaseAdapter = (
           total: 0,
         };
       });
-
-      console.log('merged:', merged);
       return merged;
     },
   };
