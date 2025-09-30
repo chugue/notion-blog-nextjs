@@ -16,12 +16,12 @@ export const createBatchRepositoryAdapter = (): BatchRepositoryPort => {
       }
       return { success: true, data: result };
     },
-    createTodayMetrics: async (
+    createCronTodayMetrics: async (
       yesterdayMetrics: SiteMetric,
       todayKST: Date,
       tx: Transaction
     ): Promise<Result<SiteMetric, Error>> => {
-      const result = await siteMetricsQuery.createTodayMetrics(yesterdayMetrics, todayKST, tx);
+      const result = await siteMetricsQuery.createCronTodayMetrics(yesterdayMetrics, todayKST, tx);
       if (!result) {
         return { success: false, error: new Error('Failed to create today metrics') };
       }

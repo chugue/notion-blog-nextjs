@@ -26,7 +26,7 @@ export const createBatchUsecaseAdapter = (
             return { success: false, error: new Error('Yesterday metrics not found') };
           }
 
-          const newTodayMetrics = await batchRepository.createTodayMetrics(
+          const newTodayMetrics = await batchRepository.createCronTodayMetrics(
             yesterdayMetrics.data,
             todayKST,
             tx

@@ -5,16 +5,19 @@ import { Transaction, db } from '../database/drizzle/drizzle';
 import { SiteMetricSelect, siteMetricToDomain, siteMetrics } from '../database/supabase/schema';
 
 export const siteMetricsQuery = {
-  createTodayMetrics: async (
+  createCronTodayMetrics: async (
     yesterdayMetrics: SiteMetric,
     todayKST: Date,
     tx: Transaction
   ): Promise<SiteMetric | null> => {
-    const newTodayMetrics = await tx.insert(siteMetrics).values({
-      date: dateToStringYYYYMMDD(todayKST),
-      totalVisits: yesterdayMetrics.totalVisits,
-      dailyVisits: 0,
-    });
+    const newTodayMetrics = await tx
+      .insert(siteMetrics)
+      .values({
+        date: dateToStringYYYYMMDD(todayKST),
+        totalVisits: yesterdayMetrics.totalVisits,
+        dailyVisits: 0,
+      })
+      .returning();
     return siteMetricToDomain(newTodayMetrics[0] as SiteMetricSelect);
   },
   createWithYesterdayMetrics: async (
@@ -23,11 +26,14 @@ export const siteMetricsQuery = {
     tx: Transaction
   ): Promise<SiteMetric | null> => {
     todayKST.setHours(0, 0, 0, 0);
-    const newTodayMetrics = await tx.insert(siteMetrics).values({
-      date: dateToStringYYYYMMDD(todayKST),
-      totalVisits: sql`${yesterdayMetrics.totalVisits} + 1`,
-      dailyVisits: 1,
-    });
+    const newTodayMetrics = await tx
+      .insert(siteMetrics)
+      .values({
+        date: dateToStringYYYYMMDD(todayKST),
+        totalVisits: sql`${yesterdayMetrics.totalVisits} + 1`,
+        dailyVisits: 1,
+      })
+      .returning();
     return siteMetricToDomain(newTodayMetrics[0] as SiteMetricSelect);
   },
 

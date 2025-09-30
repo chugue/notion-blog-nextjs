@@ -7,7 +7,7 @@ export interface BatchRepositoryPort {
     date: Date,
     tx: Transaction
   ) => Promise<Result<SiteMetric, Error>>;
-  readonly createTodayMetrics: (
+  readonly createCronTodayMetrics: (
     yesterdayMetrics: SiteMetric,
     todayKST: Date,
     tx: Transaction

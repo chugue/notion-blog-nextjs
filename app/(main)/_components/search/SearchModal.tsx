@@ -4,14 +4,12 @@ import useSearchResults from '@/presentation/hooks/get-search-results';
 import { useDebounce } from '@/presentation/hooks/main/use-debounce';
 import { useSearchStore } from '@/presentation/stores/use-search.store';
 import { CommandDialog, CommandInput, CommandList } from '@/shared/components/ui/command';
-import { useGSAP } from '@gsap/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import SearchResults from './SearchResults';
 
 const SearchModal = () => {
   const router = useRouter();
-  const dialogRef = useRef<HTMLDivElement>(null);
 
   const { isOpen, searchQuery, closeModal, setSearchQuery } = useSearchStore();
   const debouncedQuery = useDebounce(searchQuery, 0);
@@ -35,8 +33,6 @@ const SearchModal = () => {
     router.push(`/blog/${postId}`);
     closeModal();
   };
-
-  useGSAP(() => {});
 
   return (
     <CommandDialog
