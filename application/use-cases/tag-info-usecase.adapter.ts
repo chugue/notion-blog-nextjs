@@ -1,12 +1,11 @@
-import { TagInfoUsecasePort } from '@/presentation/ports/tag-info-usecase.port';
-import { TagInfoRepositoryPort } from '../port/tag-info-repository.port';
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import { PostRepositoryPort } from '../port/post-repository.port';
-import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
 import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
+import { TagInfoUsecasePort } from '@/presentation/ports/tag-info-usecase.port';
+import { diContainer } from '@/shared/di/di-container';
+import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
+import { PostRepositoryPort } from '../port/post-repository.port';
 
 export const createTagInfoUseCaseAdapter = (
-  tagInfoRepositoryPort: TagInfoRepositoryPort,
   postRepositoryPort: PostRepositoryPort
 ): TagInfoUsecasePort => {
   return {
@@ -16,6 +15,13 @@ export const createTagInfoUseCaseAdapter = (
       if (!result.success) return [];
 
       return toTagFilterItem(result.data);
+    },
+    updateAllTagCount: async (): Promise<void> => {
+      const result = await allPostMetadatasDataCache(postRepositoryPort);
+
+      if (!result.success) return;
+
+      const tagInfoRepository = diContainer.tagInfo.tagInfoRepository;
     },
   };
 };

@@ -64,6 +64,13 @@
       "when": 1759237641214,
       "tag": "0008_thankful_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1761135357020,
+      "tag": "0009_charming_the_hand",
+      "breakpoints": true
     }
   ]
 }

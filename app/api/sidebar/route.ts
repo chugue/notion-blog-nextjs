@@ -1,3 +1,4 @@
+import { diContainer } from '@/shared/di/di-container';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -21,6 +22,7 @@ export async function POST(request: NextRequest) {
     console.warn('Invalid signature - ignoring request');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+  diContainer.tagInfo.tagInfoUseCase.updateAllTagCount();
 
   console.log(body);
 
