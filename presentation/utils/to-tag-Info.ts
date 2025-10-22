@@ -215,6 +215,13 @@ export const toTagInfo = (tag: string): TagInfo => {
         color: '#79d7bd',
         tagName: 'Blockchain',
       };
+    case 'hooks&apis':
+      return {
+        name: tag,
+        icon: `/icons/${tag}.png`,
+        color: '#ffa500',
+        tagName: 'Hooks&APIs',
+      };
 
     default:
       return {
