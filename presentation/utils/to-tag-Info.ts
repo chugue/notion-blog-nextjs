@@ -208,6 +208,13 @@ export const toTagInfo = (tag: string): TagInfo => {
         color: '#fc64b7',
         tagName: 'Portfolio',
       };
+    case 'blockchain':
+      return {
+        name: tag,
+        icon: `/icons/${tag}.png`,
+        color: '#79d7bd',
+        tagName: 'Blockchain',
+      };
 
     default:
       return {
