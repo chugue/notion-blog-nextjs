@@ -71,6 +71,20 @@
       "when": 1761135357020,
       "tag": "0009_charming_the_hand",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1761136731861,
+      "tag": "0010_wet_yellow_claw",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1761136928946,
+      "tag": "0011_left_lord_tyger",
+      "breakpoints": true
     }
   ]
 }
