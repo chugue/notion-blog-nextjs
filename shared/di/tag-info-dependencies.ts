@@ -13,7 +13,7 @@ export const createTagInfoDependencies = (
   postRepositoryPort: PostRepositoryPort
 ): TagInfoDependencies => {
   const tagInfoRepository = createTagInfoRepositoryAdapter(postRepositoryPort);
-  const tagInfoUseCase = createTagInfoUseCaseAdapter(tagInfoRepository, postRepositoryPort);
+  const tagInfoUseCase = createTagInfoUseCaseAdapter(postRepositoryPort, tagInfoRepository);
 
   return {
     tagInfoRepository,
