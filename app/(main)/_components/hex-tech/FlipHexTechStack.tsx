@@ -5,18 +5,22 @@ import { use, useRef, useState } from 'react';
 
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { toHexTechStackItem } from '@/domain/utils/hex-tech-stack.utils';
-import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
 import { useHoneycombInit } from '../../../../presentation/hooks/main/use-honeycomb-init';
 import { useHoneycombMemo } from '../../../../presentation/hooks/main/use-honeycomb-memo';
 import { useRefCenter } from '../../../../presentation/hooks/main/use-ref-center';
 import HexCard from './HexCard';
 
-export function FlipHexTechStack({ tags }: { tags: Promise<TagFilterItem[]> }) {
+export function FlipHexTechStack({
+  tags,
+  selectedTag,
+}: {
+  tags: Promise<TagFilterItem[]>;
+  selectedTag: string;
+}) {
   const resizeRef = useRef<HTMLDivElement>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const allTags = use(tags);
 
-  const { selectedTag, setSelectedTag } = useSelectedTagStore();
   const techStacks = toHexTechStackItem(allTags);
 
   const { positions, honeycombWidth } = useHoneycombMemo(techStacks);
@@ -51,7 +55,6 @@ export function FlipHexTechStack({ tags }: { tags: Promise<TagFilterItem[]> }) {
                     hoveredId={hoveredId}
                     row={position.row}
                     selectedTag={selectedTag}
-                    setSelectedTag={setSelectedTag}
                   />
                 </div>
               );

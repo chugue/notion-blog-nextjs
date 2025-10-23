@@ -14,11 +14,11 @@ import SearchButton from '../search/SearchButton';
 
 export interface TagSectionProps {
   tags: Promise<TagFilterItem[]>;
-  selectedTag?: string;
+  selectedTag: string;
 }
 
-const TagSection = ({ tags }: TagSectionProps) => {
-  const { selectedTag, isChanging, ...store } = useSelectedTagStore();
+const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
+  const { isChanging, ...store } = useSelectedTagStore();
   const allTags = use(tags);
   const [expanded, setExpanded] = useState(false);
 
@@ -36,8 +36,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
     gsap.to(indicator, { y: offset, duration: 0.4, ease: 'back.out(1)' });
   };
 
-  const handleTagClick = (tagName: string) => {
-    store.setSelectedTag(tagName);
+  const handleTagClick = () => {
     store.setChanging(true);
   };
 
@@ -64,7 +63,7 @@ const TagSection = ({ tags }: TagSectionProps) => {
                 href={tag.name === '전체' ? '/' : `?tag=${encodeURIComponent(tag.name)}`}
                 key={tag.name}
                 onClick={() => {
-                  handleTagClick(tag.name);
+                  handleTagClick();
                   updateIndicator(document.getElementById(tag.name) as Element);
                 }}
                 prefetch={true}

@@ -26,15 +26,16 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <div className="container mx-auto py-5 sm:py-8">
       <AddPageView pageId="main" />
+
       <section className="mb-6 grid grid-cols-[500px_1fr] max-lg:grid-cols-1 max-md:px-4">
         <VisitStats />
-        <FlipHexTechStack tags={tags} />
+        <FlipHexTechStack tags={tags} selectedTag={selectedTag} />
       </section>
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[250px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center max-md:px-4 md:order-none">
           <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSection tags={tags} />
+            <TagSection tags={tags} selectedTag={selectedTag} />
           </Suspense>
         </aside>
 

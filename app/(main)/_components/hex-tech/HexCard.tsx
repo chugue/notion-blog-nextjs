@@ -20,20 +20,11 @@ interface HexCardProps {
   hoveredId: string | null;
   row: number;
   selectedTag: string;
-  setSelectedTag: (tag: string) => void;
 }
 // GSAP 플러그인 등록
 gsap.registerPlugin(Flip);
 
-const HexCard: React.FC<HexCardProps> = ({
-  tech,
-  index,
-  onHover,
-  hoveredId,
-  row,
-  selectedTag,
-  setSelectedTag,
-}) => {
+const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row, selectedTag }) => {
   const { isFlipped, setIsFlipped } = useFlipped(selectedTag, tech);
   const { cardRef, zIndex } = useCardAnimation(index, hoveredId, tech, row);
   const { theme } = useTheme();
@@ -42,7 +33,6 @@ const HexCard: React.FC<HexCardProps> = ({
 
   const handleClick = () => {
     setIsFlipped(true);
-    setSelectedTag(tech.tagName);
     router.push(`?tag=${encodeURIComponent(tech.tagName)}`);
   };
 

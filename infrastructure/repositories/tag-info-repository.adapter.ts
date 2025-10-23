@@ -3,7 +3,9 @@ import { TagInfoRepositoryPort } from '@/application/port/tag-info-repository.po
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 import { Result } from '@/shared/types/result';
+import { unstable_cache } from 'next/cache';
 import { db } from '../database/drizzle/drizzle';
+import { tagFilterItemToDomain } from '../database/supabase/schema/tag-filter-item';
 import { tagFilterItemQuery } from '../queries/tag-filter-item.query';
 
 export const createTagInfoRepositoryAdapter = (
@@ -17,6 +19,26 @@ export const createTagInfoRepositoryAdapter = (
 
       return toTagFilterItem(result.data);
     },
+
+    getAllTagInfosViaSupabase: async (): Promise<Result<TagFilterItem[], Error>> => {
+      const cachedFn = unstable_cache(
+        async () => {
+          return await tagFilterItemQuery.getAllTagInfosViaSupabase();
+        },
+        ['getAllTagInfosViaSupabase'],
+        { tags: ['getAllTagInfosViaSupabase'], revalidate: 5 }
+      );
+
+      const result = await cachedFn();
+
+      if (!result.success) return { success: false, error: result.error };
+
+      const tagFilterItems: TagFilterItem[] = result.data.map((tagFilterItem) =>
+        tagFilterItemToDomain(tagFilterItem)
+      );
+      return { success: true, data: tagFilterItems };
+    },
+
     replaceAllTagFilterItems: async (
       tagFilterItems: TagFilterItem[]
     ): Promise<Result<void, Error>> => {

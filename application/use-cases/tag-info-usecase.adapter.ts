@@ -2,7 +2,6 @@ import { TagFilterItem } from '@/domain/entities/post.entity';
 import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 import { TagInfoUsecasePort } from '@/presentation/ports/tag-info-usecase.port';
 import { Result } from '@/shared/types/result';
-import { allPostMetadatasDataCache } from '../data-cache/post.data-cache';
 import { PostRepositoryPort } from '../port/post-repository.port';
 import { TagInfoRepositoryPort } from '../port/tag-info-repository.port';
 
@@ -12,11 +11,11 @@ export const createTagInfoUseCaseAdapter = (
 ): TagInfoUsecasePort => {
   return {
     getAllTags: async (): Promise<TagFilterItem[]> => {
-      const result = await allPostMetadatasDataCache(postRepositoryPort);
+      const result = await tagInfoRepositoryPort.getAllTagInfosViaSupabase();
 
       if (!result.success) return [];
 
-      return toTagFilterItem(result.data);
+      return result.data;
     },
     updateAllTagCount: async (): Promise<Result<void, Error>> => {
       // 1. 모든 PostMetadata 조회
