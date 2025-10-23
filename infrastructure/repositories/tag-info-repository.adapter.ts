@@ -3,6 +3,7 @@ import { TagInfoRepositoryPort } from '@/application/port/tag-info-repository.po
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { toTagFilterItem } from '@/domain/utils/tag-info.utils';
 import { Result } from '@/shared/types/result';
+import { db } from '../database/drizzle/drizzle';
 import { tagFilterItemQuery } from '../queries/tag-filter-item.query';
 
 export const createTagInfoRepositoryAdapter = (
@@ -20,10 +21,12 @@ export const createTagInfoRepositoryAdapter = (
       tagFilterItems: TagFilterItem[]
     ): Promise<Result<void, Error>> => {
       try {
-        await tagFilterItemQuery.deleteAllTagFilterItems();
-        if (tagFilterItems.length > 0) {
-          await tagFilterItemQuery.insertTagFilterItems(tagFilterItems);
-        }
+        await db.transaction(async (tx) => {
+          if (tagFilterItems.length > 0) {
+            await tagFilterItemQuery.deleteAllTagFilterItems(tx);
+            await tagFilterItemQuery.insertTagFilterItems(tagFilterItems, tx);
+          }
+        });
         return { success: true, data: undefined };
       } catch (error) {
         console.log(error);

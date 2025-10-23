@@ -1,12 +1,23 @@
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import { db } from '../database/drizzle/drizzle';
+import { Transaction, db } from '../database/drizzle/drizzle';
 import { tagFilterItem } from '../database/supabase/schema/tag-filter-item';
 
 export const tagFilterItemQuery = {
-  deleteAllTagFilterItems: async (): Promise<void> => {
-    await db.delete(tagFilterItem).execute();
+  deleteAllTagFilterItems: async (tx?: Transaction): Promise<void> => {
+    if (tx) {
+      await tx.delete(tagFilterItem).execute();
+    } else {
+      await db.delete(tagFilterItem).execute();
+    }
   },
-  insertTagFilterItems: async (tagFilterItems: TagFilterItem[]): Promise<void> => {
-    await db.insert(tagFilterItem).values(tagFilterItems).execute();
+  insertTagFilterItems: async (
+    tagFilterItems: TagFilterItem[],
+    tx?: Transaction
+  ): Promise<void> => {
+    if (tx) {
+      await tx.insert(tagFilterItem).values(tagFilterItems).execute();
+    } else {
+      await db.insert(tagFilterItem).values(tagFilterItems).execute();
+    }
   },
 };
