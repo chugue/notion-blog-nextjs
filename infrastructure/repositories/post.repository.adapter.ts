@@ -1,170 +1,201 @@
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
 import {
-  AboutPost,
-  GetPublishedPostParams,
-  Post,
-  PostMetadata,
-  PostMetadataResp,
+    AboutPost,
+    GetPublishedPostParams,
+    Post,
+    PostMetadata,
+    PostMetadataResp,
 } from '@/domain/entities/post.entity';
 import { getPostMetadata } from '@/domain/utils/post.utils';
 import { Result } from '@/shared/types/result';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { unstable_cache } from 'next/cache';
 import * as notionType from 'notion-types';
+import { notion } from '../database/external-api/notion-client';
 import { postQuery } from '../queries/post.query';
 
 export const createPostRepositoryAdapter = (): PostRepositoryPort => {
-  return {
-    getAllPublishedPosts: async (): Promise<Result<PostMetadata[]>> => {
-      try {
-        let postMetadata: PostMetadata[] = [];
+    return {
+        getAllPublishedPosts: async (): Promise<Result<PostMetadata[]>> => {
+            try {
+                let postMetadata: PostMetadata[] = [];
 
-        // 한 번 요청당 최대 갯수가 100개
-        const initialResponse = await postQuery.getPublishedPosts({
-          pageSize: 100,
-        });
+                // 한 번 요청당 최대 갯수가 100개
+                const initialResponse = await postQuery.getPublishedPosts({
+                    pageSize: 100,
+                });
 
-        postMetadata = initialResponse.results
-          .filter((page): page is PageObjectResponse => 'properties' in page)
-          .map(getPostMetadata) as PostMetadata[];
+                postMetadata = initialResponse.results
+                    .filter((page): page is PageObjectResponse => 'properties' in page)
+                    .map(getPostMetadata) as PostMetadata[];
 
-        let hasMore = initialResponse.has_more;
-        let nextCursor = initialResponse.next_cursor || '';
+                let hasMore = initialResponse.has_more;
+                let nextCursor = initialResponse.next_cursor || '';
 
-        while (hasMore) {
-          const nextResponse = await postQuery.getPublishedPosts({
-            pageSize: 100,
-            startCursor: nextCursor,
-          });
+                while (hasMore) {
+                    const nextResponse = await postQuery.getPublishedPosts({
+                        pageSize: 100,
+                        startCursor: nextCursor,
+                    });
 
-          const additionalPosts = nextResponse.results
-            .filter((page): page is PageObjectResponse => 'properties' in page)
-            .map(getPostMetadata) as PostMetadata[];
+                    const additionalPosts = nextResponse.results
+                        .filter((page): page is PageObjectResponse => 'properties' in page)
+                        .map(getPostMetadata) as PostMetadata[];
 
-          postMetadata = [...postMetadata, ...additionalPosts];
+                    postMetadata = [...postMetadata, ...additionalPosts];
 
-          hasMore = nextResponse.has_more;
-          nextCursor = nextResponse.next_cursor || '';
-        }
+                    hasMore = nextResponse.has_more;
+                    nextCursor = nextResponse.next_cursor || '';
+                }
 
-        return {
-          success: true,
-          data: postMetadata,
-        };
-      } catch (error) {
-        console.log(error);
-        return {
-          success: false,
-          error: error as Error,
-        };
-      }
-    },
-
-    getPostsWithParams: async ({
-      tag = '전체',
-      sort = 'latest',
-      pageSize,
-      startCursor = undefined,
-    }: GetPublishedPostParams): Promise<Result<PostMetadataResp>> => {
-      try {
-        const response = await postQuery.getPublishedPosts({
-          tag,
-          sort,
-          pageSize,
-          startCursor,
-        });
-
-        const posts = response.results
-          .filter((page): page is PageObjectResponse => 'properties' in page)
-          .map(getPostMetadata);
-
-        return {
-          success: true,
-          data: {
-            posts,
-            hasMore: response.has_more,
-            nextCursor: response.next_cursor || '',
-          },
-        };
-      } catch (error) {
-        console.log(error);
-        return {
-          success: false,
-          error: error as Error,
-        };
-      }
-    },
-
-    getPostById: async (id: string): Promise<Result<Post>> => {
-      const result = await postQuery.getPostByIdQuery(id);
-      if (!result.success) {
-        return {
-          success: false,
-          error: result.error,
-        };
-      }
-
-      const allPostMetadatas = await postQuery.getAllPostMetadataCache();
-      const property = allPostMetadatas.results.find((page) => {
-        return page.id === id;
-      });
-
-      if (!property) {
-        return {
-          success: false,
-          error: new Error('Post not found'),
-        };
-      }
-
-      return {
-        success: true,
-        data: {
-          recordMap: result.data as unknown as notionType.ExtendedRecordMap,
-          properties: getPostMetadata(property as PageObjectResponse),
+                return {
+                    success: true,
+                    data: postMetadata,
+                };
+            } catch (error) {
+                console.log(error);
+                return {
+                    success: false,
+                    error: error as Error,
+                };
+            }
         },
-      };
-    },
 
-    getPostPropertiesById: async (id: string): Promise<Result<PostMetadata>> => {
-      const allPostMetadatas = await postQuery.getAllPostMetadataCache();
-      const property = allPostMetadatas.results.find((page) => {
-        return page.id === id;
-      });
+        getPostsWithParams: async ({
+            tag = '전체',
+            sort = 'latest',
+            pageSize,
+            startCursor = undefined,
+        }: GetPublishedPostParams): Promise<Result<PostMetadataResp>> => {
+            try {
+                const response = await postQuery.getPublishedPosts({
+                    tag,
+                    sort,
+                    pageSize,
+                    startCursor,
+                });
 
-      if (!property) {
-        return {
-          success: false,
-          error: new Error('Post Metadata not found'),
-        };
-      }
+                const posts = response.results
+                    .filter((page): page is PageObjectResponse => 'properties' in page)
+                    .map(getPostMetadata);
 
-      return {
-        success: true,
-        data: getPostMetadata(property as PageObjectResponse),
-      };
-    },
-    getAboutPage: async (id: string): Promise<Result<AboutPost>> => {
-      const cachedFn = unstable_cache(
-        async () => {
-          return await postQuery.getPostByIdQuery(id);
+                return {
+                    success: true,
+                    data: {
+                        posts,
+                        hasMore: response.has_more,
+                        nextCursor: response.next_cursor || '',
+                    },
+                };
+            } catch (error) {
+                console.log(error);
+                return {
+                    success: false,
+                    error: error as Error,
+                };
+            }
         },
-        [`about-page`],
-        { tags: [`about-page`], revalidate: false }
-      );
-      const result = await cachedFn();
 
-      if (!result.success) {
-        return {
-          success: false,
-          error: result.error,
-        };
-      }
-      return {
-        success: true,
-        data: {
-          recordMap: result.data as unknown as notionType.ExtendedRecordMap,
+        getPostById: async (id: string): Promise<Result<Post>> => {
+            const result = await postQuery.getPostByIdQuery(id);
+            if (!result.success) {
+                return {
+                    success: false,
+                    error: result.error,
+                };
+            }
+
+            const allPostMetadatas = await postQuery.getAllPostMetadataCache();
+            let property = allPostMetadatas.results.find((page) => {
+                return page.id === id;
+            });
+
+            // 캐시에 없으면 개별 페이지 메타데이터 직접 조회 (새 글 fallback)
+            if (!property) {
+                try {
+                    const singlePage = await notion.pages.retrieve({ page_id: id });
+                    if ('properties' in singlePage) {
+                        property = singlePage;
+                    }
+                } catch {
+                    return {
+                        success: false,
+                        error: new Error('Post not found'),
+                    };
+                }
+            }
+
+            if (!property) {
+                return {
+                    success: false,
+                    error: new Error('Post not found'),
+                };
+            }
+
+            return {
+                success: true,
+                data: {
+                    recordMap: result.data as unknown as notionType.ExtendedRecordMap,
+                    properties: getPostMetadata(property as PageObjectResponse),
+                },
+            };
         },
-      };
-    },
-  };
+
+        getPostPropertiesById: async (id: string): Promise<Result<PostMetadata>> => {
+            const allPostMetadatas = await postQuery.getAllPostMetadataCache();
+            let property = allPostMetadatas.results.find((page) => {
+                return page.id === id;
+            });
+
+            // 캐시에 없으면 개별 페이지 메타데이터 직접 조회 (새 글 fallback)
+            if (!property) {
+                try {
+                    const singlePage = await notion.pages.retrieve({ page_id: id });
+                    if ('properties' in singlePage) {
+                        property = singlePage;
+                    }
+                } catch {
+                    return {
+                        success: false,
+                        error: new Error('Post Metadata not found'),
+                    };
+                }
+            }
+
+            if (!property) {
+                return {
+                    success: false,
+                    error: new Error('Post Metadata not found'),
+                };
+            }
+
+            return {
+                success: true,
+                data: getPostMetadata(property as PageObjectResponse),
+            };
+        },
+        getAboutPage: async (id: string): Promise<Result<AboutPost>> => {
+            const cachedFn = unstable_cache(
+                async () => {
+                    return await postQuery.getPostByIdQuery(id);
+                },
+                [`about-page`],
+                { tags: [`about-page`], revalidate: false }
+            );
+            const result = await cachedFn();
+
+            if (!result.success) {
+                return {
+                    success: false,
+                    error: result.error,
+                };
+            }
+            return {
+                success: true,
+                data: {
+                    recordMap: result.data as unknown as notionType.ExtendedRecordMap,
+                },
+            };
+        },
+    };
 };
