@@ -1,35 +1,21 @@
-import { notion } from '@/infrastructure/database/external-api/notion-client';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-    const blockId = request.nextUrl.searchParams.get('blockId');
+    const encodedUrl = request.nextUrl.searchParams.get('url');
 
-    if (!blockId) {
-        return NextResponse.json({ error: 'blockId is required' }, { status: 400 });
+    if (!encodedUrl) {
+        return NextResponse.json({ error: 'url is required' }, { status: 400 });
     }
 
     try {
-        // Notion API로 블록 정보 가져오기
-        const block = await notion.blocks.retrieve({ block_id: blockId });
+        const imageUrl = decodeURIComponent(encodedUrl);
 
-        // 이미지 URL 추출
-        let imageUrl: string | null = null;
-
-        if ('type' in block && block.type === 'image') {
-            const imageBlock = block.image;
-            if (imageBlock.type === 'file') {
-                imageUrl = imageBlock.file.url;
-            } else if (imageBlock.type === 'external') {
-                imageUrl = imageBlock.external.url;
-            }
-        }
-
-        if (!imageUrl) {
-            return NextResponse.json({ error: 'Image not found' }, { status: 404 });
-        }
-
-        // 이미지 fetch 및 스트리밍
-        const imageResponse = await fetch(imageUrl);
+        // 이미지 fetch (referrer 없이)
+        const imageResponse = await fetch(imageUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; NotionImageProxy/1.0)',
+            },
+        });
 
         if (!imageResponse.ok) {
             return NextResponse.json({ error: 'Failed to fetch image' }, { status: 502 });

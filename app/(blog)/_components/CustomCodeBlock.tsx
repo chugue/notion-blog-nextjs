@@ -38,10 +38,10 @@ const CustomCodeBlock = ({ block }: { block: CodeBlock }) => {
     // 서버에서 하이라이팅된 HTML이 있으면 사용
     if (highlightedHtml) {
         return (
-            <div ref={containerRef} className="code-block opacity-0">
+            <div ref={containerRef} className="code-block w-full opacity-0">
                 <div className="mb-2 text-sm text-gray-400">{language}</div>
                 <div
-                    className="shiki-code-block overflow-x-auto rounded-lg"
+                    className="shiki-code-block w-full overflow-x-auto rounded-lg"
                     dangerouslySetInnerHTML={{ __html: highlightedHtml }}
                 />
             </div>
@@ -51,9 +51,9 @@ const CustomCodeBlock = ({ block }: { block: CodeBlock }) => {
     // 폴백: 서버 하이라이팅 없으면 코드만 표시
     const code = getBlockTitle(block, {} as never) || '';
     return (
-        <div ref={containerRef} className="code-block opacity-0">
+        <div ref={containerRef} className="code-block w-full opacity-0">
             <div className="mb-2 text-sm text-gray-400">{language}</div>
-            <pre className="overflow-x-auto rounded-lg bg-[#1e1e2e] p-4">
+            <pre className="w-full overflow-x-auto rounded-lg bg-[#1e1e2e] p-4">
                 <code className="text-sm text-gray-200">{code}</code>
             </pre>
         </div>

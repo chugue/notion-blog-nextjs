@@ -289,12 +289,16 @@ figure:has(pre.shiki) {
 }
 
 pre.shiki {
-  @apply block overflow-x-auto text-[1rem];
+  @apply block w-full overflow-x-auto text-[1rem];
   margin: 0 !important;
   padding: 3rem 3rem 3rem 2rem !important;
   overflow-wrap: normal !important;
   scrollbar-color: var(--muted-foreground) transparent;
   scrollbar-width: thin;
+}
+
+.shiki-code-block pre {
+  @apply w-full;
 }
 
 pre.shiki::-webkit-scrollbar {
