@@ -4,6 +4,7 @@ export const revalidate = 3600;
 import GiscusComments from '@/app/(blog)/_components/GiscusComments';
 import AddPageView from '@/app/(main)/_components/AddPageView';
 import getPostDetailPage from '@/presentation/utils/get-post-detail-page';
+import { highlightCodeBlocks } from '@/presentation/utils/highlight-code-blocks';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { Separator } from '@/shared/components/ui/separator';
 import { diContainer } from '@/shared/di/di-container';
@@ -91,6 +92,9 @@ export default async function BlogPost({ params }: BlogPostProps) {
   try {
     const { recordMap, properties } = await getPostDetailPage(id);
 
+    // 서버에서 코드 블록 하이라이팅
+    const highlightedCode = await highlightCodeBlocks(recordMap);
+
     return (
       <div className="container mx-auto py-6 sm:py-12">
         <AddPageView pageId={id} />
@@ -140,7 +144,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
             {/* 블로그 본문 */}
             <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-              <NotionPageContent recordMap={recordMap} />
+              <NotionPageContent recordMap={recordMap} highlightedCode={highlightedCode} />
             </div>
 
             <Separator className="my-16" />
