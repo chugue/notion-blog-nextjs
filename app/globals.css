@@ -76,8 +76,8 @@
 }
 
 :root {
-    --header-height: 3.5rem;
-    --sticky-offset: 3rem;
+    --header-height: 4rem;
+    --sticky-offset: 4rem;
     --sticky-toc-offset: 10rem;
     --sticky-toc: calc(var(--header-height) + var(--sticky-offset) + var(--sticky-toc-offset));
     --sticky-top: calc(var(--header-height) + var(--sticky-offset));
@@ -244,20 +244,30 @@
 }
 
 /* notion-x 설정  */
-.notion-header-anchor,
 .notion-table-of-contents,
 .notion-hash-link {
     display: none;
 }
+
+.notion-header-anchor {
+    position: absolute;
+    top: -100px;
+    visibility: hidden;
+}
 .notion-h1 {
-    @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100 max-sm:before:opacity-0 sm:before:opacity-10;
+    @apply before:text-primary relative mt-15 mb-2 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100 max-sm:before:opacity-0 sm:before:opacity-10;
     font-family: var(--font-family-maplestory);
-    scroll-margin-top: var(--sticky-top);
+    scroll-margin-top: 150px !important;
+}
+.notion-h2 {
+    @apply before:text-primary relative mt-10 mb-2 text-3xl font-semibold before:absolute before:-left-10 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+    font-family: var(--font-family-maplestory);
+    scroll-margin-top: 150px !important;
 }
 .notion-h3 {
-    @apply before:text-primary scroll-m-20 text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+    @apply before:text-primary text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
     font-family: var(--font-family-maplestory);
-    scroll-margin-top: var(--sticky-top);
+    scroll-margin-top: 150px !important;
 }
 .notion-text {
     @apply text-lg leading-[2] font-extralight text-neutral-200/90;
@@ -523,7 +533,8 @@ ol ul li {
     .notion-table-body {
         @apply border-t border-neutral-100;
     }
-    ㄴ .notion-table th,
+
+    .notion-table th,
     .notion-table td {
         @apply px-2 py-1.5;
     }
