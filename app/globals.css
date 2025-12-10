@@ -7,488 +7,599 @@
 @import 'katex/dist/katex.min.css';
 
 @theme {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-post_background: var(--card-post_background);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-code-accent: #252738;
-  --color-code-text: #767887;
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-post_background: var(--card-post_background);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-code-accent: #252738;
+    --color-code-text: #767887;
 
-  /* Font families */
-  --font-family-sans: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
-  --font-family-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;
-  --font-family-maplestory: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
+    /* Font families */
+    --font-family-sans: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
+    --font-family-mono: var(--font-maplestory), ui-monospace, Menlo, Monaco, Consolas, monospace;
+    --font-family-maplestory: var(--font-maplestory), ui-sans-serif, system-ui, sans-serif;
 
-  --font-size-title: 3rem;
-  --font-size-sub-title: 2.25rem;
-  --font-size-h1: 2rem;
-  --font-size-h2: 1.75rem;
-  --font-size-h3: 1.5rem;
-  --font-size-heading: 1.25rem;
-  --font-size-subheading: 1.125rem;
-  --font-size-body: 1rem;
-  --font-size-quote: 1.125rem;
-  --font-size-caption: 0.875rem;
+    --font-size-title: 3rem;
+    --font-size-sub-title: 2.25rem;
+    --font-size-h1: 2rem;
+    --font-size-h2: 1.75rem;
+    --font-size-h3: 1.5rem;
+    --font-size-heading: 1.25rem;
+    --font-size-subheading: 1.125rem;
+    --font-size-body: 1rem;
+    --font-size-quote: 1.125rem;
+    --font-size-caption: 0.875rem;
 
-  /* 라인 하이트 설정 */
-  --line-height-title: 1.1;
-  --line-height-sub-title: 1.2;
-  --line-height-h1: 1.25;
-  --line-height-h2: 1.3;
-  --line-height-h3: 1.35;
-  --line-height-heading: 1.4;
-  --line-height-subheading: 1.5;
-  --line-height-body: 1.6;
-  --line-height-quote: 1.5;
-  --line-height-caption: 1.4;
+    /* 라인 하이트 설정 */
+    --line-height-title: 1.1;
+    --line-height-sub-title: 1.2;
+    --line-height-h1: 1.25;
+    --line-height-h2: 1.3;
+    --line-height-h3: 1.35;
+    --line-height-heading: 1.4;
+    --line-height-subheading: 1.5;
+    --line-height-body: 1.6;
+    --line-height-quote: 1.5;
+    --line-height-caption: 1.4;
 }
 
 :root {
-  --header-height: 3.5rem;
-  --sticky-offset: 3rem;
-  --sticky-toc-offset: 10rem;
-  --sticky-toc: calc(var(--header-height) + var(--sticky-offset) + var(--sticky-toc-offset));
-  --sticky-top: calc(var(--header-height) + var(--sticky-offset));
+    --header-height: 3.5rem;
+    --sticky-offset: 3rem;
+    --sticky-toc-offset: 10rem;
+    --sticky-toc: calc(var(--header-height) + var(--sticky-offset) + var(--sticky-toc-offset));
+    --sticky-top: calc(var(--header-height) + var(--sticky-offset));
 }
 
 :root {
-  --radius: 0.65rem;
-  --background: #ffff;
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(from var(--primary) l c h / 0.02);
-  --card-post_background: #fffef9;
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.795 0.184 86.047);
-  --primary-foreground: oklch(0.421 0.095 57.708);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.795 0.184 86.047);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.795 0.184 86.047);
-  --sidebar-primary-foreground: oklch(0.421 0.095 57.708);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.795 0.184 86.047);
+    --radius: 0.65rem;
+    --background: #ffff;
+    --foreground: oklch(0.141 0.005 285.823);
+    --card: oklch(from var(--primary) l c h / 0.02);
+    --card-post_background: #fffef9;
+    --card-foreground: oklch(0.141 0.005 285.823);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.141 0.005 285.823);
+    --primary: oklch(0.795 0.184 86.047);
+    --primary-foreground: oklch(0.421 0.095 57.708);
+    --secondary: oklch(0.967 0.001 286.375);
+    --secondary-foreground: oklch(0.21 0.006 285.885);
+    --muted: oklch(0.967 0.001 286.375);
+    --muted-foreground: oklch(0.552 0.016 285.938);
+    --accent: oklch(0.967 0.001 286.375);
+    --accent-foreground: oklch(0.21 0.006 285.885);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.92 0.004 286.32);
+    --input: oklch(0.92 0.004 286.32);
+    --ring: oklch(0.795 0.184 86.047);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.141 0.005 285.823);
+    --sidebar-primary: oklch(0.795 0.184 86.047);
+    --sidebar-primary-foreground: oklch(0.421 0.095 57.708);
+    --sidebar-accent: oklch(0.967 0.001 286.375);
+    --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+    --sidebar-border: oklch(0.92 0.004 286.32);
+    --sidebar-ring: oklch(0.795 0.184 86.047);
 }
 
 .dark {
-  --background: #030712;
-  --bg-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(3, 7, 18, 0.6));
-  --foreground: oklch(0.985 0 0);
-  --card: #1c212a;
-  --code-block-background: #1e1e2e;
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.795 0.184 86.047);
-  --primary-foreground: oklch(0.421 0.095 57.708);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.554 0.135 66.442);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.795 0.184 86.047);
-  --sidebar-primary-foreground: oklch(0.421 0.095 57.708);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.554 0.135 66.442);
+    --background: #030712;
+    --bg-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(3, 7, 18, 0.6));
+    --foreground: oklch(0.985 0 0);
+    --card: #1c212a;
+    --code-block-background: #1e1e2e;
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.21 0.006 285.885);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.795 0.184 86.047);
+    --primary-foreground: oklch(0.421 0.095 57.708);
+    --secondary: oklch(0.274 0.006 286.033);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.274 0.006 286.033);
+    --muted-foreground: oklch(0.705 0.015 286.067);
+    --accent: oklch(0.274 0.006 286.033);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.554 0.135 66.442);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.21 0.006 285.885);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.795 0.184 86.047);
+    --sidebar-primary-foreground: oklch(0.421 0.095 57.708);
+    --sidebar-accent: oklch(0.274 0.006 286.033);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.554 0.135 66.442);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-family-maplestory);
-  }
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-family: var(--font-family-maplestory);
+    }
 }
 
 .search-button-glow:hover {
-  box-shadow:
-    0 0 3px rgba(255, 204, 0, 0.8),
-    0 0 6px rgba(255, 204, 0, 0.6),
-    0 0 12px rgba(255, 204, 0, 0.4),
-    0 0 20px rgba(255, 204, 0, 0.2);
+    box-shadow:
+        0 0 3px rgba(255, 204, 0, 0.8),
+        0 0 6px rgba(255, 204, 0, 0.6),
+        0 0 12px rgba(255, 204, 0, 0.4),
+        0 0 20px rgba(255, 204, 0, 0.2);
 }
 
 @layer utilities {
-  .card-hover {
-    @apply group-hover:text-primary group-hover:line-clamp-none;
-  }
-  .responsive-grid {
-    @apply grid grid-cols-1 gap-4 transition-all md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4;
-  }
-  .animate-radar {
-    animation: radar-pulse 2s ease-in-out infinite;
-  }
-  .before-header-tag {
-    @apply before:text-primary relative before:absolute before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
-  }
+    .card-hover {
+        @apply group-hover:text-primary group-hover:line-clamp-none;
+    }
+    .responsive-grid {
+        @apply grid grid-cols-1 gap-4 transition-all md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4;
+    }
+    .animate-radar {
+        animation: radar-pulse 2s ease-in-out infinite;
+    }
+    .before-header-tag {
+        @apply before:text-primary relative before:absolute before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+    }
 }
 
 /* 기존 코드 아래에 추가 */
 @keyframes radar-pulse {
-  0% {
-    transform: scale(0.5);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(0.5);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
 }
 .rotate-y-180 {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 
 .preserve-3d {
-  transform-style: preserve-3d;
+    transform-style: preserve-3d;
 }
 
 .hex-card {
-  backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 /* 스켈레톤 애니메이션 */
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 @keyframes pulse-subtle {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 
 .animate-shimmer {
-  animation: shimmer 2s infinite ease-in-out;
+    animation: shimmer 2s infinite ease-in-out;
 }
 
 .animate-pulse-subtle {
-  animation: pulse-subtle 2s infinite ease-in-out;
+    animation: pulse-subtle 2s infinite ease-in-out;
 }
 
 /* notion-x 설정  */
 .notion-header-anchor,
 .notion-table-of-contents,
 .notion-hash-link {
-  display: none;
+    display: none;
 }
 .notion-h1 {
-  @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100 max-sm:before:opacity-0 sm:before:opacity-10;
-  font-family: var(--font-family-maplestory);
-  scroll-margin-top: var(--sticky-top);
+    @apply before:text-primary relative mt-15 mb-2 scroll-m-20 py-0 pt-2 text-4xl font-bold before:absolute before:-left-12 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100 max-sm:before:opacity-0 sm:before:opacity-10;
+    font-family: var(--font-family-maplestory);
+    scroll-margin-top: var(--sticky-top);
 }
 .notion-h3 {
-  @apply before:text-primary scroll-m-20 text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
-  font-family: var(--font-family-maplestory);
-  scroll-margin-top: var(--sticky-top);
+    @apply before:text-primary scroll-m-20 text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+    font-family: var(--font-family-maplestory);
+    scroll-margin-top: var(--sticky-top);
 }
 .notion-text {
-  @apply text-lg leading-[2] font-extralight text-neutral-200/90;
-  font-family: var(--font-family-maplestory);
+    @apply text-lg leading-[2] font-extralight text-neutral-200/90;
+    font-family: var(--font-family-maplestory);
 }
 .notion-quote {
-  @apply border-primary mt-8 border-l-4 px-8 text-neutral-300/80 [&>*]:my-0;
-  font-family: var(--font-family-maplestory);
+    @apply border-primary mt-8 border-l-4 px-8 text-neutral-300/80 [&>*]:my-0;
+    font-family: var(--font-family-maplestory);
 }
 .notion-inline-code {
-  @apply bg-primary/10 text-primary rounded px-[0.3rem] py-[0.3rem] font-light;
-  letter-spacing: 0.08rem;
-  font-family: var(--font-family-maplestory);
+    @apply bg-primary/10 text-primary rounded px-[0.3rem] py-[0.3rem] font-light;
+    letter-spacing: 0.08rem;
+    font-family: var(--font-family-maplestory);
 }
 
 .notion-page {
-  @apply px-0;
+    @apply px-0;
 }
 
 figure {
-  @apply block;
-  position: relative;
-  margin: 0 !important;
-  padding: 0 !important;
+    @apply block;
+    position: relative;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 figure:has(pre.shiki) {
-  @apply block overflow-hidden rounded-lg;
+    @apply block overflow-hidden rounded-lg;
 }
 
 pre.shiki {
-  @apply block w-full overflow-x-auto text-[1rem];
-  margin: 0 !important;
-  padding: 3rem 3rem 3rem 2rem !important;
-  overflow-wrap: normal !important;
-  scrollbar-color: var(--muted-foreground) transparent;
-  scrollbar-width: thin;
+    @apply block w-full overflow-x-auto text-[1rem];
+    margin: 0 !important;
+    padding: 3rem 3rem 3rem 2rem !important;
+    overflow-wrap: normal !important;
+    scrollbar-color: var(--muted-foreground) transparent;
+    scrollbar-width: thin;
 }
 
 .shiki-code-block pre {
-  @apply w-full;
+    @apply w-full;
 }
 
 pre.shiki::-webkit-scrollbar {
-  @apply rounded-full bg-transparent; /* 스크롤바 색상 및 둥근 모서리 */
+    @apply rounded-full bg-transparent; /* 스크롤바 색상 및 둥근 모서리 */
 }
 
 figure [class^='code_module_codeCopyButton'] {
-  @apply bg-muted/30 hover:text-primary top-4 right-4 flex items-center justify-end rounded-md transition-all;
+    @apply bg-muted/30 hover:text-primary top-4 right-4 flex items-center justify-end rounded-md transition-all;
 }
 
 figure [class^='code_module_codeCopyButton'] svg {
-  @apply hidden;
+    @apply hidden;
 }
 
 figure [class^='code_module_codeLanLabel'] {
-  @apply bg-muted/30 top-4 left-2 items-center justify-start rounded-md transition-all;
+    @apply bg-muted/30 top-4 left-2 items-center justify-start rounded-md transition-all;
 }
 
 .notion-bookmark {
-  @apply rounded-md;
-  font-family: var(--font-family-maplestory);
+    @apply rounded-md;
+    font-family: var(--font-family-maplestory);
 }
 
 .notion-bookmark-title {
-  @apply font-bold;
+    @apply font-bold;
 }
 
 .notion-bookmark-link-text {
-  @apply text-blue-700;
+    @apply text-blue-700;
 }
 
 .notion-page-icon-span > .notion-page-icon {
-  @apply relative top-2;
+    @apply relative top-2;
 }
 
 .notion-callout-text {
-  @apply text-lg;
-  font-family: var(--font-family-maplestory);
+    @apply text-lg;
+    font-family: var(--font-family-maplestory);
 }
 
 .notion-simple-table {
-  @apply table w-full border-none;
+    @apply table w-full border-none;
 }
 
 .notion-text-children {
-  @apply mt-2 pl-0 sm:mt-2 sm:pl-4;
+    @apply mt-2 pl-0 sm:mt-2 sm:pl-4;
 }
 
 .notion-asset-wrapper-image > div {
-  @apply !h-auto !max-h-none;
+    @apply !h-auto !max-h-none;
 }
 
 .notion-asset-wrapper img {
-  @apply h-auto w-full rounded-lg object-contain;
+    @apply h-auto w-full rounded-lg object-contain;
 }
 
 .notion-asset-caption {
-  @apply text-muted-foreground/80 text-base;
-  font-family: var(--font-family-maplestory);
+    @apply text-muted-foreground/80 text-base;
+    font-family: var(--font-family-maplestory);
 }
 
 .notion-external {
-  @apply items-center rounded-md border-gray-400 p-2 text-base;
+    @apply items-center rounded-md border-gray-400 p-2 text-base;
 }
 
 .notion-external svg path {
-  fill: var(--color-muted-foreground);
+    fill: var(--color-muted-foreground);
 }
 
 .notion-external-image {
-  @apply flex justify-center;
+    @apply flex justify-center;
 }
 
 .notion-external-image svg {
-  @apply mx-auto; /* 수평 중앙 정렬 */
+    @apply mx-auto; /* 수평 중앙 정렬 */
 }
 
 .notion-external-title {
-  @apply text-base font-bold;
+    @apply text-base font-bold;
 }
 
 .notion-external-block-desc {
-  @apply text-muted-foreground/80 text-sm;
+    @apply text-muted-foreground/80 text-sm;
 }
 
 .notion-list {
-  @apply block w-full;
+    @apply block w-full;
 }
 
 /* 리스트 스타일 추가 */
 .notion-list > ol,
 .notion-list > ul {
-  @apply my-0 block px-0 text-lg text-neutral-300/70;
+    @apply my-0 block px-0 text-lg text-neutral-300/70;
 }
 
 .notion-list > li {
-  @apply text-lg text-neutral-200/90;
-  font-family: var(--font-family-maplestory);
+    @apply text-lg text-neutral-200/90;
+    font-family: var(--font-family-maplestory);
 }
 
 .notion-list-numbered > li {
-  @apply list-decimal text-lg text-neutral-200/90;
-  font-family: var(--font-family-maplestory);
+    @apply list-decimal text-lg text-neutral-200/90;
+    font-family: var(--font-family-maplestory);
 }
 
 ol .notion-text {
-  @apply text-lg text-neutral-300/70;
+    @apply text-lg text-neutral-300/70;
 }
 
 ol ul li {
-  @apply ml-6 text-lg text-neutral-300/70;
-  font-family: var(--font-family-maplestory);
+    @apply ml-6 text-lg text-neutral-300/70;
+    font-family: var(--font-family-maplestory);
 }
 
 .notion-text-children > ul > ul {
-  @apply ml-8 text-gray-400;
+    @apply ml-8 text-gray-400;
 }
 
 .notion-asset-caption > ol {
-  @apply block w-full;
+    @apply block w-full;
 }
 
 .notion-list > ol > li {
-  @apply ml-6;
-  list-style-type: lower-alpha;
+    @apply ml-6;
+    list-style-type: lower-alpha;
 }
 
 .notion-page img {
-  @apply border-1 border-neutral-800;
+    @apply border-1 border-neutral-800;
 }
 
 /* about-page */
 .about-page {
-  background: linear-gradient(223.17deg, #1c1627 0%, var(--color-background) 25.63%);
+    background: linear-gradient(223.17deg, #1c1627 0%, var(--color-background) 25.63%);
 
-  & img {
-    @apply border-none;
-  }
+    & img {
+        @apply border-none;
+    }
 
-  & .notion-simple-table {
-    font-family: var(--font-family-maplestory);
-  }
+    & .notion-simple-table {
+        font-family: var(--font-family-maplestory);
+    }
 
-  & .notion-simple-table-header-cell {
-    @apply bg-muted/50 font-bold;
-  }
+    & .notion-simple-table-header-cell {
+        @apply bg-muted/50 font-bold;
+    }
 
-  & .notion-h3 {
-    @apply bg-muted/70 block w-full rounded-sm;
-  }
+    & .notion-h3 {
+        @apply bg-muted/70 block w-full rounded-sm;
+    }
 
-  & .notion-text {
-    @apply py-0;
-  }
+    & .notion-text {
+        @apply py-0;
+    }
 
-  & .notion-list {
-    @apply ml-0;
-  }
+    & .notion-list {
+        @apply ml-0;
+    }
 
-  & .notion-list li {
-    @apply py-1;
-  }
+    & .notion-list li {
+        @apply py-1;
+    }
 
-  & .notion-list .notion-list li {
-    @apply ml-6 text-neutral-200/50;
-  }
+    & .notion-list .notion-list li {
+        @apply ml-6 text-neutral-200/50;
+    }
 
-  & .notion-list .notion-list .notion-list {
-    @apply ml-6 text-neutral-200/50;
-  }
+    & .notion-list .notion-list .notion-list {
+        @apply ml-6 text-neutral-200/50;
+    }
 
-  & .notion-quote {
-    @apply my-0 mt-4 text-lg font-light;
-  }
+    & .notion-quote {
+        @apply my-0 mt-4 text-lg font-light;
+    }
 
-  & .notion-simple-table-header-row td {
-    @apply bg-muted/50 font-bold;
-  }
+    & .notion-simple-table-header-row td {
+        @apply bg-muted/50 font-bold;
+    }
 }
 
 .notion-file {
-  @apply bg-muted/50 border-border rounded-md border hover:bg-[#474c50];
+    @apply bg-muted/50 border-border rounded-md border hover:bg-[#474c50];
 }
 
 .notion-toggle {
-  @apply mt-4;
+    @apply mt-4;
 
-  & .notion-h3::before {
-    content: none !important;
-    opacity: 0 !important;
-    pointer-events: none;
-  }
+    & .notion-h3::before {
+        content: none !important;
+        opacity: 0 !important;
+        pointer-events: none;
+    }
+}
+
+/* Collection (데이터베이스) 스타일 */
+.notion-collection {
+    @apply w-full overflow-hidden;
+
+    .notion-table {
+        @apply w-full border-collapse;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .notion-table-view {
+        @apply w-full overflow-x-auto;
+        padding: 0 !important;
+        margin-top: 0 !important;
+        width: 100% !important;
+    }
+
+    .notion-table-view-header-cell {
+        width: auto !important;
+    }
+
+    .notion-table-header,
+    .notion-table-header-placeholder {
+        @apply hidden;
+    }
+
+    .notion-table-body {
+        @apply border-t border-neutral-100;
+    }
+    ㄴ .notion-table th,
+    .notion-table td {
+        @apply px-2 py-1.5;
+    }
+
+    .notion-table-row {
+        width: 100% !important;
+        flex: 1 !important;
+    }
+
+    .notion-table-cell-multi_select {
+        width: 100% !important;
+        padding: 15px;
+        flex: 1 !important;
+    }
+
+    .notion-collection-row {
+        @apply flex flex-wrap items-center gap-2 border-b border-neutral-700/50 py-3;
+    }
+
+    .notion-collection-row-body {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .notion-collection-row-property {
+        @apply flex items-center gap-2;
+    }
+
+    .notion-collection-column-title {
+        @apply hidden;
+    }
+
+    .notion-property {
+        @apply flex items-center;
+    }
+
+    .notion-property-multi_select {
+        @apply flex flex-wrap gap-1.5;
+    }
+
+    .notion-property-multi_select-item {
+        @apply rounded-md px-2 py-1 text-sm font-medium;
+        filter: saturate(3) brightness(0.9);
+    }
+
+    .notion-collection-card {
+        @apply bg-card rounded-lg border border-neutral-700/50 p-4;
+    }
+
+    .notion-collection-card-cover {
+        @apply mb-3 overflow-hidden rounded-md;
+    }
+
+    .notion-collection-card-body {
+        @apply space-y-2;
+    }
+
+    .notion-page-title-text {
+        @apply text-base font-medium;
+    }
+
+    .notion-page-icon-inline {
+        @apply hidden;
+    }
+}
+
+/* Collection header의 부모 래퍼 */
+div:has(> .notion-collection-header) {
+    @apply w-full;
+}
+
+.notion-collection-header {
+    @apply relative -ml-8 block w-full overflow-visible pl-8;
+}
+
+.notion-collection-header-title {
+    @apply before:text-primary relative block w-full scroll-m-20 text-2xl font-semibold before:absolute before:-left-8 before:opacity-10 before:transition-opacity before:duration-500 before:content-['#'] hover:before:opacity-100;
+    font-family: var(--font-family-maplestory) !important;
+    scroll-margin-top: var(--sticky-top);
 }

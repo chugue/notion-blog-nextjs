@@ -1,12 +1,18 @@
 'use client';
 
 import { HighlightedCodeMap } from '@/presentation/utils/highlight-code-blocks';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Block, ExtendedRecordMap } from 'notion-types';
 import { NotionRenderer } from 'react-notion-x';
 import CustomCodeBlock from './CustomCodeBlock';
 import { HighlightedCodeProvider } from './HighlightedCodeContext';
+
+// 데이터베이스 컴포넌트 동적 로드
+const Collection = dynamic(() => import('react-notion-x/build/third-party/collection').then((m) => m.Collection), {
+    ssr: false,
+});
 
 const mapImageUrl = (url: string | undefined, block: Block): string => {
     if (!url) return '';
@@ -51,6 +57,7 @@ const NotionPageContent = ({ recordMap, highlightedCode = {} }: NotionPageConten
                         nextImage: Image,
                         nextLink: Link,
                         Code: CustomCodeBlock,
+                        Collection,
                     }}
                 />
             </div>
