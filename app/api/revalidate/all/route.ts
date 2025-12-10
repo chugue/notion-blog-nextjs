@@ -2,13 +2,13 @@ import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 export const GET = async () => {
-  revalidateTag('getAllPublishedPostMetadatas');
-  revalidateTag('all-searchable-posts');
-  revalidateTag('all-posts');
-  revalidateTag('image-proxy');
-  revalidateTag('mainPageDefault');
-  revalidateTag('allPostMetadatas');
-  revalidateTag('getMainPageDataCache');
+  revalidateTag('getAllPublishedPostMetadatas', { expire: 0 });
+  revalidateTag('all-searchable-posts', { expire: 0 });
+  revalidateTag('all-posts', { expire: 0 });
+  revalidateTag('image-proxy', { expire: 0 });
+  revalidateTag('mainPageDefault', { expire: 0 });
+  revalidateTag('allPostMetadatas', { expire: 0 });
+  revalidateTag('getMainPageDataCache', { expire: 0 });
 
   return NextResponse.json({ success: true });
 };

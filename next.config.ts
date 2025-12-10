@@ -37,16 +37,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: false,
   },
-
-  webpack: (config: any, { isServer }: { isServer: boolean }) => {
-    // CSS 최소화 비활성화
-    if (!isServer) {
-      config.optimization.minimizer = config.optimization.minimizer.filter(
-        (minimizer: any) => !minimizer.constructor.name.includes('CssMinimizerPlugin')
-      );
-    }
-    return config;
-  },
+  turbopack: {},
   headers: async () => {
     return [
       {
