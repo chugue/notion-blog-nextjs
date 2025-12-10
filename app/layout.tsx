@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import { SmoothScrollProvider } from '@/presentation/providers/SmoothScrollProvider';
 import TanstackProvider from '@/presentation/providers/TanstackProvider';
 import { ThemeProvider } from '@/presentation/providers/ThemeProvider';
 import type { Metadata } from 'next';
@@ -105,8 +106,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
-
+            <SmoothScrollProvider>
+              {children}
+            </SmoothScrollProvider>
             <Toaster richColors />
           </ThemeProvider>
         </TanstackProvider>
