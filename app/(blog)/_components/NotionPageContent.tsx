@@ -2,8 +2,8 @@
 
 import { HighlightedCodeMap } from '@/presentation/utils/highlight-code-blocks';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import Link from 'next/link';
+import NotionImage from './NotionImage';
 import { Block, ExtendedRecordMap } from 'notion-types';
 import { NotionRenderer } from 'react-notion-x';
 import CustomCodeBlock from './CustomCodeBlock';
@@ -67,10 +67,11 @@ const NotionPageContent = ({ recordMap, highlightedCode = {} }: NotionPageConten
                     darkMode={true}
                     disableHeader={true}
                     previewImages={true}
+                    forceCustomImages={true}
                     mapPageUrl={() => '#'}
                     mapImageUrl={mapImageUrl}
                     components={{
-                        nextImage: Image,
+                        nextImage: NotionImage,
                         nextLink: Link,
                         Code: CustomCodeBlock,
                         Collection,

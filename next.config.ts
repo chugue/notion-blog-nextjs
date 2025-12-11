@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   poweredByHeader: false,
   images: {
+    localPatterns: [
+      {
+        pathname: '/**',
+      },
+    ],
     remotePatterns: [
       {
         hostname: 'picsum.photos',
