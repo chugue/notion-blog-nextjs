@@ -14,6 +14,17 @@ const Collection = dynamic(() => import('react-notion-x/build/third-party/collec
     ssr: false,
 });
 
+// Notion 내부 이미지인지 확인 (S3, file.notion.so, attachment:, notion.so)
+const isNotionImage = (url: string): boolean => {
+    return (
+        url.includes('s3.us-west-2.amazonaws.com') ||
+        url.includes('s3.amazonaws.com') ||
+        url.includes('file.notion.so') ||
+        url.includes('notion.so') ||
+        url.startsWith('attachment:')
+    );
+};
+
 const mapImageUrl = (url: string | undefined, block: Block): string => {
     if (!url) return '';
 
@@ -22,13 +33,18 @@ const mapImageUrl = (url: string | undefined, block: Block): string => {
         return url;
     }
 
-    // attachment: 스킴은 Notion 이미지 URL로 변환
-    if (url.startsWith('attachment:')) {
-        const notionImageUrl = `https://www.notion.so/image/${encodeURIComponent(url)}?table=block&id=${block.id}`;
-        return `/api/notion-image?url=${encodeURIComponent(notionImageUrl)}`;
+    // 이미지 블록인 경우 항상 blockId로 fresh URL 요청
+    // (캐시된 signed_urls가 만료되었을 수 있으므로)
+    if (block.type === 'image') {
+        return `/api/notion-block-image?blockId=${block.id}`;
     }
 
-    // 모든 외부 이미지는 프록시를 통해 제공 (referrer 정책 우회)
+    // Notion 내부 이미지 URL은 blockId로 fresh URL 요청
+    if (isNotionImage(url)) {
+        return `/api/notion-block-image?blockId=${block.id}`;
+    }
+
+    // 기타 외부 이미지는 프록시를 통해 제공 (referrer 정책 우회)
     if (url.startsWith('http')) {
         return `/api/notion-image?url=${encodeURIComponent(url)}`;
     }
