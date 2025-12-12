@@ -12,8 +12,7 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
         <ReactLenis
             root
             options={{
-                lerp: 0.1,
-                duration: 1.2,
+                lerp: 0.05,
                 smoothWheel: false,
             }}
         >

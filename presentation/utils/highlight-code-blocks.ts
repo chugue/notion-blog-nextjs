@@ -23,16 +23,19 @@ const PRELOADED_LANGUAGES = [
 
 const THEME = 'catppuccin-mocha';
 
-let highlighterPromise: Promise<Highlighter> | null = null;
+// Next.js 환경에서 진정한 싱글톤을 위해 globalThis 사용
+const globalForShiki = globalThis as unknown as {
+    shikiHighlighter: Promise<Highlighter> | undefined;
+};
 
 async function getHighlighter(): Promise<Highlighter> {
-    if (!highlighterPromise) {
-        highlighterPromise = createHighlighter({
+    if (!globalForShiki.shikiHighlighter) {
+        globalForShiki.shikiHighlighter = createHighlighter({
             themes: [THEME],
             langs: PRELOADED_LANGUAGES,
         });
     }
-    return highlighterPromise;
+    return globalForShiki.shikiHighlighter;
 }
 
 // Notion 언어명을 Shiki 언어명으로 매핑
