@@ -7,7 +7,6 @@ import { FlipHexTechStack } from './_components/hex-tech/FlipHexTechStack';
 import PostListSkeleton from './_components/post-list/PostListSkeleton';
 import PostListSuspense from './_components/post-list/PostListSuspense';
 import TagSection from './_components/tag-section/TagSection';
-import TagSectionSkeleton from './_components/tag-section/TagSectionSkeleton';
 
 interface HomeProps {
   searchParams: Promise<{
@@ -22,6 +21,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedSort = sort ?? 'latest';
 
   const { tags, postsPromise } = getMainPageData({ selectedTag, selectedSort });
+  const resolvedTags = await tags;
 
   return (
     <div className="container mx-auto py-5 sm:py-8">
@@ -29,14 +29,12 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section className="mb-6 grid grid-cols-[500px_1fr] max-lg:grid-cols-1 max-md:px-4">
         <VisitStats />
-        <FlipHexTechStack tags={tags} selectedTag={selectedTag} />
+        <FlipHexTechStack tags={resolvedTags} />
       </section>
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[250px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-2 min-w-2xs max-md:w-full max-md:justify-self-center max-md:px-4 md:order-none">
-          <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSection tags={tags} selectedTag={selectedTag} />
-          </Suspense>
+          <TagSection tags={resolvedTags} selectedTag={selectedTag} />
         </aside>
 
         <div className="order-3 space-y-8 max-md:mx-auto max-md:max-w-[476px] max-md:px-4 md:order-none md:ml-10 md:w-full">
