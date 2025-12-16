@@ -331,8 +331,22 @@ figure [class^='code_module_codeLanLabel'] {
 }
 
 .notion-bookmark {
-    @apply rounded-md;
+    @apply overflow-hidden rounded-md;
     font-family: var(--font-family-maplestory);
+}
+
+/* 북마크 이미지 - 가로 채우고 위아래 중앙에서 자르기 */
+.notion-bookmark-image {
+    @apply overflow-hidden;
+}
+
+.notion-bookmark-image > div {
+    @apply !h-full !w-full;
+}
+
+.notion-bookmark-image img {
+    @apply !w-full !h-full object-cover;
+    object-position: center center;
 }
 
 .notion-bookmark-title {
