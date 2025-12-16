@@ -1,72 +1,10 @@
 import { notionAPI } from '@/infrastructure/database/external-api/notion-client';
+import {
+    convertToNotionImageUrl,
+    fetchImageWithRetry,
+    isGif,
+} from '@/shared/utils/notion-image-utils';
 import { NextRequest, NextResponse } from 'next/server';
-
-const BROWSER_USER_AGENT =
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-
-// URL이나 Content-Type으로 GIF인지 확인
-function isGif(url: string, contentType: string | null): boolean {
-    const urlLower = url.toLowerCase();
-    const isGifUrl = urlLower.includes('.gif') || urlLower.includes('%2Egif');
-    const isGifContentType = contentType?.includes('image/gif') ?? false;
-    return isGifUrl || isGifContentType;
-}
-
-// attachment: URL을 Notion 영구 URL로 변환
-function convertToNotionImageUrl(url: string, blockId: string, spaceId?: string): string {
-    // 이미 HTTP URL이면 그대로 반환
-    if (url.startsWith('http')) {
-        return url;
-    }
-
-    // attachment: 스킴인 경우 Notion 영구 URL로 변환
-    if (url.startsWith('attachment:')) {
-        const encodedPath = encodeURIComponent(url);
-        const params = new URLSearchParams({
-            table: 'block',
-            id: blockId,
-        });
-        if (spaceId) {
-            params.set('spaceId', spaceId);
-        }
-        return `https://www.notion.so/image/${encodedPath}?${params.toString()}`;
-    }
-
-    return url;
-}
-
-async function fetchImageWithRetry(url: string, maxRetries = 3): Promise<Response> {
-    let lastError: Error | null = null;
-
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-            const response = await fetch(url, {
-                headers: {
-                    'User-Agent': BROWSER_USER_AGENT,
-                    Accept: 'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-                    'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
-                },
-                cache: 'no-store',
-            });
-
-            if (response.status === 503 && attempt < maxRetries) {
-                console.log(`[notion-block-image] 503 received, retrying (${attempt}/${maxRetries})...`);
-                await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
-                continue;
-            }
-
-            return response;
-        } catch (error) {
-            lastError = error as Error;
-            if (attempt < maxRetries) {
-                console.log(`[notion-block-image] Fetch error, retrying (${attempt}/${maxRetries})...`);
-                await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
-            }
-        }
-    }
-
-    throw lastError || new Error('Max retries exceeded');
-}
 
 export async function GET(request: NextRequest) {
     const blockId = request.nextUrl.searchParams.get('blockId');
@@ -112,6 +50,14 @@ export async function GET(request: NextRequest) {
             }
         }
 
+        // 3. 북마크 블록의 커버 이미지 처리
+        if (!imageUrl && block.type === 'bookmark') {
+            if (block.format?.bookmark_cover) {
+                imageUrl = block.format.bookmark_cover;
+                console.log('[notion-block-image] Using bookmark_cover');
+            }
+        }
+
         if (!imageUrl) {
             console.error('[notion-block-image] Image URL not found in block:', blockId);
             return NextResponse.json({ error: 'Image URL not found' }, { status: 404 });
@@ -126,7 +72,9 @@ export async function GET(request: NextRequest) {
         console.log('[notion-block-image] Fresh URL obtained:', fetchUrl.substring(0, 100) + '...');
 
         // 이미지 fetch
-        const imageResponse = await fetchImageWithRetry(fetchUrl);
+        const imageResponse = await fetchImageWithRetry(fetchUrl, {
+            logPrefix: '[notion-block-image]',
+        });
 
         if (!imageResponse.ok) {
             console.error('[notion-block-image] Failed to fetch image:', imageResponse.status);
