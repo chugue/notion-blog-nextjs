@@ -8,7 +8,7 @@ export const useInfiniteScroll = (
 ) => {
   // 무한 스크롤 라이브러리
   const { ref, inView } = useInView({
-    threshold: 1,
+    threshold: 0,
   });
 
   // 무한 스크롤 로직
@@ -16,7 +16,7 @@ export const useInfiniteScroll = (
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return { ref };
 };
