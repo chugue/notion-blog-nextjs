@@ -1,4 +1,3 @@
-import { unwrapBlock } from '@/shared/utils/notion-block-helper';
 import { ExtendedRecordMap } from 'notion-types';
 import { getBlockTitle } from 'notion-utils';
 import { createHighlighter, type Highlighter } from 'shiki';
@@ -71,7 +70,7 @@ export async function highlightCodeBlocks(recordMap: ExtendedRecordMap): Promise
     const blocks = Object.values(recordMap.block);
 
     for (const blockWrapper of blocks) {
-        const block = unwrapBlock(blockWrapper);
+        const block = blockWrapper?.value;
         if (!block || block.type !== 'code') continue;
 
         const code = getBlockTitle(block, recordMap) || '';
