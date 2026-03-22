@@ -1,44 +1,31 @@
-export const dynamic = 'force-static';
-export const revalidate = false;
+'use client';
 
-import AboutPageContent from '@/app/(blog)/_components/AboutPageContent';
-import TableOfContentsWrapper from '@/app/(blog)/_components/TableOfContentsWrapper';
-import AddPageView from '@/app/(main)/_components/AddPageView';
-import LoadingSpinner from '@/shared/components/LoadingSpinner';
-import { getDiContainer } from '@/shared/di/di-container';
-import { Separator } from '@radix-ui/react-separator';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+import { DotGrid } from './_components/about-ui';
+import { CareerSection } from './_components/CareerSection';
+import { ContactSection } from './_components/ContactSection';
+import { HeroSection } from './_components/HeroSection';
+import { ProjectsSection } from './_components/ProjectsSection';
+import { StatsSection } from './_components/StatsSection';
+import { StrengthsSection } from './_components/StrengthsSection';
+import { TechStackSection } from './_components/TechStackSection';
 
-export default async function About() {
-  const aboutPageId = process.env.NEXT_PUBLIC_ABOUT_PAGE_ID!;
-  const postUseCase = getDiContainer().post.postUseCase;
-  const result = await postUseCase.getAboutPage(aboutPageId);
-
-  if (!result) {
-    notFound();
-  }
-
-  const { recordMap } = result;
-
+export default function AboutPage() {
   return (
-    <div className="container mx-auto sm:py-12">
-      <AddPageView pageId={process.env.NEXT_PUBLIC_ABOUT_PAGE_ID || ''} />
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
-        <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
-        <section className="min-w-0 px-4">
-          <Separator className="my-6" />
+    <div className="relative min-h-screen bg-[#030712] text-neutral-100 selection:bg-amber-500/20">
+      <DotGrid />
 
-          {/* 블로그 본문 */}
-          <div className="prose prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-            <Suspense fallback={<LoadingSpinner />}>
-              <AboutPageContent recordMap={recordMap} />
-            </Suspense>
-          </div>
-        </section>
-        {/* 목차 */}
-        <TableOfContentsWrapper className="md:block" />
+      {/* Ambient glow */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="bg-primary/8 absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 rounded-full blur-[160px]" />
       </div>
+
+      <HeroSection />
+      <StatsSection />
+      <StrengthsSection />
+      <TechStackSection />
+      <ProjectsSection />
+      <CareerSection />
+      <ContactSection />
     </div>
   );
 }

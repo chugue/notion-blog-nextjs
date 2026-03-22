@@ -26,7 +26,7 @@ const Header = ({ className }: { className?: string }) => {
 
     const navigationItems = [
         { href: '/', label: '홈' },
-        // { href: '/about', label: '이력소개서' },
+        { href: '/about', label: 'About' },
     ];
 
     const socialLinks = [
