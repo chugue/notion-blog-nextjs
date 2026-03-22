@@ -35,10 +35,12 @@ const getCoverImage = (cover: PageObjectResponse['cover'], pageId: string) => {
 
   switch (cover.type) {
     case 'external': {
-      return convertS3UrlToNotionUrl(cover.external.url, pageId);
+      const url = cover.external?.url;
+      return url ? convertS3UrlToNotionUrl(url, pageId) : '';
     }
     case 'file': {
-      return convertS3UrlToNotionUrl(cover.file.url, pageId);
+      const url = cover.file?.url;
+      return url ? convertS3UrlToNotionUrl(url, pageId) : '';
     }
     default:
       return '';
@@ -65,7 +67,7 @@ export const getPostMetadata = (page: PageObjectResponse): PostMetadata => {
         ? ((properties.author.people[0] as NotionUser)?.name ?? '')
         : '',
     date:
-      properties.createdAt.type === 'created_time' ? (properties.createdAt.created_time ?? '') : '',
+      properties.createdAt?.type === 'created_time' ? (properties.createdAt.created_time ?? '') : '',
   };
 };
 
