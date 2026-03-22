@@ -17,13 +17,19 @@ import MobileToc from '../../_components/MobileToc';
 import NotionPageContent from '../../_components/NotionPageContent';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
+/** 빌드 시 정적 생성에서 에러를 유발하는 포스트 ID 목록 (런타임에 동적 렌더링) */
+const SKIP_SSG_IDS = new Set([
+    '2c39c76c-6cb4-80f0-a79e-e935e2bed857',
+    '2c59c76c-6cb4-803e-95eb-f0fe5d659685',
+]);
+
 export async function generateStaticParams() {
     const postUseCase = diContainer.post.postUseCase;
     const result = await postUseCase.getAllPublishedPostMetadatas();
 
-    return result.map((post) => ({
-        id: post.id,
-    }));
+    return result
+        .filter((post) => !SKIP_SSG_IDS.has(post.id))
+        .map((post) => ({ id: post.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
