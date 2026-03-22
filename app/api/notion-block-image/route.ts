@@ -4,6 +4,7 @@ import {
     fetchImageWithRetry,
     isGif,
 } from '@/shared/utils/notion-image-utils';
+import { unwrapBlock } from '@/shared/utils/notion-block-helper';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
 
         // Notion API로 해당 블록의 fresh signed URL 가져오기
         const recordMap = await notionAPI.getPage(blockId);
-        const block = recordMap.block[blockId]?.value;
+        const block = unwrapBlock(recordMap.block[blockId]);
 
         if (!block) {
             console.error('[notion-block-image] Block not found:', blockId);
