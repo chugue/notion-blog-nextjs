@@ -1,0 +1,54 @@
+diff --git a/node_modules/notion-client/build/index.js b/node_modules/notion-client/build/index.js
+index 76da6f4..79d51a2 100644
+--- a/node_modules/notion-client/build/index.js
++++ b/node_modules/notion-client/build/index.js
+@@ -306,7 +306,7 @@ var NotionAPI = class {
+     };
+     return this.fetch({
+       endpoint: "loadPageChunk",
+-      body,
++      body: JSON.stringify(body),
+       ofetchOptions
+     });
+   }
+@@ -461,7 +461,7 @@ var NotionAPI = class {
+       headers,
+       ofetchOptions: {
+         timeout: 6e4,
+-        ...ofetchOptions,
++  
+         params: {
+           // TODO: spread ofetchOptions?.searchParams
+           src: "initial_load"
+@@ -527,7 +527,7 @@ var NotionAPI = class {
+     };
+     return this.fetch({
+       endpoint: "search",
+-      body,
++      body: JSON.stringify(body),
+       ofetchOptions
+     });
+   }
+@@ -550,15 +550,15 @@ var NotionAPI = class {
+       headers["x-notion-active-user-header"] = this._activeUser;
+     }
+     const url = `${this._apiBaseUrl}/${endpoint}`;
+-    const res = ofetch(url, {
++    const res = fetch(url, {
+       method: "POST",
+-      mode: "no-cors",
+-      ...this._ofetchOptions,
+-      ...ofetchOptions,
+-      body,
+-      headers
++
++
++
++      body: JSON.stringify(body),
++      headers: { "Content-Type": "application/json", ...headers }
+     });
+-    return res;
++    return res.then(r => r.json());
+   }
+ };
+ export {
