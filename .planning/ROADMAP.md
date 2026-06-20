@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plansPlans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Build normalizer foundation: idempotent normalizeRecordMap + getNotionPage entry point (BUILD-01)
+- [x] 01-01-PLAN.md — Build normalizer foundation: idempotent normalizeRecordMap + getNotionPage entry point (BUILD-01)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -79,6 +79,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Build Recovery | 0/3 | Not started | - |
+| 1. Build Recovery | 1/3 | In Progress|  |
 | 2. Upgrade to 7.10 | 0/TBD | Not started | - |
 | 3. Render Integrity & DoD | 0/TBD | Not started | - |

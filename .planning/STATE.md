@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-06-20T03:46:17.215Z"
-last_activity: 2026-06-20 -- Phase 01 planning complete
+last_updated: "2026-06-20T04:19:55.606Z"
+last_activity: 2026-06-20
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -20,16 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-20)
 
 **Core value:** 블로그가 빌드되고 모든 published 포스트가 정상 렌더된다.
-**Current focus:** Phase 1 — Build Recovery
+**Current focus:** Phase 01 — build-recovery
 
 ## Current Position
 
-Phase: 1 of 3 (Build Recovery)
-Plan: 0 of TBD in current phase
+Phase: 01 (build-recovery) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-06-20 -- Phase 01 planning complete
+Last activity: 2026-06-20
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-build-recovery P01 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ Recent decisions affecting current work:
 - Pre-planning: Normalization hotfix (method A — ~20-line idempotent adapter) chosen over SKIP_SSG_IDS expansion or version downgrade
 - Pre-planning: Public-API migration deferred to separate milestone (Appendix A trade-off analysis)
 - Pre-planning: react-notion-x kept — upstream 7.10.0 actively maintained (Appendix B)
+- [Phase ?]: D-01: idempotent normalizeRecordMap — unwrap only double-wrapped records
+- [Phase ?]: D-02: RECORD_TABLES = block, collection, collection_view, notion_user; discussion excluded (role-only shape, unused in rendering)
+- [Phase ?]: D-03: getNotionPage beside notionAPI (not shadowing); defensive shadowing deferred to Phase 2
 
 ### Pending Todos
 
@@ -84,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-20T03:33:28.421Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-build-recovery/01-CONTEXT.md
+Last session: 2026-06-20T04:19:55.602Z
+Stopped at: Completed 01-build-recovery 01-01-PLAN.md
+Resume file: None
