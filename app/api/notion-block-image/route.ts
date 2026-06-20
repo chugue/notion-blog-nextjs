@@ -1,4 +1,4 @@
-import { notionAPI } from '@/infrastructure/database/external-api/notion-client';
+import { getNotionPage } from '@/infrastructure/database/external-api/notion-client';
 import {
     convertToNotionImageUrl,
     fetchImageWithRetry,
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
         console.log('[notion-block-image] Fetching fresh URL for block:', blockId);
 
         // Notion API로 해당 블록의 fresh signed URL 가져오기
-        const recordMap = await notionAPI.getPage(blockId);
+        const recordMap = await getNotionPage(blockId);
         const block = recordMap.block[blockId]?.value;
 
         if (!block) {

@@ -1,4 +1,4 @@
-import { notionAPI } from '@/infrastructure/database/external-api/notion-client';
+import { getNotionPage } from '@/infrastructure/database/external-api/notion-client';
 import { Result } from '@/shared/types/result';
 import { NextRequest, NextResponse } from 'next/server';
 import { ExtendedRecordMap } from 'notion-types';
@@ -23,7 +23,7 @@ export const GET = async (
   }
 
   try {
-    const result = await notionAPI.getPage(pageId);
+    const result = await getNotionPage(pageId);
 
     if (!result) {
       return NextResponse.json(
