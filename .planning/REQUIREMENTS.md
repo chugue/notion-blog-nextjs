@@ -10,7 +10,7 @@ react-notion-x 7.10 업그레이드 마일스톤의 요구사항. 각 항목은 
 ### Build Recovery
 
 - [x] **BUILD-01**: recordMap 이중 래핑(`{value:{value,role}}`)을 `{role,value}`로 푸는 멱등 정규화 어댑터를 데이터 페치 경로에 적용한다
-- [ ] **BUILD-02**: `notionAPI.getPage` 3개 호출지점(블로그 상세, `api/notion-block-image`, `api/notion/page`)이 정규화된 recordMap을 사용한다
+- [x] **BUILD-02**: `notionAPI.getPage` 3개 호출지점(블로그 상세, `api/notion-block-image`, `api/notion/page`)이 정규화된 recordMap을 사용한다
 - [ ] **BUILD-03**: 정규화 적용 후 현행 7.4.3에서 `next build`가 그린으로 통과한다
 
 ### Upgrade
@@ -47,7 +47,7 @@ react-notion-x 7.10 업그레이드 마일스톤의 요구사항. 각 항목은 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BUILD-01 | Phase 1 | Complete |
-| BUILD-02 | Phase 1 | Pending |
+| BUILD-02 | Phase 1 | Complete |
 | BUILD-03 | Phase 1 | Pending |
 | UPG-01 | Phase 2 | Pending |
 | UPG-02 | Phase 2 | Pending |

@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Wire 3 consumers to normalized path + empty SKIP_SSG_IDS (BUILD-02)
+- [x] 01-02-PLAN.md — Wire 3 consumers to normalized path + empty SKIP_SSG_IDS (BUILD-02)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -79,6 +79,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Build Recovery | 1/3 | In Progress|  |
+| 1. Build Recovery | 2/3 | In Progress|  |
 | 2. Upgrade to 7.10 | 0/TBD | Not started | - |
 | 3. Render Integrity & DoD | 0/TBD | Not started | - |
