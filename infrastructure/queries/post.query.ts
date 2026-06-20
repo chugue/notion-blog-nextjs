@@ -25,12 +25,26 @@ const fetchAndCacheRecordMap = (id: string): Promise<notionType.ExtendedRecordMa
   return pending;
 };
 
+// jsonb 직렬화는 객체 키 순서를 보존하지 않는다. react-notion-x는 rootPageId가 없으면
+// block의 "첫 키"를 페이지 루트로 삼기 때문에, 캐시(jsonb)에서 읽으면 엉뚱한 블록
+// (예: transclusion_container)이 루트가 되어 본문이 비어 보인다. 포스트 블록을 첫 키로
+// 되돌려 키 순서와 무관하게 항상 올바른 루트에서 렌더되게 한다.
+const ensurePageBlockFirst = (
+  recordMap: notionType.ExtendedRecordMap,
+  id: string
+): notionType.ExtendedRecordMap => {
+  if (recordMap?.block?.[id]) {
+    recordMap.block = { [id]: recordMap.block[id], ...recordMap.block };
+  }
+  return recordMap;
+};
+
 // DB 영속 캐시 read-through: 있으면 DB에서, 없으면 single-flight로 Notion 페치 후 저장.
 const getRecordMapThroughCache = async (id: string): Promise<notionType.ExtendedRecordMap> => {
   const cached = await notionRecordMapQuery.get(id);
-  if (cached) return cached;
+  const recordMap = cached ?? (await fetchAndCacheRecordMap(id));
 
-  return fetchAndCacheRecordMap(id);
+  return ensurePageBlockFirst(recordMap, id);
 };
 
 export const postQuery = {

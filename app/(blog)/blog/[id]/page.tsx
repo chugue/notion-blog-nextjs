@@ -172,6 +172,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
                             <NotionPageContent
                                 recordMap={recordMap}
                                 highlightedCode={highlightedCode}
+                                pageId={id}
                             />
                         </div>
 

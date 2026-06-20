@@ -55,14 +55,23 @@ const mapImageUrl = (url: string | undefined, block: Block): string => {
 interface NotionPageContentProps {
     recordMap: ExtendedRecordMap;
     highlightedCode?: HighlightedCodeMap;
+    // 렌더 루트 블록 id. 미지정 시 react-notion-x는 block의 "첫 키"를 루트로 삼는데,
+    // recordMap이 jsonb 등으로 직렬화되며 키 순서가 바뀌면 엉뚱한 블록이 루트가 되어
+    // 본문이 비어 보인다. 포스트 id를 명시해 키 순서와 무관하게 올바른 루트를 고정한다.
+    pageId?: string;
 }
 
-const NotionPageContent = ({ recordMap, highlightedCode = {} }: NotionPageContentProps) => {
+const NotionPageContent = ({
+    recordMap,
+    highlightedCode = {},
+    pageId,
+}: NotionPageContentProps) => {
     return (
         <HighlightedCodeProvider highlightedCode={highlightedCode}>
             <div className="flex">
                 <NotionRenderer
                     recordMap={recordMap}
+                    rootPageId={pageId}
                     fullPage={false}
                     darkMode={true}
                     disableHeader={true}
