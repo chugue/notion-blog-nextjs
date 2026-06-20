@@ -12,6 +12,11 @@ const NotionImage = ({ style, className, ...props }: NotionImageProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
 
+    // GIF는 /_next/image 최적화를 거치면 정지 프레임이 되거나 깨진다.
+    // unoptimized로 두면 next/image가 최적화 경로를 건너뛰고 원본 src를 그대로 로드한다.
+    const isAnimatedGif =
+        typeof props.src === 'string' && (props.src.includes('gif=1') || props.src.includes('.gif'));
+
     // wrapper 스타일 - 로딩 중에는 최소 높이 확보
     const wrapperStyle: CSSProperties = {
         ...style,
@@ -55,6 +60,7 @@ const NotionImage = ({ style, className, ...props }: NotionImageProps) => {
             {/* 실제 이미지 */}
             <Image
                 {...props}
+                unoptimized={isAnimatedGif}
                 width={0}
                 height={0}
                 sizes="100vw"
