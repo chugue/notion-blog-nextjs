@@ -44,16 +44,14 @@ react-notion-x 7.10 업그레이드 마일스톤의 요구사항. 각 항목은 
 
 ## Traceability
 
-로드맵 생성 시 채워짐.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUILD-01 | — | Pending |
-| BUILD-02 | — | Pending |
-| BUILD-03 | — | Pending |
-| UPG-01 | — | Pending |
-| UPG-02 | — | Pending |
-| UPG-03 | — | Pending |
-| RENDER-01 | — | Pending |
-| RENDER-02 | — | Pending |
-| RENDER-03 | — | Pending |
+| BUILD-01 | Phase 1 | Pending |
+| BUILD-02 | Phase 1 | Pending |
+| BUILD-03 | Phase 1 | Pending |
+| UPG-01 | Phase 2 | Pending |
+| UPG-02 | Phase 2 | Pending |
+| UPG-03 | Phase 2 | Pending |
+| RENDER-01 | Phase 3 | Pending |
+| RENDER-02 | Phase 3 | Pending |
+| RENDER-03 | Phase 3 | Pending |
