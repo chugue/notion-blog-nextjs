@@ -3,6 +3,7 @@ import { Result } from '@/shared/types/result';
 import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 import { unstable_cache } from 'next/cache';
 import * as notionType from 'notion-types';
+import { normalizeRecordMap } from '../database/external-api/normalize-record-map';
 import { notion, notionAPI } from '../database/external-api/notion-client';
 
 export const postQuery = {
@@ -68,7 +69,7 @@ export const postQuery = {
 
       return {
         success: true,
-        data: result as unknown as notionType.ExtendedRecordMap,
+        data: normalizeRecordMap(result as unknown as notionType.ExtendedRecordMap),
       };
     } catch (error) {
       console.log(error);
