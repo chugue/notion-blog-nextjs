@@ -18,10 +18,14 @@ import NotionPageContent from '../../_components/NotionPageContent';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
 /** 빌드 시 정적 생성에서 에러를 유발하는 포스트 ID 목록 (런타임에 동적 렌더링) */
-const SKIP_SSG_IDS = new Set([
-    '2c39c76c-6cb4-80f0-a79e-e935e2bed857',
-    '2c59c76c-6cb4-803e-95eb-f0fe5d659685',
-]);
+const SKIP_SSG_IDS = new Set<string>();
+
+/**
+ * 빌드 시 미리 만들 최신 글 개수. 비공개 Notion API는 미인증 호출이라 전 글을 한 번에
+ * prebuild 하면 동시 요청 폭주로 차단(HTML)당한다. 최신 글만 prebuild 하고, 나머지는
+ * dynamicParams(ISR)로 첫 요청 시 on-demand 렌더 + 캐시한다.
+ */
+const PRESTATIC_POST_LIMIT = Number(process.env.PRESTATIC_POST_LIMIT ?? 20);
 
 export async function generateStaticParams() {
     const postUseCase = diContainer.post.postUseCase;
@@ -29,6 +33,7 @@ export async function generateStaticParams() {
 
     return result
         .filter((post) => !SKIP_SSG_IDS.has(post.id))
+        .slice(0, PRESTATIC_POST_LIMIT)
         .map((post) => ({ id: post.id }));
 }
 
@@ -167,6 +172,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
                             <NotionPageContent
                                 recordMap={recordMap}
                                 highlightedCode={highlightedCode}
+                                pageId={id}
                             />
                         </div>
 
