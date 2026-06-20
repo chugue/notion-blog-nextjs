@@ -27,7 +27,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. No post ID needs to be added to SKIP_SSG_IDS to allow the build to pass
   3. The image proxy route (`/api/notion-block-image`) returns a valid image URL for any published post's image block — `block.type` is no longer undefined
   4. The `/api/notion/page` route returns a correctly shaped `ExtendedRecordMap` (flat `{ role, value }` records) for any page ID
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 01-01-PLAN.md — Build normalizer foundation: idempotent normalizeRecordMap + getNotionPage entry point (BUILD-01)
+- [ ] 01-02-PLAN.md — Wire 3 consumers to normalized path + empty SKIP_SSG_IDS (BUILD-02)
+- [ ] 01-03-PLAN.md — Verify green build, 3 named posts prerender, API route shapes (BUILD-03)
 
 ### Phase 2: Upgrade to 7.10
 **Goal**: All four notion packages run at 7.10.0 and every published post URL returns HTTP 200
@@ -58,6 +62,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Build Recovery | 0/TBD | Not started | - |
+| 1. Build Recovery | 0/3 | Not started | - |
 | 2. Upgrade to 7.10 | 0/TBD | Not started | - |
 | 3. Render Integrity & DoD | 0/TBD | Not started | - |
