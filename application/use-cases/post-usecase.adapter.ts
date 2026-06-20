@@ -52,7 +52,13 @@ export const createPostUseCaseAdapter = (
     getPostById: async (id: string): Promise<Post | null> => {
       const result = await postRepositoryPort.getPostById(id);
 
-      if (!result.success) return null;
+      if (!result.success) {
+        // 글이 진짜 없으면 null → notFound(). 일시적 fetch 실패(레이트리밋 등)는
+        // throw 해서 ISR이 다음 요청에 재시도하게 한다 — 영구 404로 굽지 않는다.
+        if (result.error?.message === 'Post not found') return null;
+
+        throw result.error;
+      }
 
       return result.data;
     },
