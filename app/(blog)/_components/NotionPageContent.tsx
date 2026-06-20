@@ -33,6 +33,12 @@ const mapImageUrl = (url: string | undefined, block: Block): string => {
         return url;
     }
 
+    // GIF는 next/image 최적화를 거치면 정지 프레임이 되거나 깨진다.
+    // 프록시로 fresh 원본(raw)을 받되, NotionImage에서 unoptimized로 렌더하도록 표시(gif=1).
+    if (url.includes('.gif')) {
+        return `/api/notion-block-image?blockId=${block.id}&gif=1`;
+    }
+
     // 이미지 블록인 경우 항상 blockId로 fresh URL 요청
     // (캐시된 signed_urls가 만료되었을 수 있으므로)
     if (block.type === 'image') {
