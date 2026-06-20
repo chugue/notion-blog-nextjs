@@ -4,7 +4,7 @@ import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints'
 import { unstable_cache } from 'next/cache';
 import * as notionType from 'notion-types';
 import { normalizeRecordMap } from '../database/external-api/normalize-record-map';
-import { notion, notionAPI } from '../database/external-api/notion-client';
+import { getNotionPageWithRetry, notion } from '../database/external-api/notion-client';
 
 export const postQuery = {
   getPublishedPosts: async ({
@@ -50,7 +50,7 @@ export const postQuery = {
     try {
       const cachedFn = unstable_cache(
         async () => {
-          return await notionAPI.getPage(id);
+          return await getNotionPageWithRetry(id);
         },
         [`post-${id}`],
         {
