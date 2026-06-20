@@ -1,4 +1,5 @@
 import { getNotionPage } from '@/infrastructure/database/external-api/notion-client';
+import notionImageCache from '@/infrastructure/queries/notion-image-cache.query';
 import {
     convertToNotionImageUrl,
     fetchImageWithRetry,
@@ -11,6 +12,18 @@ export async function GET(request: NextRequest) {
 
     if (!blockId) {
         return NextResponse.json({ error: 'blockId is required' }, { status: 400 });
+    }
+
+    // 1. 스토리지 캐시 우선 — 있으면 Notion을 건드리지 않고 바로 반환
+    const cachedImage = await notionImageCache.get(blockId);
+    if (cachedImage) {
+        return new NextResponse(cachedImage.buffer as unknown as BodyInit, {
+            headers: {
+                'Content-Type': cachedImage.contentType,
+                'Content-Length': cachedImage.buffer.byteLength.toString(),
+                'Cache-Control': 'public, max-age=86400',
+            },
+        });
     }
 
     try {
@@ -90,6 +103,9 @@ export async function GET(request: NextRequest) {
             console.log('[notion-block-image] GIF detected, fetching full buffer...');
             const buffer = await imageResponse.arrayBuffer();
 
+            // 3. 스토리지에 저장 (다음 요청부터 Notion 없이 서빙)
+            await notionImageCache.put(blockId, Buffer.from(buffer), contentType);
+
             return new NextResponse(buffer, {
                 headers: {
                     'Content-Type': contentType,
@@ -101,6 +117,10 @@ export async function GET(request: NextRequest) {
 
         // 일반 이미지
         const buffer = await imageResponse.arrayBuffer();
+
+        // 3. 스토리지에 저장 (다음 요청부터 Notion 없이 서빙)
+        await notionImageCache.put(blockId, Buffer.from(buffer), contentType);
+
         return new NextResponse(buffer, {
             headers: {
                 'Content-Type': contentType,
