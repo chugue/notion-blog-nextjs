@@ -13,7 +13,7 @@ This milestone introduces GSD planning to the repo and focuses on a single objec
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Build Recovery** - Apply recordMap normalization hotfix so next build passes green on 7.4.3
+- [x] **Phase 1: Build Recovery** - Apply recordMap normalization hotfix so next build passes green on 7.4.3 (completed 2026-06-20)
 - [ ] **Phase 2: Upgrade to 7.10** - Bump all four notion packages to 7.10.0, investigate and fix the 404 regression, and confirm every published post URL responds correctly
 - [ ] **Phase 3: Render Integrity & DoD** - Remove SKIP_SSG_IDS, verify all key block types render without regression, confirm the milestone Definition of Done
 
@@ -42,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Verify green build, 3 named posts prerender, API route shapes (BUILD-03)
+- [x] 01-03-PLAN.md — Verify green build, 3 named posts prerender, API route shapes (BUILD-03)
 
 ### Phase 2: Upgrade to 7.10
 
@@ -79,6 +79,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Build Recovery | 2/3 | In Progress|  |
+| 1. Build Recovery | 3/3 | Complete    | 2026-06-20 |
 | 2. Upgrade to 7.10 | 0/TBD | Not started | - |
 | 3. Render Integrity & DoD | 0/TBD | Not started | - |
