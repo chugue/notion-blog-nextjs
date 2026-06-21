@@ -1,4 +1,4 @@
-import { getNotionPage } from '@/infrastructure/database/external-api/notion-client';
+import { getNotionPage, notion } from '@/infrastructure/database/external-api/notion-client';
 import notionImageCache from '@/infrastructure/queries/notion-image-cache.query';
 import {
     convertToNotionImageUrl,
@@ -74,6 +74,26 @@ export async function GET(request: NextRequest) {
         if (!imageUrl) {
             console.error('[notion-block-image] Image URL not found in block:', blockId);
             return NextResponse.json({ error: 'Image URL not found' }, { status: 404 });
+        }
+
+        // attachment: 파일은 비공식 변환(notion.so/image)이 404 난다(특히 GIF/대용량).
+        // 공식 API로 fresh signed S3 URL을 받아 raw 원본으로 리다이렉트한다.
+        // → 브라우저가 S3에서 직접 로드하므로 변환 손상도, Vercel 프록시 용량 한도도 우회.
+        if (imageUrl.startsWith('attachment:')) {
+            try {
+                const officialBlock = await notion.blocks.retrieve({ block_id: blockId });
+                if ('type' in officialBlock && officialBlock.type === 'image') {
+                    const officialImage = officialBlock.image;
+                    const officialUrl =
+                        officialImage.type === 'file'
+                            ? officialImage.file.url
+                            : officialImage.external.url;
+
+                    return NextResponse.redirect(officialUrl, 302);
+                }
+            } catch (error) {
+                console.error('[notion-block-image] official API resolve failed:', error);
+            }
         }
 
         // spaceId 추출 (block에서)
