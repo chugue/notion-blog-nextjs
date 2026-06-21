@@ -1,35 +1,58 @@
 import { getNotionPage, notion } from '@/infrastructure/database/external-api/notion-client';
-import notionImageCache from '@/infrastructure/queries/notion-image-cache.query';
-import {
-    convertToNotionImageUrl,
-    fetchImageWithRetry,
-    isGif,
-} from '@/shared/utils/notion-image-utils';
 import { NextRequest, NextResponse } from 'next/server';
 
+// 바이트를 프록시하지 않고 매 요청마다 로드 가능한 URL로 302 리다이렉트만 한다.
+// 브라우저/이미지 옵티마이저가 S3(또는 공개 호스트)에서 직접 받으므로,
+// 비공식 recordMap이 주는 서명 없는 S3 URL(→403→502) 문제를 구조적으로 우회한다.
 export async function GET(request: NextRequest) {
     const blockId = request.nextUrl.searchParams.get('blockId');
+
+    // gif 파라미터는 이제 프론트(unoptimized 분기) 전용 — 이 라우트는 분기하지 않는다.
 
     if (!blockId) {
         return NextResponse.json({ error: 'blockId is required' }, { status: 400 });
     }
 
-    // 1. 스토리지 캐시 우선 — 있으면 Notion을 건드리지 않고 바로 반환
-    const cachedImage = await notionImageCache.get(blockId);
-    if (cachedImage) {
-        return new NextResponse(cachedImage.buffer as unknown as BodyInit, {
-            headers: {
-                'Content-Type': cachedImage.contentType,
-                'Content-Length': cachedImage.buffer.byteLength.toString(),
-                'Cache-Control': 'public, max-age=86400',
-            },
+    // 서명된 S3 URL은 1시간 만료(X-Amz-Expires=3600)다. 30분 캐시면 캐시된 리다이렉트가
+    // 항상 ≥30분의 서명 유효 마진을 남겨, 만료된 서명으로 리다이렉트되는 일이 없다.
+    const redirectTo = (url: string) =>
+        NextResponse.redirect(url, {
+            status: 302,
+            headers: { 'Cache-Control': 'public, max-age=1800' },
         });
-    }
+
+    // 절대 http(s)여야 하고, 서명 없는 Notion S3 URL이면 로드 불가로 본다.
+    // prod-files-secure.s3 / secure.notion-static.com 호스트인데 X-Amz- 서명이 없으면
+    // 그대로 302하면 403이 나므로 스킵한다. attachment:도 로드 불가.
+    const isLoadable = (u: string): boolean => {
+        if (!/^https?:\/\//.test(u)) return false;
+
+        const isNotionS3 =
+            u.includes('prod-files-secure.s3') || u.includes('secure.notion-static.com');
+        if (isNotionS3 && !u.includes('X-Amz-')) return false;
+
+        return true;
+    };
 
     try {
-        console.log('[notion-block-image] Fetching fresh URL for block:', blockId);
+        console.log('[notion-block-image] Resolving block:', blockId);
 
-        // Notion API로 해당 블록의 fresh signed URL 가져오기
+        // 1차 — 공식 API. 서명 없는 S3 이미지 블록(502 원인)을 fresh signed URL로 해결한다.
+        try {
+            const officialBlock = await notion.blocks.retrieve({ block_id: blockId });
+            if ('type' in officialBlock && officialBlock.type === 'image') {
+                const image = officialBlock.image;
+                const url = image.type === 'file' ? image.file.url : image.external.url;
+
+                console.log('[notion-block-image] Using official blocks.retrieve');
+                return redirectTo(url);
+            }
+        } catch (error) {
+            // 공식 API는 북마크 커버/페이지 커버를 해결하지 못한다 — fallback으로 넘어간다.
+            console.log('[notion-block-image] official API miss, falling back:', error);
+        }
+
+        // 2차 — 비공식 recordMap fallback.
         const recordMap = await getNotionPage(blockId);
         const block = recordMap.block[blockId]?.value;
 
@@ -38,116 +61,31 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Block not found' }, { status: 404 });
         }
 
-        // 1. signed_urls에서 먼저 가져오기 (notion-client가 자동으로 fresh signed URL 제공)
-        let imageUrl: string | null = null;
-        const signedUrls = recordMap.signed_urls;
-        if (signedUrls && signedUrls[blockId]) {
-            imageUrl = signedUrls[blockId];
+        // a) signed_urls — notion-client가 이미 서명해 둔 URL
+        const signedUrl = recordMap.signed_urls?.[blockId];
+        if (signedUrl) {
             console.log('[notion-block-image] Using signed_urls');
+            return redirectTo(signedUrl);
         }
 
-        // 2. signed_urls에 없으면 블록에서 직접 추출
-        if (!imageUrl && block.type === 'image') {
-            // format.display_source가 보통 signed URL
-            if (block.format?.display_source) {
-                imageUrl = block.format.display_source;
-                console.log('[notion-block-image] Using format.display_source');
-            }
-            // properties.source는 attachment: URL일 수 있음
-            if (!imageUrl) {
-                const source = block.properties?.source?.[0]?.[0];
-                if (source) {
-                    imageUrl = source;
-                    console.log('[notion-block-image] Using properties.source');
-                }
+        // b) image 블록 — display_source 또는 properties.source가 로드 가능할 때만
+        if (block.type === 'image') {
+            const candidate = block.format?.display_source ?? block.properties?.source?.[0]?.[0];
+            if (candidate && isLoadable(candidate)) {
+                console.log('[notion-block-image] Using image block source');
+                return redirectTo(candidate);
             }
         }
 
-        // 3. 북마크 블록의 커버 이미지 처리
-        if (!imageUrl && block.type === 'bookmark') {
-            if (block.format?.bookmark_cover) {
-                imageUrl = block.format.bookmark_cover;
-                console.log('[notion-block-image] Using bookmark_cover');
-            }
+        // c) bookmark 블록의 커버 이미지
+        if (block.type === 'bookmark' && block.format?.bookmark_cover) {
+            console.log('[notion-block-image] Using bookmark_cover');
+            return redirectTo(block.format.bookmark_cover);
         }
 
-        if (!imageUrl) {
-            console.error('[notion-block-image] Image URL not found in block:', blockId);
-            return NextResponse.json({ error: 'Image URL not found' }, { status: 404 });
-        }
-
-        // attachment: 파일은 비공식 변환(notion.so/image)이 404 난다(특히 GIF/대용량).
-        // 공식 API로 fresh signed S3 URL을 받아 raw 원본으로 리다이렉트한다.
-        // → 브라우저가 S3에서 직접 로드하므로 변환 손상도, Vercel 프록시 용량 한도도 우회.
-        if (imageUrl.startsWith('attachment:')) {
-            try {
-                const officialBlock = await notion.blocks.retrieve({ block_id: blockId });
-                if ('type' in officialBlock && officialBlock.type === 'image') {
-                    const officialImage = officialBlock.image;
-                    const officialUrl =
-                        officialImage.type === 'file'
-                            ? officialImage.file.url
-                            : officialImage.external.url;
-
-                    return NextResponse.redirect(officialUrl, 302);
-                }
-            } catch (error) {
-                console.error('[notion-block-image] official API resolve failed:', error);
-            }
-        }
-
-        // spaceId 추출 (block에서)
-        const spaceId = block.space_id;
-
-        // attachment: 스킴이면 Notion 영구 URL로 변환
-        const fetchUrl = convertToNotionImageUrl(imageUrl, blockId, spaceId);
-
-        console.log('[notion-block-image] Fresh URL obtained:', fetchUrl.substring(0, 100) + '...');
-
-        // 이미지 fetch
-        const imageResponse = await fetchImageWithRetry(fetchUrl, {
-            logPrefix: '[notion-block-image]',
-        });
-
-        if (!imageResponse.ok) {
-            console.error('[notion-block-image] Failed to fetch image:', imageResponse.status);
-            return NextResponse.json({ error: 'Failed to fetch image' }, { status: 502 });
-        }
-
-        const contentType = imageResponse.headers.get('Content-Type') || 'image/png';
-        // 원본 URL과 fetchUrl 둘 다 체크 (attachment: URL에서 확장자 확인)
-        const isGifImage = isGif(imageUrl, contentType) || isGif(fetchUrl, contentType);
-
-        // GIF는 전체 버퍼를 받아서 반환 (짤림 방지)
-        if (isGifImage) {
-            console.log('[notion-block-image] GIF detected, fetching full buffer...');
-            const buffer = await imageResponse.arrayBuffer();
-
-            // 3. 스토리지에 저장 (다음 요청부터 Notion 없이 서빙)
-            await notionImageCache.put(blockId, Buffer.from(buffer), contentType);
-
-            return new NextResponse(buffer, {
-                headers: {
-                    'Content-Type': contentType,
-                    'Content-Length': buffer.byteLength.toString(),
-                    'Cache-Control': 'no-store, must-revalidate',
-                },
-            });
-        }
-
-        // 일반 이미지
-        const buffer = await imageResponse.arrayBuffer();
-
-        // 3. 스토리지에 저장 (다음 요청부터 Notion 없이 서빙)
-        await notionImageCache.put(blockId, Buffer.from(buffer), contentType);
-
-        return new NextResponse(buffer, {
-            headers: {
-                'Content-Type': contentType,
-                'Content-Length': buffer.byteLength.toString(),
-                'Cache-Control': 'public, max-age=3600', // 1시간 캐시 (signed URL 만료 전)
-            },
-        });
+        // d) 로드 가능한 URL을 못 찾음
+        console.error('[notion-block-image] Image URL not found in block:', blockId);
+        return NextResponse.json({ error: 'Image URL not found' }, { status: 404 });
     } catch (error) {
         console.error('[notion-block-image] Error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
