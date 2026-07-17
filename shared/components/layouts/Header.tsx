@@ -26,7 +26,7 @@ const Header = ({ className }: { className?: string }) => {
 
     const navigationItems = [
         { href: '/', label: '홈' },
-        { href: '/about', label: 'About' },
+        // { href: '/about', label: 'About' },
     ];
 
     const socialLinks = [
