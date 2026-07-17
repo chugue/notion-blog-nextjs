@@ -1,18 +1,20 @@
 import { TechStackItem } from '@/domain/entities/hex-tech-stack';
 import { useEffect, useState } from 'react';
+import { selectActiveTag, useSelectedTagStore } from '../../stores/use-selected-tag.store';
 
-const useFlipped = (selectedTag: string, tech: TechStackItem) => {
+const useFlipped = (tech: TechStackItem) => {
+  const activeTag = useSelectedTagStore(selectActiveTag);
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
-    if (selectedTag === tech.tagName) {
+    if (activeTag === tech.tagName) {
       setIsFlipped(true);
     } else {
       setIsFlipped(false);
     }
-  }, [selectedTag, tech.tagName]);
+  }, [activeTag, tech.tagName]);
 
-  return { isFlipped, setIsFlipped };
+  return { isFlipped, setIsFlipped, activeTag };
 };
 
 export default useFlipped;

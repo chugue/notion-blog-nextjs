@@ -4,6 +4,7 @@ import { TechStackItem } from '@/domain/entities/hex-tech-stack';
 import useCardAnimation from '@/presentation/hooks/main/use-card-animation';
 import useFlipped from '@/presentation/hooks/main/use-flipped';
 import useMounted from '@/presentation/hooks/main/use-mounted';
+import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
 import { cn } from '@/shared/utils/tailwind-cn';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
@@ -19,13 +20,15 @@ interface HexCardProps {
   onHover: (id: string | null) => void;
   hoveredId: string | null;
   row: number;
-  selectedTag: string;
 }
+
 // GSAP 플러그인 등록
 gsap.registerPlugin(Flip);
 
-const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row, selectedTag }) => {
-  const { isFlipped, setIsFlipped } = useFlipped(selectedTag, tech);
+const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row }) => {
+  const { isFlipped, setIsFlipped, activeTag } = useFlipped(tech);
+  const setOptimisticTag = useSelectedTagStore((state) => state.setOptimisticTag);
+  const setChanging = useSelectedTagStore((state) => state.setChanging);
   const { cardRef, zIndex } = useCardAnimation(index, hoveredId, tech, row);
   const { theme } = useTheme();
   const mounted = useMounted();
@@ -33,6 +36,8 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row,
 
   const handleClick = () => {
     setIsFlipped(true);
+    setOptimisticTag(tech.tagName);
+    setChanging(true);
     router.push(`?tag=${encodeURIComponent(tech.tagName)}`);
   };
 
@@ -51,7 +56,7 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row,
       }}
       onMouseLeave={() => {
         onHover(null);
-        if (selectedTag !== tech.tagName) {
+        if (activeTag !== tech.tagName) {
           setIsFlipped(false);
         }
       }}
@@ -95,4 +100,5 @@ const HexCard: React.FC<HexCardProps> = ({ tech, index, onHover, hoveredId, row,
     </div>
   );
 };
+
 export default HexCard;

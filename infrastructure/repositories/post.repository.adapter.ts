@@ -97,14 +97,8 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
         },
 
         getPostById: async (id: string): Promise<Result<Post>> => {
-            const result = await postQuery.getPostByIdQuery(id);
-            if (!result.success) {
-                return {
-                    success: false,
-                    error: result.error,
-                };
-            }
-
+            // 1) 존재 여부를 먼저 확정한다(공식 API 권위). 없는 글은 recordMap 재시도 폭풍 없이
+            //    즉시 'Post not found'(→404)로 끝낸다.
             const allPostMetadatas = await postQuery.getAllPostMetadataCache();
             let property = allPostMetadatas.results.find((page) => {
                 return page.id === id;
@@ -129,6 +123,16 @@ export const createPostRepositoryAdapter = (): PostRepositoryPort => {
                 return {
                     success: false,
                     error: new Error('Post not found'),
+                };
+            }
+
+            // 2) 존재하는 글만 recordMap을 가져온다. 일시적 fetch 실패는 error를 그대로 전파해
+            //    상위에서 throw → ISR 재시도되게 한다('Post not found'와 구분).
+            const result = await postQuery.getPostByIdQuery(id);
+            if (!result.success) {
+                return {
+                    success: false,
+                    error: result.error,
                 };
             }
 

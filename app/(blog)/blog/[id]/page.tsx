@@ -17,149 +17,178 @@ import MobileToc from '../../_components/MobileToc';
 import NotionPageContent from '../../_components/NotionPageContent';
 import TableOfContentsWrapper from '../../_components/TableOfContentsWrapper';
 
-export async function generateStaticParams() {
-  const postUseCase = diContainer.post.postUseCase;
-  const result = await postUseCase.getAllPublishedPostMetadatas();
+/** 빌드 시 정적 생성에서 에러를 유발하는 포스트 ID 목록 (런타임에 동적 렌더링) */
+const SKIP_SSG_IDS = new Set<string>();
 
-  return result.map((post) => ({
-    id: post.id,
-  }));
+/**
+ * 빌드 시 미리 만들 최신 글 개수. 비공개 Notion API는 미인증 호출이라 전 글을 한 번에
+ * prebuild 하면 동시 요청 폭주로 차단(HTML)당한다. 최신 글만 prebuild 하고, 나머지는
+ * dynamicParams(ISR)로 첫 요청 시 on-demand 렌더 + 캐시한다.
+ */
+const PRESTATIC_POST_LIMIT = Number(process.env.PRESTATIC_POST_LIMIT ?? 20);
+
+export async function generateStaticParams() {
+    const postUseCase = diContainer.post.postUseCase;
+    const result = await postUseCase.getAllPublishedPostMetadatas();
+
+    return result
+        .filter((post) => !SKIP_SSG_IDS.has(post.id))
+        .slice(0, PRESTATIC_POST_LIMIT)
+        .map((post) => ({ id: post.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const result = await getPostDetailPage(id);
+    const { id } = await params;
+    const result = await getPostDetailPage(id);
 
-  if (!result.properties) {
+    const baseUrl = 'https://www.stephen-dev.blog';
+
+    if (!result.properties) {
+        return {
+            title: "Stephen's 기술블로그 | 개발 공부 및 튜토리얼",
+            description: '개발 공부 및 튜토리얼',
+            openGraph: {
+                images: [
+                    {
+                        url: `${baseUrl}/images/main-thumbnail.png`,
+                        width: 1200,
+                        height: 630,
+                        alt: 'Not Found',
+                    },
+                ],
+            },
+            twitter: { images: [`${baseUrl}/images/main-thumbnail.png`] },
+        };
+    }
+
+    const post = result.properties;
+    // 만료 시간이 없는 OG 이미지 URL 사용 (포스트 ID 기반)
+    const ogImage = `${baseUrl}/api/og-image/${id}`;
+
     return {
-      title: "Stephen's 기술블로그 | 개발 공부 및 튜토리얼",
-      description: '개발 공부 및 튜토리얼',
-      openGraph: {
-        images: [{ url: '/images/main-thumbnail.png', width: 1200, height: 630, alt: 'Not Found' }],
-      },
-      twitter: { images: ['/images/main-thumbnail.png'] },
-    };
-  }
-
-  const post = result.properties;
-  return {
-    title: post.title,
-    description: `${post.tag.join(', ')} - ${post.title} - Stephen's 기술블로그`,
-    keywords: post.tag,
-    authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
-    publisher: '김성훈',
-    alternates: { canonical: `https://www.stephen.dev.blog/blog/${post.id}` },
-    robots: {
-      index: true,
-      follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
-    },
-    openGraph: {
-      title: post.title,
-      description: `${post.tag.join(', ')} - ${post.title} - Stephen's 기술블로그`,
-      url: `https://www.stephen.dev.blog/blog/${post.id}`,
-      type: 'article',
-      publishedTime: post.date,
-      authors: post.author || '김성훈',
-      tags: post.tag,
-      images: [
-        {
-          url: post.coverImage || '/images/no-image-dark.png',
-          width: 1200,
-          height: 630,
-          alt: post.title,
+        title: post.title,
+        description: `${post.tag.join(', ')} - ${post.title} - Stephen's 기술블로그`,
+        keywords: post.tag,
+        authors: [{ name: '김성훈', url: 'https://github.com/chugue' }],
+        publisher: '김성훈',
+        alternates: { canonical: `${baseUrl}/blog/${post.id}` },
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+            'max-video-preview': -1,
         },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: `${post.title} - Stephen's 기술블로그`,
-      images: [post.coverImage || '/images/no-image-dark.png'],
-    },
-  };
+        openGraph: {
+            title: post.title,
+            description: `${post.tag.join(', ')} - ${post.title} - Stephen's 기술블로그`,
+            url: `${baseUrl}/blog/${post.id}`,
+            type: 'article',
+            publishedTime: post.date,
+            authors: post.author || '김성훈',
+            tags: post.tag,
+            images: [
+                {
+                    url: ogImage,
+                    width: 1200,
+                    height: 630,
+                    alt: post.title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: post.title,
+            description: `${post.title} - Stephen's 기술블로그`,
+            images: [ogImage],
+        },
+    };
 }
 
 interface BlogPostProps {
-  params: Promise<{ id: string }>;
+    params: Promise<{ id: string }>;
 }
 
 export default async function BlogPost({ params }: BlogPostProps) {
-  const { id } = await params;
+    const { id } = await params;
 
-  try {
-    const { recordMap, properties } = await getPostDetailPage(id);
+    try {
+        const { recordMap, properties } = await getPostDetailPage(id);
 
-    // 서버에서 코드 블록 하이라이팅
-    const highlightedCode = await highlightCodeBlocks(recordMap);
+        // 서버에서 코드 블록 하이라이팅
+        const highlightedCode = await highlightCodeBlocks(recordMap);
 
-    return (
-      <div className="container mx-auto py-6 sm:py-12">
-        <AddPageView pageId={id} />
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
-          <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
-          <section className="min-w-0 px-4">
-            {/* 블로그 헤더 */}
-            <div className="space-y-4">
-              <div className="my-4 space-y-4">
-                <h1 className="my-10 text-5xl font-bold">{properties?.title}</h1>
-              </div>
+        return (
+            <div className="container mx-auto py-6 sm:py-12">
+                <AddPageView pageId={id} />
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px] xl:grid-cols-[250px_1fr_300px]">
+                    <aside className="hidden xl:block">{/* 추후 컨텐츠 추가 */}</aside>
+                    <section className="min-w-0 px-4">
+                        {/* 블로그 헤더 */}
+                        <div className="space-y-4">
+                            <div className="my-4 space-y-4">
+                                <h1 className="my-10 text-5xl font-bold">{properties?.title}</h1>
+                            </div>
 
-              <div className="relative my-8 aspect-video w-full">
-                <Image
-                  src={properties?.coverImage || '/images/no-image-dark.png'}
-                  alt={properties?.title || ''}
-                  fill
-                  className="rounded-lg object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
+                            <div className="relative my-8 aspect-video w-full">
+                                <Image
+                                    src={properties?.coverImage || '/images/no-image-dark.png'}
+                                    alt={properties?.title || ''}
+                                    fill
+                                    className="rounded-lg object-cover"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                            </div>
 
-              {/* 메타 정보 */}
-              <div className="text-muted-foreground flex flex-col gap-4 text-lg">
-                <div className="flex flex-wrap gap-2">
-                  {properties?.tag.map((tag: string) => (
-                    <ColoredBadge key={tag} tag={tag} />
-                  ))}
+                            {/* 메타 정보 */}
+                            <div className="text-muted-foreground flex flex-col gap-4 text-lg">
+                                <div className="flex flex-wrap gap-2">
+                                    {properties?.tag.map((tag: string) => (
+                                        <ColoredBadge key={tag} tag={tag} />
+                                    ))}
+                                </div>
+                                <div className="flex items-center justify-end gap-4">
+                                    <div className="flex items-center gap-1">
+                                        <User className="h-4 w-4" />
+                                        <span>{properties?.author}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <CalendarDays className="h-4 w-4" />
+                                        <span>
+                                            {properties?.date ? formatDate(properties?.date) : ''}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <Separator className="my-6" />
+
+                        {/* 모바일 블로그 목차 */}
+                        <MobileToc />
+
+                        {/* 블로그 본문 */}
+                        <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
+                            <NotionPageContent
+                                recordMap={recordMap}
+                                highlightedCode={highlightedCode}
+                                pageId={id}
+                            />
+                        </div>
+
+                        <Separator className="my-16" />
+                        <Suspense fallback={<LoadingSpinner />}>
+                            <GiscusComments term={`blog-${id}`} />
+                        </Suspense>
+                    </section>
+
+                    {/* 목차 */}
+                    <TableOfContentsWrapper className="md:block" />
                 </div>
-                <div className="flex items-center justify-end gap-4">
-                  <div className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    <span>{properties?.author}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <CalendarDays className="h-4 w-4" />
-                    <span>{properties?.date ? formatDate(properties?.date) : ''}</span>
-                  </div>
-                </div>
-              </div>
             </div>
-
-            <Separator className="my-6" />
-
-            {/* 모바일 블로그 목차 */}
-            <MobileToc />
-
-            {/* 블로그 본문 */}
-            <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-[var(--sticky-top)] max-w-none">
-              <NotionPageContent recordMap={recordMap} highlightedCode={highlightedCode} />
-            </div>
-
-            <Separator className="my-16" />
-            <Suspense fallback={<LoadingSpinner />}>
-              <GiscusComments term={`blog-${id}`} />
-            </Suspense>
-          </section>
-
-          {/* 목차 */}
-          <TableOfContentsWrapper className="md:block" />
-        </div>
-      </div>
-    );
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+        );
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }

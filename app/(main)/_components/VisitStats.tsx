@@ -27,7 +27,7 @@ const chartConfig = {
 } as ChartConfig;
 
 export function VisitStats({ className }: { className?: string }) {
-  const { data: siteMetrics, isFetching } = useQuery({
+  const { data: siteMetrics, isLoading } = useQuery({
     queryKey: ['site-metrics-client'],
     queryFn: async () => {
       const res = await fetch('/api/site-metrics').then((res) => res.json());
@@ -35,7 +35,7 @@ export function VisitStats({ className }: { className?: string }) {
 
       return res.data as MainPageChartData[];
     },
-    staleTime: 0, // 5분
+    staleTime: 5 * 60 * 1000, // 5분
   });
 
   const total = React.useMemo(
@@ -49,7 +49,7 @@ export function VisitStats({ className }: { className?: string }) {
   return (
     <Card className={cn('items-center justify-center p-0', className)}>
       <CardContent className="flex w-full flex-col gap-0">
-        {isFetching ? (
+        {isLoading ? (
           <div className="flex h-[250px] items-center justify-center">
             <LoadingSpinner />
           </div>

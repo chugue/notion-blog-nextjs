@@ -1,7 +1,11 @@
 'use client';
 
 import { TagFilterItem } from '@/domain/entities/post.entity';
-import { useSelectedTagStore } from '@/presentation/stores/use-selected-tag.store';
+import { useSyncSelectedTag } from '@/presentation/hooks/use-sync-selected-tag';
+import {
+  selectActiveTag,
+  useSelectedTagStore,
+} from '@/presentation/stores/use-selected-tag.store';
 import { toTagInfo } from '@/presentation/utils/to-tag-Info';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
@@ -9,35 +13,58 @@ import { cn } from '@/shared/utils/tailwind-cn';
 import gsap from 'gsap';
 import Image from 'next/image';
 import Link from 'next/link';
-import { use, useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchButton from '../search/SearchButton';
 
 export interface TagSectionProps {
-  tags: Promise<TagFilterItem[]>;
+  tags: TagFilterItem[];
   selectedTag: string;
 }
 
 const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
-  const { isChanging, ...store } = useSelectedTagStore();
-  const allTags = use(tags);
+  const activeTag = useSelectedTagStore(selectActiveTag);
+  const setOptimisticTag = useSelectedTagStore((state) => state.setOptimisticTag);
+  const setChanging = useSelectedTagStore((state) => state.setChanging);
   const [expanded, setExpanded] = useState(false);
 
-  const updateIndicator = (target: Element) => {
+  // 서버에서 받은 selectedTag를 store에 동기화
+  useSyncSelectedTag(selectedTag);
+
+  const updateIndicator = (tagName: string, animate = true) => {
+    const target = document.getElementById(tagName);
     const indicator = document.querySelector('.indicator');
     const tabRow = document.querySelector('.tabs-row');
 
-    if (!indicator || !tabRow) return;
+    if (!target || !indicator || !tabRow) return;
 
-    const tagetBounds = target.getBoundingClientRect();
+    const targetBounds = target.getBoundingClientRect();
     const rowBounds = tabRow.getBoundingClientRect();
 
-    const offset = tagetBounds.top - rowBounds.top;
+    const offset = targetBounds.top - rowBounds.top;
 
-    gsap.to(indicator, { y: offset, duration: 0.4, ease: 'back.out(1)' });
+    if (animate) {
+      gsap.to(indicator, { y: offset, duration: 0.4, ease: 'back.out(1)' });
+    } else {
+      gsap.set(indicator, { y: offset });
+    }
   };
 
-  const handleTagClick = () => {
-    store.setChanging(true);
+  // activeTag 변경 시 indicator 위치 동기화
+  useEffect(() => {
+    const tagName = activeTag || '전체';
+    // 초기 렌더링 시에는 애니메이션 없이, 이후에는 애니메이션과 함께
+    const isInitial = !document.querySelector('.indicator')?.hasAttribute('data-initialized');
+
+    // DOM이 준비된 후 실행
+    requestAnimationFrame(() => {
+      updateIndicator(tagName, !isInitial);
+      document.querySelector('.indicator')?.setAttribute('data-initialized', 'true');
+    });
+  }, [activeTag]);
+
+  const handleTagClick = (tagName: string) => {
+    setOptimisticTag(tagName);
+    setChanging(true);
   };
 
   return (
@@ -55,16 +82,16 @@ const TagSection = ({ tags, selectedTag }: TagSectionProps) => {
               : 'max-md:h-[50vh] max-md:overflow-hidden'
           )}
         >
-          {allTags.map((tag) => {
+          {tags.map((tag) => {
             const tagInfo = toTagInfo(tag.name);
-            const isSelected = selectedTag === tag.name || (!selectedTag && tag.name === '전체');
+            const isSelected = activeTag === tag.name || (!activeTag && tag.name === '전체');
             return (
               <Link
                 href={tag.name === '전체' ? '/' : `?tag=${encodeURIComponent(tag.name)}`}
                 key={tag.name}
                 onClick={() => {
-                  handleTagClick();
-                  updateIndicator(document.getElementById(tag.name) as Element);
+                  handleTagClick(tag.name);
+                  updateIndicator(tag.name);
                 }}
                 prefetch={true}
                 scroll={false}

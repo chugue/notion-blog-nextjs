@@ -3,13 +3,14 @@ import { Transaction } from '@/infrastructure/database/drizzle/drizzle';
 import { Result } from '@/shared/types/result';
 
 export interface BatchRepositoryPort {
-  readonly getSiteMetricsByDate: (
-    date: Date,
-    tx: Transaction
-  ) => Promise<Result<SiteMetric, Error>>;
-  readonly createCronTodayMetrics: (
-    yesterdayMetrics: SiteMetric,
-    todayKST: Date,
-    tx: Transaction
-  ) => Promise<Result<SiteMetric, Error>>;
+    readonly getSiteMetricsByDate: (
+        date: Date,
+        tx: Transaction
+    ) => Promise<Result<SiteMetric, Error>>;
+    readonly createCronTodayMetrics: (
+        yesterdayMetrics: SiteMetric,
+        todayKST: Date,
+
+        tx: Transaction
+    ) => Promise<Result<SiteMetric, Error>>;
 }

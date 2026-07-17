@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/shared/utils/tailwind-cn';
-import { use, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { TagFilterItem } from '@/domain/entities/post.entity';
 import { toHexTechStackItem } from '@/domain/utils/hex-tech-stack.utils';
@@ -12,16 +12,13 @@ import HexCard from './HexCard';
 
 export function FlipHexTechStack({
   tags,
-  selectedTag,
 }: {
-  tags: Promise<TagFilterItem[]>;
-  selectedTag: string;
+  tags: TagFilterItem[];
 }) {
   const resizeRef = useRef<HTMLDivElement>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const allTags = use(tags);
 
-  const techStacks = toHexTechStackItem(allTags);
+  const techStacks = toHexTechStackItem(tags);
 
   const { positions, honeycombWidth } = useHoneycombMemo(techStacks);
   const centerX = useRefCenter(resizeRef, honeycombWidth);
@@ -54,7 +51,6 @@ export function FlipHexTechStack({
                     onHover={setHoveredId}
                     hoveredId={hoveredId}
                     row={position.row}
-                    selectedTag={selectedTag}
                   />
                 </div>
               );
