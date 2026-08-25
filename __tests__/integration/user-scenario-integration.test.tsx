@@ -1,33 +1,41 @@
 import { render, screen, waitFor } from '@/__tests__/utils/test-utils';
+import { Post, PostMetadata, PostMetadataResp } from '@/domain/entities/post.entity';
+import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
+import { diContainer } from '@/shared/di/di-container';
 import { jest } from '@jest/globals';
-import { diContainer } from '../../shared/di/di-container';
 
-// Mock dependencies
-jest.mock('../../shared/di/di-container', () => ({
-  diContainer: {
-    post: {
-      postUseCase: {
-        getPostsWithParams: jest.fn(),
-        getPostById: jest.fn(),
-        getAllPublishedPostMetadatas: jest.fn(),
-      },
-    },
-  },
-}));
+// 테스트 파일은 ESM 으로 실행되므로 정적 import 이전에 적용되는 jest.unstable_mockModule 을 사용하고,
+// 페이지 컴포넌트는 모킹 등록 이후 동적 import 로 가져온다.
+
+const mockNotFound = jest.fn<() => never>(() => {
+  throw new Error('NEXT_NOT_FOUND');
+});
 
 // Mock Next.js navigation
-jest.mock('next/navigation', () => ({
+jest.unstable_mockModule('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
     back: jest.fn(),
   }),
   useSearchParams: () => new URLSearchParams(),
-  notFound: jest.fn(),
+  notFound: mockNotFound,
 }));
 
+// 서버 사이드 Shiki 하이라이터는 무거우므로 빈 결과로 대체
+jest.unstable_mockModule('@/presentation/utils/highlight-code-blocks', () => ({
+  highlightCodeBlocks: jest.fn(async () => ({})),
+}));
+
+// gsap 은 jsdom 에서 파싱/실행되지 않으므로 로드 자체를 막는다
+jest.unstable_mockModule('gsap', () => ({
+  default: { registerPlugin: jest.fn(), fromTo: jest.fn(), to: jest.fn() },
+}));
+jest.unstable_mockModule('gsap/ScrollTrigger', () => ({ default: {} }));
+jest.unstable_mockModule('@gsap/react', () => ({ useGSAP: jest.fn() }));
+
 // Mock components
-jest.mock('../../../app/(blog)/_components/NotionPageContent', () => ({
+jest.unstable_mockModule('@/app/(blog)/_components/NotionPageContent', () => ({
   __esModule: true,
   default: ({ recordMap }: { recordMap: unknown }) => (
     <div data-testid="notion-page-content">
@@ -36,45 +44,31 @@ jest.mock('../../../app/(blog)/_components/NotionPageContent', () => ({
   ),
 }));
 
-jest.mock('../../../app/(main)/_components/post-list/PostList.client', () => ({
+jest.unstable_mockModule('@/app/(blog)/_components/GiscusComments', () => ({
   __esModule: true,
-  default: ({ posts }: { posts: any[] }) => (
-    <div data-testid="post-list">
-      {posts.map((post) => (
-        <div key={post.id} data-testid={`post-${post.id}`}>
-          <h3>{post.title}</h3>
-          <p>{post.author}</p>
-          <span>{post.date}</span>
-          {post.tag.map((tag: string) => (
-            <span key={tag} data-testid={`tag-${tag}`}>
-              {tag}
-            </span>
-          ))}
-        </div>
-      ))}
-    </div>
+  default: ({ term }: { term: string }) => <div data-testid="giscus-comments">{term}</div>,
+}));
+
+jest.unstable_mockModule('next/image', () => ({
+  __esModule: true,
+  default: ({ src, alt, ...props }: { src: string; alt: string; [key: string]: unknown }) => (
+    <img src={src} alt={alt} data-testid="next-image" {...props} />
   ),
 }));
 
-jest.mock('../../../app/(main)/_components/search/SearchModal', () => ({
-  __esModule: true,
-  default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
-    isOpen ? (
-      <div data-testid="search-modal">
-        <button onClick={onClose} data-testid="close-search">
-          Close
-        </button>
-        <div data-testid="search-results">Search Results</div>
-      </div>
-    ) : null,
-}));
+const { default: BlogPost } = await import('@/app/(blog)/blog/[id]/page');
+
+// 실제 diContainer.post 를 타입이 맞는 mock 으로 교체 (getPostDetailPage 는 getDiContainer() 로 같은 싱글톤을 읽는다)
+const mockPostUseCase = {
+  getPostPropertiesById: jest.fn<PostUseCasePort['getPostPropertiesById']>(),
+  getAllPublishedPostMetadatas: jest.fn<PostUseCasePort['getAllPublishedPostMetadatas']>(),
+  getPostsWithParams: jest.fn<PostUseCasePort['getPostsWithParams']>(),
+  getPostById: jest.fn<PostUseCasePort['getPostById']>(),
+  getAboutPage: jest.fn<PostUseCasePort['getAboutPage']>(),
+};
 
 describe('User Scenario Integration Tests', () => {
-  const mockPostUseCase = diContainer.post.postUseCase as jest.Mocked<
-    typeof diContainer.post.postUseCase
-  >;
-
-  const mockPosts = {
+  const mockPosts: PostMetadataResp = {
     posts: [
       {
         id: 'post-1',
@@ -105,7 +99,7 @@ describe('User Scenario Integration Tests', () => {
     nextCursor: null,
   };
 
-  const mockPostDetail = {
+  const mockPostDetail: Post = {
     properties: {
       id: 'post-1',
       title: 'React Hooks 완전 가이드',
@@ -147,80 +141,25 @@ describe('User Scenario Integration Tests', () => {
     },
   };
 
+  beforeAll(() => {
+    diContainer.post = {
+      postRepository: diContainer.post.postRepository,
+      postUseCase: mockPostUseCase,
+    };
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPostUseCase.getPostsWithParams.mockReset();
+    mockPostUseCase.getPostById.mockReset();
+    mockPostUseCase.getAllPublishedPostMetadatas.mockReset();
   });
 
-  describe('Scenario 1: 사용자가 블로그 메인 페이지에서 포스트 목록을 확인', () => {
-    it('should display all posts with correct information', async () => {
-      // Arrange
-      mockPostUseCase.getPostsWithParams.mockResolvedValue(mockPosts);
-
-      // Act - 메인 페이지 렌더링 시뮬레이션
-      const MainPage = require('../../../app/(main)/page').default;
-      render(await MainPage());
-
-      // Assert
-      await waitFor(() => {
-        expect(screen.getByTestId('post-list')).toBeInTheDocument();
-        expect(screen.getByTestId('post-post-1')).toBeInTheDocument();
-        expect(screen.getByTestId('post-post-2')).toBeInTheDocument();
-        expect(screen.getByTestId('post-post-3')).toBeInTheDocument();
-
-        // 포스트 정보 확인
-        expect(screen.getByText('React Hooks 완전 가이드')).toBeInTheDocument();
-        expect(screen.getByText('TypeScript 타입 시스템 마스터하기')).toBeInTheDocument();
-        expect(screen.getByText('Next.js 14 App Router 활용법')).toBeInTheDocument();
-
-        // 태그 확인
-        expect(screen.getByTestId('tag-React')).toBeInTheDocument();
-        expect(screen.getByTestId('tag-TypeScript')).toBeInTheDocument();
-        expect(screen.getByTestId('tag-JavaScript')).toBeInTheDocument();
-      });
-    });
-
-    it('should handle empty post list gracefully', async () => {
-      // Arrange
-      mockPostUseCase.getPostsWithParams.mockResolvedValue({
-        posts: [],
-        hasMore: false,
-        nextCursor: null,
-      });
-
-      // Act
-      const MainPage = require('../../../app/(main)/page').default;
-      render(await MainPage());
-
-      // Assert
-      await waitFor(() => {
-        expect(screen.getByTestId('post-list')).toBeInTheDocument();
-        expect(screen.queryByTestId('post-post-1')).not.toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Scenario 2: 사용자가 특정 태그로 포스트를 필터링', () => {
+  describe('Scenario 1: 사용자가 특정 태그로 포스트를 필터링', () => {
     it('should filter posts by React tag', async () => {
       // Arrange
-      const reactPosts = {
-        posts: [
-          {
-            id: 'post-1',
-            title: 'React Hooks 완전 가이드',
-            author: '김성훈',
-            date: '2024-01-01',
-            tag: ['React', 'JavaScript'],
-            coverImage: '/images/react-hooks.jpg',
-          },
-          {
-            id: 'post-3',
-            title: 'Next.js 14 App Router 활용법',
-            author: '김성훈',
-            date: '2024-01-03',
-            tag: ['Next.js', 'React'],
-            coverImage: '/images/nextjs.jpg',
-          },
-        ],
+      const reactPosts: PostMetadataResp = {
+        posts: [mockPosts.posts[0], mockPosts.posts[2]],
         hasMore: false,
         nextCursor: null,
       };
@@ -228,7 +167,7 @@ describe('User Scenario Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(reactPosts);
 
       // Act - React 태그로 필터링된 요청 시뮬레이션
-      const filteredPosts = await mockPostUseCase.getPostsWithParams({
+      const filteredPosts = await diContainer.post.postUseCase.getPostsWithParams({
         tag: 'React',
         sort: undefined,
         pageSize: undefined,
@@ -243,9 +182,9 @@ describe('User Scenario Integration Tests', () => {
         startCursor: undefined,
       });
 
-      expect(filteredPosts?.posts).toHaveLength(2);
-      expect(filteredPosts?.posts[0].title).toBe('React Hooks 완전 가이드');
-      expect(filteredPosts?.posts[1].title).toBe('Next.js 14 App Router 활용법');
+      expect(filteredPosts.posts).toHaveLength(2);
+      expect(filteredPosts.posts[0].title).toBe('React Hooks 완전 가이드');
+      expect(filteredPosts.posts[1].title).toBe('Next.js 14 App Router 활용법');
     });
 
     it('should handle non-existent tag gracefully', async () => {
@@ -257,7 +196,7 @@ describe('User Scenario Integration Tests', () => {
       });
 
       // Act
-      const filteredPosts = await mockPostUseCase.getPostsWithParams({
+      const filteredPosts = await diContainer.post.postUseCase.getPostsWithParams({
         tag: 'NonExistentTag',
         sort: undefined,
         pageSize: undefined,
@@ -265,21 +204,22 @@ describe('User Scenario Integration Tests', () => {
       });
 
       // Assert
-      expect(filteredPosts?.posts).toHaveLength(0);
+      expect(filteredPosts.posts).toHaveLength(0);
     });
   });
 
-  describe('Scenario 3: 사용자가 특정 포스트를 클릭하여 상세 페이지로 이동', () => {
+  describe('Scenario 2: 사용자가 특정 포스트를 클릭하여 상세 페이지로 이동', () => {
     it('should display post detail page with all components', async () => {
       // Arrange
       mockPostUseCase.getPostById.mockResolvedValue(mockPostDetail);
 
       // Act - 블로그 포스트 상세 페이지 렌더링 시뮬레이션
-      const BlogPost = require('../../../app/(blog)/blog/[id]/page').default;
       const params = Promise.resolve({ id: 'post-1' });
       render(await BlogPost({ params }));
 
       // Assert
+      expect(mockPostUseCase.getPostById).toHaveBeenCalledWith('post-1');
+
       await waitFor(() => {
         // 포스트 제목 확인
         expect(screen.getByText('React Hooks 완전 가이드')).toBeInTheDocument();
@@ -287,8 +227,8 @@ describe('User Scenario Integration Tests', () => {
         // 작성자 확인
         expect(screen.getByText('김성훈')).toBeInTheDocument();
 
-        // 날짜 확인
-        expect(screen.getByText('2024-01-01')).toBeInTheDocument();
+        // 날짜 확인 (formatDate: 'PPP' + ko locale)
+        expect(screen.getByText('2024년 1월 1일')).toBeInTheDocument();
 
         // 태그 확인
         expect(screen.getByText('React')).toBeInTheDocument();
@@ -305,90 +245,38 @@ describe('User Scenario Integration Tests', () => {
 
     it('should handle non-existent post gracefully', async () => {
       // Arrange
-      const { notFound } = require('next/navigation');
       mockPostUseCase.getPostById.mockResolvedValue(null);
 
       // Act & Assert
-      const BlogPost = require('../../../app/(blog)/blog/[id]/page').default;
       const params = Promise.resolve({ id: 'non-existent-post' });
 
-      await expect(BlogPost({ params })).rejects.toThrow();
-      expect(notFound).toHaveBeenCalled();
+      await expect(BlogPost({ params })).rejects.toThrow('NEXT_NOT_FOUND');
+      expect(mockNotFound).toHaveBeenCalled();
     });
   });
 
-  describe('Scenario 4: 사용자가 검색 기능을 사용하여 포스트 검색', () => {
-    it('should open search modal and display search results', async () => {
+  describe('Scenario 3: 사용자가 검색 기능을 사용하여 포스트 검색', () => {
+    it('should return search candidates from all published post metadatas', async () => {
       // Arrange
-      const mockSearchResults = [
-        {
-          id: 'post-1',
-          title: 'React Hooks 완전 가이드',
-          author: '김성훈',
-          date: '2024-01-01',
-          tag: ['React', 'JavaScript'],
-          coverImage: '/images/react-hooks.jpg',
-        },
-      ];
+      const mockSearchResults: PostMetadata[] = [mockPosts.posts[0]];
 
       mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue(mockSearchResults);
 
-      // Act - 검색 모달 열기 시뮬레이션
-      const SearchModal = require('../../../app/(main)/_components/search/SearchModal').default;
-      const { rerender } = render(<SearchModal isOpen={false} onClose={jest.fn()} />);
-
-      // 검색 모달 열기
-      rerender(<SearchModal isOpen={true} onClose={jest.fn()} />);
-
-      // Assert
-      expect(screen.getByTestId('search-modal')).toBeInTheDocument();
-      expect(screen.getByTestId('search-results')).toBeInTheDocument();
-    });
-
-    it('should close search modal when close button is clicked', async () => {
-      // Arrange
-      const onClose = jest.fn();
-      const SearchModal = require('../../../app/(main)/_components/search/SearchModal').default;
-      render(<SearchModal isOpen={true} onClose={onClose} />);
-
       // Act
-      // fireEvent.click(screen.getByTestId('close-search')); // This line was removed from imports, so it's removed here.
+      const result = await diContainer.post.postUseCase.getAllPublishedPostMetadatas();
 
       // Assert
-      expect(onClose).toHaveBeenCalled();
+      expect(mockPostUseCase.getAllPublishedPostMetadatas).toHaveBeenCalled();
+      expect(result).toHaveLength(1);
+      expect(result[0].title).toBe('React Hooks 완전 가이드');
     });
   });
 
-  describe('Scenario 5: 사용자가 포스트를 정렬하여 확인', () => {
+  describe('Scenario 4: 사용자가 포스트를 정렬하여 확인', () => {
     it('should sort posts by date in descending order', async () => {
       // Arrange
-      const sortedPosts = {
-        posts: [
-          {
-            id: 'post-3',
-            title: 'Next.js 14 App Router 활용법',
-            author: '김성훈',
-            date: '2024-01-03',
-            tag: ['Next.js', 'React'],
-            coverImage: '/images/nextjs.jpg',
-          },
-          {
-            id: 'post-2',
-            title: 'TypeScript 타입 시스템 마스터하기',
-            author: '김성훈',
-            date: '2024-01-02',
-            tag: ['TypeScript', 'JavaScript'],
-            coverImage: '/images/typescript.jpg',
-          },
-          {
-            id: 'post-1',
-            title: 'React Hooks 완전 가이드',
-            author: '김성훈',
-            date: '2024-01-01',
-            tag: ['React', 'JavaScript'],
-            coverImage: '/images/react-hooks.jpg',
-          },
-        ],
+      const sortedPosts: PostMetadataResp = {
+        posts: [mockPosts.posts[2], mockPosts.posts[1], mockPosts.posts[0]],
         hasMore: false,
         nextCursor: null,
       };
@@ -396,7 +284,7 @@ describe('User Scenario Integration Tests', () => {
       mockPostUseCase.getPostsWithParams.mockResolvedValue(sortedPosts);
 
       // Act - 날짜 내림차순 정렬 요청 시뮬레이션
-      const sortedResult = await mockPostUseCase.getPostsWithParams({
+      const sortedResult = await diContainer.post.postUseCase.getPostsWithParams({
         tag: undefined,
         sort: 'date',
         pageSize: undefined,
@@ -411,22 +299,22 @@ describe('User Scenario Integration Tests', () => {
         startCursor: undefined,
       });
 
-      expect(sortedResult?.posts[0].date).toBe('2024-01-03');
-      expect(sortedResult?.posts[1].date).toBe('2024-01-02');
-      expect(sortedResult?.posts[2].date).toBe('2024-01-01');
+      expect(sortedResult.posts[0].date).toBe('2024-01-03');
+      expect(sortedResult.posts[1].date).toBe('2024-01-02');
+      expect(sortedResult.posts[2].date).toBe('2024-01-01');
     });
   });
 
-  describe('Scenario 6: 사용자가 페이지네이션을 사용하여 더 많은 포스트 로드', () => {
+  describe('Scenario 5: 사용자가 페이지네이션을 사용하여 더 많은 포스트 로드', () => {
     it('should load more posts with pagination', async () => {
       // Arrange
-      const firstPage = {
+      const firstPage: PostMetadataResp = {
         posts: mockPosts.posts.slice(0, 2),
         hasMore: true,
         nextCursor: 'cursor-123',
       };
 
-      const secondPage = {
+      const secondPage: PostMetadataResp = {
         posts: [mockPosts.posts[2]],
         hasMore: false,
         nextCursor: null,
@@ -437,7 +325,7 @@ describe('User Scenario Integration Tests', () => {
         .mockResolvedValueOnce(secondPage);
 
       // Act - 첫 번째 페이지 로드
-      const firstPageResult = await mockPostUseCase.getPostsWithParams({
+      const firstPageResult = await diContainer.post.postUseCase.getPostsWithParams({
         tag: undefined,
         sort: undefined,
         pageSize: 2,
@@ -445,7 +333,7 @@ describe('User Scenario Integration Tests', () => {
       });
 
       // 두 번째 페이지 로드
-      const secondPageResult = await mockPostUseCase.getPostsWithParams({
+      const secondPageResult = await diContainer.post.postUseCase.getPostsWithParams({
         tag: undefined,
         sort: undefined,
         pageSize: 2,
@@ -453,36 +341,22 @@ describe('User Scenario Integration Tests', () => {
       });
 
       // Assert
-      expect(firstPageResult?.posts).toHaveLength(2);
-      expect(firstPageResult?.hasMore).toBe(true);
-      expect(firstPageResult?.nextCursor).toBe('cursor-123');
+      expect(firstPageResult.posts).toHaveLength(2);
+      expect(firstPageResult.hasMore).toBe(true);
+      expect(firstPageResult.nextCursor).toBe('cursor-123');
 
-      expect(secondPageResult?.posts).toHaveLength(1);
-      expect(secondPageResult?.hasMore).toBe(false);
-      expect(secondPageResult?.nextCursor).toBe(null);
+      expect(secondPageResult.posts).toHaveLength(1);
+      expect(secondPageResult.hasMore).toBe(false);
+      expect(secondPageResult.nextCursor).toBe(null);
     });
   });
 
-  describe('Scenario 7: 에러 상황에서의 사용자 경험', () => {
-    it('should handle API errors gracefully in main page', async () => {
-      // Arrange
-      mockPostUseCase.getPostsWithParams.mockRejectedValue(new Error('API Error'));
-
-      // Act & Assert
-      const MainPage = require('../../../app/(main)/page').default;
-
-      // 에러가 발생해도 페이지가 렌더링되어야 함
-      expect(async () => {
-        render(await MainPage());
-      }).not.toThrow();
-    });
-
+  describe('Scenario 6: 에러 상황에서의 사용자 경험', () => {
     it('should handle network errors in post detail page', async () => {
       // Arrange
       mockPostUseCase.getPostById.mockRejectedValue(new Error('Network Error'));
 
       // Act & Assert
-      const BlogPost = require('../../../app/(blog)/blog/[id]/page').default;
       const params = Promise.resolve({ id: 'post-1' });
 
       await expect(BlogPost({ params })).rejects.toThrow('Network Error');

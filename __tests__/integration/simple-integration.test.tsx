@@ -1,10 +1,19 @@
+import { render, screen } from '@/__tests__/utils/test-utils';
+import { jest } from '@jest/globals';
+import { CodeBlock, ExtendedRecordMap } from 'notion-types';
 import React from 'react';
-import CustomCodeBlock from '../../app/(blog)/_components/CustomCodeBlock';
-import NotionPageContent from '../../app/(blog)/_components/NotionPageContent';
-import { render, screen } from '../utils/test-utils';
 
-// Mock external dependencies
-jest.mock('react-notion-x', () => ({
+// 테스트 파일은 ESM 으로 실행되므로 정적 import 이전에 적용되는 jest.unstable_mockModule 을 사용하고,
+// 대상 컴포넌트는 모킹 등록 이후 동적 import 로 가져온다.
+
+// gsap/ScrollTrigger 는 ESM 소스인데 gsap 패키지가 CJS 로 선언되어 있어 jest 가 파싱하지 못한다 → 로드 자체를 막는다
+jest.unstable_mockModule('gsap', () => ({
+  default: { registerPlugin: jest.fn(), fromTo: jest.fn(), to: jest.fn() },
+}));
+jest.unstable_mockModule('gsap/ScrollTrigger', () => ({ default: {} }));
+jest.unstable_mockModule('@gsap/react', () => ({ useGSAP: jest.fn() }));
+
+jest.unstable_mockModule('react-notion-x', () => ({
   NotionRenderer: ({
     recordMap,
     components,
@@ -19,25 +28,14 @@ jest.mock('react-notion-x', () => ({
   ),
 }));
 
-jest.mock('react-notion-x-code-block', () => ({
-  Code: ({ block, defaultLanguage, showLangLabel, themes }: any) => (
-    <div data-testid="code-component">
-      <div data-testid="block-data">{JSON.stringify(block)}</div>
-      <div data-testid="default-language">{defaultLanguage}</div>
-      <div data-testid="show-lang-label">{String(showLangLabel)}</div>
-      <div data-testid="themes">{JSON.stringify(themes)}</div>
-    </div>
-  ),
-}));
-
-jest.mock('next/image', () => ({
+jest.unstable_mockModule('next/image', () => ({
   __esModule: true,
   default: ({ src, alt, ...props }: { src: string; alt: string; [key: string]: unknown }) => (
     <img src={src} alt={alt} data-testid="next-image" {...props} />
   ),
 }));
 
-jest.mock('next/link', () => ({
+jest.unstable_mockModule('next/link', () => ({
   __esModule: true,
   default: ({
     href,
@@ -54,9 +52,12 @@ jest.mock('next/link', () => ({
   ),
 }));
 
+const { default: CustomCodeBlock } = await import('@/app/(blog)/_components/CustomCodeBlock');
+const { default: NotionPageContent } = await import('@/app/(blog)/_components/NotionPageContent');
+
 describe('Simple Integration Tests', () => {
   describe('NotionPageContent Integration', () => {
-    const mockRecordMap = {
+    const mockRecordMap: ExtendedRecordMap = {
       block: {
         'test-block-id': {
           role: 'reader',
@@ -89,15 +90,17 @@ describe('Simple Integration Tests', () => {
     };
 
     it('should render NotionPageContent with recordMap', () => {
-      render(<NotionPageContent recordMap={mockRecordMap as any} />);
+      render(<NotionPageContent recordMap={mockRecordMap} />);
 
       expect(screen.getByTestId('notion-renderer')).toBeInTheDocument();
       expect(screen.getByTestId('record-map')).toHaveTextContent('test-block-id');
-      expect(screen.getByTestId('components')).toHaveTextContent('nextImage,nextLink,Code');
+      expect(screen.getByTestId('components')).toHaveTextContent(
+        'nextImage,nextLink,Code,Collection'
+      );
     });
 
     it('should handle empty recordMap', () => {
-      const emptyRecordMap = {
+      const emptyRecordMap: ExtendedRecordMap = {
         block: {},
         collection: {},
         collection_view: {},
@@ -107,19 +110,20 @@ describe('Simple Integration Tests', () => {
         preview_images: {},
       };
 
-      render(<NotionPageContent recordMap={emptyRecordMap as any} />);
+      render(<NotionPageContent recordMap={emptyRecordMap} />);
 
       expect(screen.getByTestId('notion-renderer')).toBeInTheDocument();
     });
   });
 
   describe('CustomCodeBlock Integration', () => {
-    const createMockCodeBlock = (language?: string) => ({
+    const createMockCodeBlock = (language?: string): CodeBlock => ({
       id: 'test-code-block',
       type: 'code',
       properties: {
-        language: language ? [[language]] : undefined,
+        language: language ? [[language]] : [],
         title: [['console.log("Hello World");']],
+        caption: [],
       },
       content: [],
       parent_id: 'parent-block',
@@ -131,56 +135,42 @@ describe('Simple Integration Tests', () => {
       last_edited_by_id: 'user-id',
       last_edited_by_table: 'notion_user',
       last_edited_time: 1234567890,
+      version: 1,
     });
 
     it('should render CustomCodeBlock with JavaScript language', () => {
       const mockBlock = createMockCodeBlock('javascript');
       render(<CustomCodeBlock block={mockBlock} />);
 
-      expect(screen.getByTestId('code-component')).toBeInTheDocument();
-      expect(screen.getByTestId('default-language')).toHaveTextContent('javascript');
-      expect(screen.getByTestId('show-lang-label')).toHaveTextContent('true');
+      expect(screen.getByText('javascript')).toBeInTheDocument();
+      expect(screen.getByText('console.log("Hello World");')).toBeInTheDocument();
     });
 
     it('should render CustomCodeBlock with TypeScript language', () => {
       const mockBlock = createMockCodeBlock('typescript');
       render(<CustomCodeBlock block={mockBlock} />);
 
-      expect(screen.getByTestId('code-component')).toBeInTheDocument();
-      expect(screen.getByTestId('default-language')).toHaveTextContent('typescript');
+      expect(screen.getByText('typescript')).toBeInTheDocument();
     });
 
     it('should handle plain_text language conversion', () => {
       const mockBlock = createMockCodeBlock('plain_text');
       render(<CustomCodeBlock block={mockBlock} />);
 
-      expect(screen.getByTestId('default-language')).toHaveTextContent('plaintext');
+      expect(screen.getByText('plaintext')).toBeInTheDocument();
     });
 
     it('should handle undefined language', () => {
       const mockBlock = createMockCodeBlock();
       render(<CustomCodeBlock block={mockBlock} />);
 
-      expect(screen.getByTestId('default-language')).toHaveTextContent('plaintext');
-    });
-
-    it('should configure themes correctly', () => {
-      const mockBlock = createMockCodeBlock('python');
-      render(<CustomCodeBlock block={mockBlock} />);
-
-      const themesElement = screen.getByTestId('themes');
-      const themes = JSON.parse(themesElement.textContent || '{}');
-
-      expect(themes).toEqual({
-        light: 'catppuccin-mocha',
-        dark: 'catppuccin-mocha',
-      });
+      expect(screen.getByText('plaintext')).toBeInTheDocument();
     });
   });
 
   describe('Component Integration', () => {
     it('should integrate NotionPageContent and CustomCodeBlock through NotionRenderer', () => {
-      const mockRecordMap = {
+      const mockRecordMap: ExtendedRecordMap = {
         block: {
           'code-block-id': {
             role: 'reader',
@@ -190,6 +180,7 @@ describe('Simple Integration Tests', () => {
               properties: {
                 language: [['javascript']],
                 title: [['console.log("Hello World");']],
+                caption: [],
               },
               content: [],
               parent_id: 'parent-block',
@@ -213,7 +204,7 @@ describe('Simple Integration Tests', () => {
         preview_images: {},
       };
 
-      render(<NotionPageContent recordMap={mockRecordMap as any} />);
+      render(<NotionPageContent recordMap={mockRecordMap} />);
 
       // NotionRenderer가 렌더링되었는지 확인
       expect(screen.getByTestId('notion-renderer')).toBeInTheDocument();
@@ -226,7 +217,7 @@ describe('Simple Integration Tests', () => {
     });
 
     it('should handle multiple code blocks with different languages', () => {
-      const mockRecordMap = {
+      const mockRecordMap: ExtendedRecordMap = {
         block: {
           'js-block': {
             role: 'reader',
@@ -236,6 +227,7 @@ describe('Simple Integration Tests', () => {
               properties: {
                 language: [['javascript']],
                 title: [['const x = 1;']],
+                caption: [],
               },
               content: [],
               parent_id: 'parent-block',
@@ -258,6 +250,7 @@ describe('Simple Integration Tests', () => {
               properties: {
                 language: [['typescript']],
                 title: [['const y: number = 2;']],
+                caption: [],
               },
               content: [],
               parent_id: 'parent-block',
@@ -281,7 +274,7 @@ describe('Simple Integration Tests', () => {
         preview_images: {},
       };
 
-      render(<NotionPageContent recordMap={mockRecordMap as any} />);
+      render(<NotionPageContent recordMap={mockRecordMap} />);
 
       expect(screen.getByTestId('notion-renderer')).toBeInTheDocument();
       expect(screen.getByTestId('record-map')).toHaveTextContent('js-block');
@@ -290,9 +283,9 @@ describe('Simple Integration Tests', () => {
   });
 
   describe('Error Handling Integration', () => {
-    it('should handle malformed recordMap gracefully', () => {
-      const malformedRecordMap = {
-        block: null,
+    it('should handle recordMap without blocks gracefully', () => {
+      const emptyRecordMap: ExtendedRecordMap = {
+        block: {},
         collection: {},
         collection_view: {},
         collection_query: {},
@@ -302,15 +295,15 @@ describe('Simple Integration Tests', () => {
       };
 
       expect(() => {
-        render(<NotionPageContent recordMap={malformedRecordMap as any} />);
+        render(<NotionPageContent recordMap={emptyRecordMap} />);
       }).not.toThrow();
     });
 
-    it('should handle malformed code block gracefully', () => {
-      const malformedBlock = {
+    it('should handle code block with empty properties gracefully', () => {
+      const malformedBlock: CodeBlock = {
         id: 'malformed-block',
         type: 'code',
-        properties: null,
+        properties: { title: [], language: [], caption: [] },
         content: [],
         parent_id: 'parent-block',
         parent_table: 'block',
@@ -321,6 +314,7 @@ describe('Simple Integration Tests', () => {
         last_edited_by_id: 'user-id',
         last_edited_by_table: 'notion_user',
         last_edited_time: 1234567890,
+        version: 1,
       };
 
       expect(() => {

@@ -2,62 +2,51 @@ import { jest } from '@jest/globals';
 import { SiteMetricsRepositoryPort } from '../../../application/port/site-metrics-repository.port';
 import createSiteMetricUsecaseAdapter from '../../../application/use-cases/site-metric-usecase.adapter';
 import { SiteMetric } from '../../../domain/entities/site-metric.entity';
+import { dateToStringYYYYMMDD, getKstDate } from '../../../shared/utils/format-date';
 
-// dateToKoreaDateString 함수를 모킹합니다.
-const mockDateToKoreaDateString = jest.fn((date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+// 어댑터와 동일한 방식으로 기대 날짜 목록(29일 전 -> 오늘, KST)을 계산합니다.
+const getExpectedDateStrings = (): string[] => {
+  const today = getKstDate();
+
+  return Array.from({ length: 30 }, (_, i) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (29 - i));
+    return dateToStringYYYYMMDD(date);
+  });
+};
+
+const createMetric = (date: string, dailyVisits: number, totalVisits: number): SiteMetric => ({
+  id: `metric-${date}`,
+  date,
+  dailyVisits,
+  totalVisits,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 });
 
-jest.mock('../../../shared/utils/format-date', () => ({
-  dateToKoreaDateString: mockDateToKoreaDateString,
-}));
-
 describe('SiteMetricUsecaseAdapter', () => {
-  let mockSiteMetricRepository: SiteMetricsRepositoryPort;
+  let mockSiteMetricRepository: jest.Mocked<SiteMetricsRepositoryPort>;
 
   beforeEach(() => {
     mockSiteMetricRepository = {
-      getSiteMetricsByDateRange: jest.fn(),
-      updateSiteMetric: jest.fn(),
+      getSiteMetricsByDateRange: jest.fn<SiteMetricsRepositoryPort['getSiteMetricsByDateRange']>(),
+      updateSiteMetric: jest.fn<SiteMetricsRepositoryPort['updateSiteMetric']>(),
     };
   });
 
   describe('getThirtyDaysSiteMetrics', () => {
-    it('성공적으로 30일간의 사이트 지표를 가져와 날짜 순으로 정렬하여 반환해야 한다', async () => {
+    it('30일 범위로 조회하고, 조회된 날짜는 실제 값·없는 날짜는 0으로 채운 30개 항목을 반환해야 한다', async () => {
       // Given
-      const mockMetrics: SiteMetric[] = [
-        {
-          id: '1',
-          date: '2023-11-29',
-          totalVisits: 10,
-          dailyVisits: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: '2',
-          date: '2023-11-30',
-          totalVisits: 12,
-          dailyVisits: 3,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: '3',
-          date: '2023-11-28',
-          totalVisits: 8,
-          dailyVisits: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+      const dateStrings = getExpectedDateStrings();
+      const [startDate, endDate] = [dateStrings[0], dateStrings[29]];
+      const fetchedMetrics: SiteMetric[] = [
+        createMetric(dateStrings[29], 3, 12),
+        createMetric(dateStrings[27], 1, 8),
+        createMetric(dateStrings[28], 2, 10),
       ];
-
-      (mockSiteMetricRepository.getSiteMetricsByDateRange as jest.Mock).mockResolvedValue({
+      mockSiteMetricRepository.getSiteMetricsByDateRange.mockResolvedValue({
         success: true,
-        data: mockMetrics,
+        data: fetchedMetrics,
       });
 
       const siteMetricUsecase = createSiteMetricUsecaseAdapter(mockSiteMetricRepository);
@@ -67,55 +56,46 @@ describe('SiteMetricUsecaseAdapter', () => {
 
       // Then
       expect(mockSiteMetricRepository.getSiteMetricsByDateRange).toHaveBeenCalledTimes(1);
-      // 날짜 계산을 기반으로 정확한 start/endDate를 검증하기 위해 실제 호출 값을 확인합니다.
-      const today = new Date();
-      const todayKST = mockDateToKoreaDateString(today);
-      const thirtyDaysAgoDate = new Date();
-      thirtyDaysAgoDate.setDate(today.getDate() - 29);
-      const thirtyDaysAgoKST = mockDateToKoreaDateString(thirtyDaysAgoDate);
-
-      expect(mockDateToKoreaDateString).toHaveBeenCalledWith(today);
-      expect(mockDateToKoreaDateString).toHaveBeenCalledWith(thirtyDaysAgoDate);
-
       expect(mockSiteMetricRepository.getSiteMetricsByDateRange).toHaveBeenCalledWith(
-        thirtyDaysAgoKST,
-        todayKST
+        startDate,
+        endDate
       );
 
-      expect(result).toEqual([
-        {
-          id: '3',
-          date: '2023-11-28',
-          totalVisits: 8,
-          dailyVisits: 1,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-        },
-        {
-          id: '1',
-          date: '2023-11-29',
-          totalVisits: 10,
-          dailyVisits: 2,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-        },
-        {
-          id: '2',
-          date: '2023-11-30',
-          totalVisits: 12,
-          dailyVisits: 3,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-        },
-      ]);
+      expect(result).toHaveLength(30);
+      expect(result.map((item) => item.date)).toEqual(dateStrings);
+
+      expect(result[27]).toEqual({
+        id: `metric-${dateStrings[27]}`,
+        date: dateStrings[27],
+        daily: 1,
+        total: 8,
+      });
+      expect(result[28]).toEqual({
+        id: `metric-${dateStrings[28]}`,
+        date: dateStrings[28],
+        daily: 2,
+        total: 10,
+      });
+      expect(result[29]).toEqual({
+        id: `metric-${dateStrings[29]}`,
+        date: dateStrings[29],
+        daily: 3,
+        total: 12,
+      });
+
+      const emptyItems = result.slice(0, 27);
+      expect(emptyItems.every((item) => item.daily === 0 && item.total === 0)).toBe(true);
+      expect(emptyItems.every((item) => typeof item.id === 'string' && item.id.length > 0)).toBe(
+        true
+      );
     });
 
-    it('getSiteMetricsByDateRange 호출이 실패하면 빈 배열을 반환해야 한다', async () => {
+    it('getSiteMetricsByDateRange 호출이 실패하면 모두 0으로 채운 30개 항목을 반환해야 한다', async () => {
       // Given
-      const errorMessage = '데이터를 가져오는 중 오류 발생';
-      (mockSiteMetricRepository.getSiteMetricsByDateRange as jest.Mock).mockResolvedValue({
+      const dateStrings = getExpectedDateStrings();
+      mockSiteMetricRepository.getSiteMetricsByDateRange.mockResolvedValue({
         success: false,
-        error: new Error(errorMessage),
+        error: new Error('데이터를 가져오는 중 오류 발생'),
       });
 
       const siteMetricUsecase = createSiteMetricUsecaseAdapter(mockSiteMetricRepository);
@@ -125,34 +105,17 @@ describe('SiteMetricUsecaseAdapter', () => {
 
       // Then
       expect(mockSiteMetricRepository.getSiteMetricsByDateRange).toHaveBeenCalledTimes(1);
-      expect(result).toEqual([]);
+      expect(result).toHaveLength(30);
+      expect(result.map((item) => item.date)).toEqual(dateStrings);
+      expect(result.every((item) => item.daily === 0 && item.total === 0)).toBe(true);
     });
 
-    it('metric이 null인 경우 기본값으로 채워진 객체를 반환해야 한다', async () => {
+    it('date가 비어 있는 metric은 무시하고 해당 날짜를 0으로 채워야 한다', async () => {
       // Given
-      const mockMetricsWithNull: (SiteMetric | null)[] = [
-        {
-          id: '1',
-          date: '2023-11-29',
-          totalVisits: 10,
-          dailyVisits: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        null, // null 값 포함
-        {
-          id: '3',
-          date: '2023-11-28',
-          totalVisits: 8,
-          dailyVisits: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ];
-
-      (mockSiteMetricRepository.getSiteMetricsByDateRange as jest.Mock).mockResolvedValue({
+      const dateStrings = getExpectedDateStrings();
+      mockSiteMetricRepository.getSiteMetricsByDateRange.mockResolvedValue({
         success: true,
-        data: mockMetricsWithNull,
+        data: [createMetric('', 5, 50), createMetric(dateStrings[29], 3, 12)],
       });
 
       const siteMetricUsecase = createSiteMetricUsecaseAdapter(mockSiteMetricRepository);
@@ -161,33 +124,14 @@ describe('SiteMetricUsecaseAdapter', () => {
       const result = await siteMetricUsecase.getThirtyDaysSiteMetrics();
 
       // Then
-      expect(mockSiteMetricRepository.getSiteMetricsByDateRange).toHaveBeenCalledTimes(1);
-      expect(result).toEqual([
-        {
-          id: '1',
-          date: '2023-11-29',
-          totalVisits: 10,
-          dailyVisits: 2,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-        },
-        {
-          id: '',
-          date: 'N/A',
-          totalVisits: 0,
-          dailyVisits: 0,
-          createdAt: undefined,
-          updatedAt: undefined,
-        },
-        {
-          id: '3',
-          date: '2023-11-28',
-          totalVisits: 8,
-          dailyVisits: 1,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-        },
-      ]);
+      expect(result).toHaveLength(30);
+      expect(result[29]).toEqual({
+        id: `metric-${dateStrings[29]}`,
+        date: dateStrings[29],
+        daily: 3,
+        total: 12,
+      });
+      expect(result.slice(0, 29).every((item) => item.daily === 0 && item.total === 0)).toBe(true);
     });
   });
 });

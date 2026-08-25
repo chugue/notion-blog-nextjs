@@ -1,48 +1,62 @@
 import { PostRepositoryPort } from '@/application/port/post-repository.port';
-import { PostMetadataResp, TagFilterItem } from '@/domain/entities/post.entity';
-import { tagInfoQuery } from '@/infrastructure/queries/tag-info.query';
-import { createTagInfoRepositoryAdapter } from '@/infrastructure/repositories/tag-info-repository.adapter';
+import { PostMetadata, TagFilterItem } from '@/domain/entities/post.entity';
+import type { Transaction } from '@/infrastructure/database/drizzle/drizzle';
+import { TagFilterItemSelect } from '@/infrastructure/database/supabase/schema/tag-filter-item';
 import { Result } from '@/shared/types/result';
+import { jest } from '@jest/globals';
 
-// Mock dependencies
-jest.mock('@/infrastructure/queries/tag-info.query');
-jest.mock('@/domain/utils/tag-info.utils');
+// Mock dependencies (ESM 환경이므로 unstable_mockModule + 동적 import 사용)
+const mockGetAllTagInfosViaSupabase = jest.fn<() => Promise<Result<TagFilterItemSelect[]>>>();
+const mockDeleteAllTagFilterItems = jest.fn<(tx?: Transaction) => Promise<void>>();
+const mockInsertTagFilterItems =
+  jest.fn<(tagFilterItems: TagFilterItem[], tx?: Transaction) => Promise<void>>();
+
+jest.unstable_mockModule('@/infrastructure/queries/tag-filter-item.query', () => ({
+  tagFilterItemQuery: {
+    getAllTagInfosViaSupabase: mockGetAllTagInfosViaSupabase,
+    deleteAllTagFilterItems: mockDeleteAllTagFilterItems,
+    insertTagFilterItems: mockInsertTagFilterItems,
+  },
+}));
+
+const mockTx = { delete: jest.fn(), insert: jest.fn() } as unknown as Transaction;
+const mockTransaction = jest.fn(async (callback: (tx: Transaction) => Promise<void>) => {
+  await callback(mockTx);
+});
+
+jest.unstable_mockModule('@/infrastructure/database/drizzle/drizzle', () => ({
+  db: { transaction: mockTransaction },
+}));
+
+jest.unstable_mockModule('next/cache', () => ({
+  unstable_cache: <T extends (...args: never[]) => unknown>(fn: T) => fn,
+  revalidateTag: jest.fn(),
+}));
+
+const { createTagInfoRepositoryAdapter } = await import(
+  '@/infrastructure/repositories/tag-info-repository.adapter'
+);
 
 const mockPostRepositoryPort: jest.Mocked<PostRepositoryPort> = {
-  getAllPublishedPosts: jest.fn(),
-  getPostsWithParams: jest.fn(),
-  getPostById: jest.fn(),
+  getPostPropertiesById: jest.fn<PostRepositoryPort['getPostPropertiesById']>(),
+  getAllPublishedPosts: jest.fn<PostRepositoryPort['getAllPublishedPosts']>(),
+  getPostsWithParams: jest.fn<PostRepositoryPort['getPostsWithParams']>(),
+  getPostById: jest.fn<PostRepositoryPort['getPostById']>(),
+  getAboutPage: jest.fn<PostRepositoryPort['getAboutPage']>(),
 };
-
-const mockTagInfoQuery = tagInfoQuery as jest.Mocked<typeof tagInfoQuery>;
-
-// Mock getAllTags method
-mockTagInfoQuery.getAllTags = jest.fn();
-
-// Mock toTagFilterItem function
-const mockToTagFilterItem = jest.fn();
-jest.doMock('@/domain/utils/tag-info.utils', () => ({
-  toTagFilterItem: mockToTagFilterItem,
-}));
 
 describe('Infrastructure Repositories - TagInfo Repository Adapter', () => {
   let tagInfoRepository: ReturnType<typeof createTagInfoRepositoryAdapter>;
 
   beforeEach(() => {
-    tagInfoRepository = createTagInfoRepositoryAdapter();
     jest.clearAllMocks();
-
-    // Default mock return value
-    mockTagInfoQuery.getAllTags.mockResolvedValue({
-      success: true,
-      data: [],
-    });
+    tagInfoRepository = createTagInfoRepositoryAdapter(mockPostRepositoryPort);
   });
 
   describe('getAllTags', () => {
     it('게시된 포스트를 가져와서 태그 필터 아이템으로 변환해야 한다', async () => {
       // Given
-      const mockPosts = [
+      const mockPosts: PostMetadata[] = [
         {
           id: '1',
           title: 'Test Post 1',
@@ -55,162 +69,140 @@ describe('Infrastructure Repositories - TagInfo Repository Adapter', () => {
           title: 'Test Post 2',
           author: 'Author',
           date: '2024-01-02',
-          tag: ['Next.js'],
+          tag: ['React'],
         },
       ];
 
-      const successResult: Result<PostMetadataResp> = {
+      mockPostRepositoryPort.getAllPublishedPosts.mockResolvedValue({
         success: true,
-        data: { posts: mockPosts, hasMore: false, nextCursor: '' },
-      };
-
-      const expectedTagFilterItems: TagFilterItem[] = [
-        { id: 'all', name: '전체', count: 2 },
-        { id: 'next.js', name: 'Next.js', count: 1 },
-        { id: 'react', name: 'React', count: 1 },
-        { id: 'typescript', name: 'TypeScript', count: 1 },
-      ];
-
-      mockPostRepositoryPort.getPostsWithParams.mockResolvedValue(successResult);
-
-      // toTagFilterItem을 다시 import해서 mock
-      const { toTagFilterItem } = await import('@/domain/utils/tag-info.utils');
-      (toTagFilterItem as jest.Mock).mockReturnValue(expectedTagFilterItems);
-
-      // When
-      const result = await tagInfoRepository.getAllTags();
-
-      // Then
-      expect(mockTagInfoQuery.getAllTags).toHaveBeenCalledTimes(1);
-      expect(result).toEqual([]);
-    });
-
-    it('포스트를 가져오는데 실패하면 빈 배열을 반환해야 한다', async () => {
-      // Given
-      const failureResult: Result<PostMetadataResp> = {
-        success: false,
-        error: new Error('Failed to fetch posts'),
-      };
-
-      mockPostRepositoryPort.getPostsWithParams.mockResolvedValue(failureResult);
-
-      // When
-      const result = await tagInfoRepository.getAllTags();
-
-      // Then
-      expect(mockTagInfoQuery.getAllTags).toHaveBeenCalledTimes(1);
-      expect(result).toEqual([]);
-    });
-
-    it('태그 정보 조회에서 에러가 발생하면 빈 배열을 반환해야 한다', async () => {
-      // Given
-      mockTagInfoQuery.getAllTags.mockResolvedValue({
-        success: false,
-        error: new Error('Database error'),
+        data: mockPosts,
       });
 
       // When
       const result = await tagInfoRepository.getAllTags();
 
       // Then
-      expect(mockTagInfoQuery.getAllTags).toHaveBeenCalledTimes(1);
+      expect(mockPostRepositoryPort.getAllPublishedPosts).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([
+        { id: 'all', name: '전체', count: 2 },
+        { id: 'React', name: 'React', count: 2 },
+        { id: 'TypeScript', name: 'TypeScript', count: 1 },
+      ]);
+    });
+
+    it('포스트를 가져오는데 실패하면 빈 배열을 반환해야 한다', async () => {
+      // Given
+      mockPostRepositoryPort.getAllPublishedPosts.mockResolvedValue({
+        success: false,
+        error: new Error('Failed to fetch posts'),
+      });
+
+      // When
+      const result = await tagInfoRepository.getAllTags();
+
+      // Then
+      expect(mockPostRepositoryPort.getAllPublishedPosts).toHaveBeenCalledTimes(1);
       expect(result).toEqual([]);
     });
   });
 
-  describe('resetTagInfoList', () => {
-    it('태그 정보 목록을 성공적으로 리셋해야 한다', async () => {
+  describe('getAllTagInfosViaSupabase', () => {
+    it('DB 레코드를 도메인 TagFilterItem으로 변환해서 반환해야 한다', async () => {
       // Given
-      const inputTagFilterItems: TagFilterItem[] = [
-        { id: 'react', name: 'React', count: 0 },
-        { id: 'typescript', name: 'TypeScript', count: 0 },
-      ];
-
-      const mockDbTagInfo = [
-        { id: 'all', name: '전체', count: 5, createdAt: new Date(), updatedAt: new Date() },
-        { id: 'react', name: 'React', count: 3, createdAt: new Date(), updatedAt: new Date() },
-        {
-          id: 'typescript',
-          name: 'TypeScript',
-          count: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ];
-
-      const successResult: Result<typeof mockDbTagInfo> = {
-        success: true,
-        data: mockDbTagInfo,
-      };
-
-      mockTagInfoQuery.resetTagInfoList.mockResolvedValue(successResult);
-
-      // When
-      const result = await tagInfoRepository.resetTagInfoList(inputTagFilterItems);
-
-      // Then
-      expect(mockTagInfoQuery.resetTagInfoList).toHaveBeenCalledWith(inputTagFilterItems);
-      expect(result).toEqual([
+      const mockDbRows: TagFilterItemSelect[] = [
         { id: 'all', name: '전체', count: 5 },
         { id: 'react', name: 'React', count: 3 },
-        { id: 'typescript', name: 'TypeScript', count: 2 },
-      ]);
+      ];
+
+      mockGetAllTagInfosViaSupabase.mockResolvedValue({ success: true, data: mockDbRows });
+
+      // When
+      const result = await tagInfoRepository.getAllTagInfosViaSupabase();
+
+      // Then
+      expect(mockGetAllTagInfosViaSupabase).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({
+        success: true,
+        data: [
+          { id: 'all', name: '전체', count: 5 },
+          { id: 'react', name: 'React', count: 3 },
+        ],
+      });
     });
 
     it('count가 null인 경우 0으로 처리해야 한다', async () => {
       // Given
-      const inputTagFilterItems: TagFilterItem[] = [{ id: 'react', name: 'React', count: 0 }];
+      const mockDbRows: TagFilterItemSelect[] = [{ id: 'react', name: 'React', count: null }];
 
-      const mockDbTagInfo = [
-        { id: 'react', name: 'React', count: null, createdAt: new Date(), updatedAt: new Date() },
+      mockGetAllTagInfosViaSupabase.mockResolvedValue({ success: true, data: mockDbRows });
+
+      // When
+      const result = await tagInfoRepository.getAllTagInfosViaSupabase();
+
+      // Then
+      expect(result).toEqual({
+        success: true,
+        data: [{ id: 'react', name: 'React', count: 0 }],
+      });
+    });
+
+    it('쿼리가 실패하면 실패 Result를 그대로 반환해야 한다', async () => {
+      // Given
+      const error = new Error('Database error');
+      mockGetAllTagInfosViaSupabase.mockResolvedValue({ success: false, error });
+
+      // When
+      const result = await tagInfoRepository.getAllTagInfosViaSupabase();
+
+      // Then
+      expect(result).toEqual({ success: false, error });
+    });
+  });
+
+  describe('replaceAllTagFilterItems', () => {
+    it('트랜잭션 안에서 전체 삭제 후 삽입해야 한다', async () => {
+      // Given
+      const inputTagFilterItems: TagFilterItem[] = [
+        { id: 'react', name: 'React', count: 3 },
+        { id: 'typescript', name: 'TypeScript', count: 2 },
       ];
 
-      const successResult: Result<typeof mockDbTagInfo> = {
-        success: true,
-        data: mockDbTagInfo,
-      };
-
-      mockTagInfoQuery.resetTagInfoList.mockResolvedValue(successResult);
+      mockDeleteAllTagFilterItems.mockResolvedValue(undefined);
+      mockInsertTagFilterItems.mockResolvedValue(undefined);
 
       // When
-      const result = await tagInfoRepository.resetTagInfoList(inputTagFilterItems);
+      const result = await tagInfoRepository.replaceAllTagFilterItems(inputTagFilterItems);
 
       // Then
-      expect(result).toEqual([{ id: 'react', name: 'React', count: 0 }]);
+      expect(mockTransaction).toHaveBeenCalledTimes(1);
+      expect(mockDeleteAllTagFilterItems).toHaveBeenCalledWith(mockTx);
+      expect(mockInsertTagFilterItems).toHaveBeenCalledWith(inputTagFilterItems, mockTx);
+      expect(result).toEqual({ success: true, data: undefined });
     });
 
-    it('태그 정보 리셋에 실패하면 빈 배열을 반환해야 한다', async () => {
+    it('빈 배열이면 삭제·삽입 없이 성공해야 한다', async () => {
+      // When
+      const result = await tagInfoRepository.replaceAllTagFilterItems([]);
+
+      // Then
+      expect(mockTransaction).toHaveBeenCalledTimes(1);
+      expect(mockDeleteAllTagFilterItems).not.toHaveBeenCalled();
+      expect(mockInsertTagFilterItems).not.toHaveBeenCalled();
+      expect(result).toEqual({ success: true, data: undefined });
+    });
+
+    it('트랜잭션이 실패하면 실패 Result를 반환해야 한다', async () => {
       // Given
-      const inputTagFilterItems: TagFilterItem[] = [{ id: 'react', name: 'React', count: 0 }];
-
-      const failureResult: Result<
-        { id: string; name: string; count: number | null; createdAt: Date; updatedAt: Date }[]
-      > = {
-        success: false,
-        error: new Error('Reset failed'),
-      };
-
-      mockTagInfoQuery.resetTagInfoList.mockResolvedValue(failureResult);
+      const inputTagFilterItems: TagFilterItem[] = [{ id: 'react', name: 'React', count: 3 }];
+      const error = new Error('Transaction failed');
+      mockDeleteAllTagFilterItems.mockRejectedValue(error);
 
       // When
-      const result = await tagInfoRepository.resetTagInfoList(inputTagFilterItems);
+      const result = await tagInfoRepository.replaceAllTagFilterItems(inputTagFilterItems);
 
       // Then
-      expect(mockTagInfoQuery.resetTagInfoList).toHaveBeenCalledWith(inputTagFilterItems);
-      expect(result).toEqual([]);
-    });
-
-    it('태그 정보 쿼리에서 에러가 발생하면 에러를 전파해야 한다', async () => {
-      // Given
-      const inputTagFilterItems: TagFilterItem[] = [{ id: 'react', name: 'React', count: 0 }];
-      const error = new Error('Query error');
-      mockTagInfoQuery.resetTagInfoList.mockRejectedValue(error);
-
-      // When & Then
-      await expect(tagInfoRepository.resetTagInfoList(inputTagFilterItems)).rejects.toThrow(
-        'Query error'
-      );
-      expect(mockTagInfoQuery.resetTagInfoList).toHaveBeenCalledWith(inputTagFilterItems);
+      expect(mockInsertTagFilterItems).not.toHaveBeenCalled();
+      expect(result).toEqual({ success: false, error });
     });
   });
 });
