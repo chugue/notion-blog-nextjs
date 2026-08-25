@@ -88,6 +88,7 @@ None yet.
 |----|-------------|------|-----------|
 | 260825-wl1 | notion-client 요청에 User-Agent 헤더 추가 (Notion Cloudflare 403 차단 회피) | 2026-08-25 | .planning/quick/260825-wl1-notion-client-user-agent-notion-cloudfla |
 | 260825-wqy | 기존 __tests__ 타입 에러 정리 (tsc 100→0, 소스 불변) | 2026-08-25 | .planning/quick/260825-wqy-tests-tsc-0 |
+| 260825-x9u | 남은 jest 실패 4개 정리 (19/19 스위트 통과) | 2026-08-26 | .planning/quick/260825-x9u-jest-4-gsap-esm-tag-info-utils-di-mock |
 
 ## Deferred Items
 

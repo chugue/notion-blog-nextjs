@@ -57,9 +57,9 @@ describe('Domain Utils - Tag Utils', () => {
         count: 3,
       });
 
-      // 태그들이 알파벳 순으로 정렬되어야 함
+      // 태그들이 개수 내림차순(동률은 등장 순)으로 정렬되어야 함
       const tagNames = result.slice(1).map((tag) => tag.name);
-      expect(tagNames).toEqual(['Next.js', 'React', 'TypeScript']);
+      expect(tagNames).toEqual(['React', 'TypeScript', 'Next.js']);
 
       // 각 태그의 개수가 정확해야 함
       const reactTag = result.find((tag) => tag.name === 'React');
