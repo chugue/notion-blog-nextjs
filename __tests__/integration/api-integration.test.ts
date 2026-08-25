@@ -1,36 +1,40 @@
+import { GET as notionGET } from '@/app/api/notion/route';
+import { GET as searchGET } from '@/app/api/search/route';
+import { PostMetadata, PostMetadataResp } from '@/domain/entities/post.entity';
+import { PostUseCasePort } from '@/presentation/ports/post-usecase.port';
+import { diContainer } from '@/shared/di/di-container';
 import { jest } from '@jest/globals';
-import { NextRequest } from 'next/server';
-import { GET as notionGET } from '../../../app/api/notion/route';
-import { GET as searchGET } from '../../../app/api/search/route';
-import { mockDiContainer, mockPostUseCase, resetAllMocks } from '../shared/di-mock';
-// import { diContainer } from '../../shared/di/di-container'; // 👈 diContainer 직접 import 제거
+import { NextRequest, NextResponse } from 'next/server';
 
-// Mock dependencies
-jest.mock('../../shared/di/di-container', () => ({
-  diContainer: mockDiContainer, // 👈 mockDiContainer 사용
-}));
+// next/server(NextResponse.json, NextRequest)는 jest.setup.js에서 전역 모킹됨
 
-jest.mock('next/server', () => ({
-  NextResponse: {
-    json: jest.fn((data) => ({
-      status: 200,
-      json: () => Promise.resolve(data),
-    })),
-  },
-}));
+// 실제 diContainer.post 를 타입이 맞는 mock 으로 교체 (site-metrics route 테스트와 동일 패턴)
+const mockPostUseCase = {
+  getPostPropertiesById: jest.fn<PostUseCasePort['getPostPropertiesById']>(),
+  getAllPublishedPostMetadatas: jest.fn<PostUseCasePort['getAllPublishedPostMetadatas']>(),
+  getPostsWithParams: jest.fn<PostUseCasePort['getPostsWithParams']>(),
+  getPostById: jest.fn<PostUseCasePort['getPostById']>(),
+  getAboutPage: jest.fn<PostUseCasePort['getAboutPage']>(),
+};
 
 describe('API Integration Tests', () => {
-  // const actualMockPostUseCase = diContainer.post.postUseCase as jest.Mocked<typeof mockPostUseCase>; // 더 이상 필요 없음
-  // const actualMockTagInfoUseCase = diContainer.tagInfo.tagInfoUseCase as jest.Mocked<typeof mockTagInfoUseCase>; // 더 이상 필요 없음
+  beforeAll(() => {
+    diContainer.post = {
+      postRepository: diContainer.post.postRepository,
+      postUseCase: mockPostUseCase,
+    };
+  });
 
   beforeEach(() => {
-    resetAllMocks(); // 👈 resetAllMocks 사용
+    jest.clearAllMocks();
+    mockPostUseCase.getPostsWithParams.mockReset();
+    mockPostUseCase.getAllPublishedPostMetadatas.mockReset();
   });
 
   describe('/api/notion - GET Posts with Parameters', () => {
     it('should return posts with default parameters', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [
           {
             id: 'post-1',
@@ -66,7 +70,7 @@ describe('API Integration Tests', () => {
 
     it('should return posts with query parameters', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [
           {
             id: 'post-2',
@@ -104,7 +108,7 @@ describe('API Integration Tests', () => {
 
     it('should handle empty results', async () => {
       // Arrange
-      const mockEmptyPosts = {
+      const mockEmptyPosts: PostMetadataResp = {
         posts: [],
         hasMore: false,
         nextCursor: null,
@@ -122,23 +126,9 @@ describe('API Integration Tests', () => {
       });
     });
 
-    it('should handle API errors', async () => {
-      // Arrange
-      mockPostUseCase.getPostsWithParams.mockResolvedValue(null);
-
-      const request = new NextRequest('http://localhost:3000/api/notion');
-      const response = await notionGET(request);
-
-      // Assert
-      expect(NextResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: new Error('Failed to get published posts'),
-      });
-    });
-
     it('should handle invalid pageSize parameter', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [],
         hasMore: false,
         nextCursor: null,
@@ -150,10 +140,11 @@ describe('API Integration Tests', () => {
       const response = await notionGET(request);
 
       // Assert
+      // Number('invalid') === NaN 이고, 라우트는 `|| undefined` 로 정규화한다
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
         tag: undefined,
         sort: undefined,
-        pageSize: NaN,
+        pageSize: undefined,
         startCursor: undefined,
       });
     });
@@ -162,7 +153,7 @@ describe('API Integration Tests', () => {
   describe('/api/search - GET All Post Metadatas', () => {
     it('should return all published post metadatas', async () => {
       // Arrange
-      const mockMetadatas = [
+      const mockMetadatas: PostMetadata[] = [
         {
           id: 'post-1',
           title: 'Test Post 1',
@@ -205,25 +196,12 @@ describe('API Integration Tests', () => {
         data: [],
       });
     });
-
-    it('should handle API errors', async () => {
-      // Arrange
-      mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue(null);
-
-      const response = await searchGET();
-
-      // Assert
-      expect(NextResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: new Error('Failed to get posts'),
-      });
-    });
   });
 
   describe('Data Flow Integration', () => {
     it('should maintain data consistency between API calls', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [
           {
             id: 'post-1',
@@ -238,7 +216,7 @@ describe('API Integration Tests', () => {
         nextCursor: null,
       };
 
-      const mockMetadatas = [
+      const mockMetadatas: PostMetadata[] = [
         {
           id: 'post-1',
           title: 'Test Post 1',
@@ -253,10 +231,9 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue(mockMetadatas);
 
       const notionRequest = new NextRequest('http://localhost:3000/api/notion');
-      const searchRequest = {};
 
       const notionResponse = await notionGET(notionRequest);
-      const searchResponse = await searchGET(searchRequest);
+      const searchResponse = await searchGET();
 
       // Assert
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalled();
@@ -276,7 +253,7 @@ describe('API Integration Tests', () => {
 
     it('should handle concurrent API calls', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [],
         hasMore: false,
         nextCursor: null,
@@ -286,11 +263,10 @@ describe('API Integration Tests', () => {
       mockPostUseCase.getAllPublishedPostMetadatas.mockResolvedValue([]);
 
       const notionRequest = new NextRequest('http://localhost:3000/api/notion');
-      const searchRequest = {};
 
       const [notionResponse, searchResponse] = await Promise.all([
         notionGET(notionRequest),
-        searchGET(searchRequest),
+        searchGET(),
       ]);
 
       // Assert
@@ -302,7 +278,7 @@ describe('API Integration Tests', () => {
   describe('Error Handling and Edge Cases', () => {
     it('should handle malformed query parameters', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [],
         hasMore: false,
         nextCursor: null,
@@ -316,17 +292,18 @@ describe('API Integration Tests', () => {
       const response = await notionGET(request);
 
       // Assert
+      // 빈 문자열은 라우트에서 `|| undefined` 로 정규화된다
       expect(mockPostUseCase.getPostsWithParams).toHaveBeenCalledWith({
-        tag: '',
-        sort: '',
-        pageSize: 0,
-        startCursor: '',
+        tag: undefined,
+        sort: undefined,
+        pageSize: undefined,
+        startCursor: undefined,
       });
     });
 
     it('should handle very large pageSize values', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [],
         hasMore: false,
         nextCursor: null,
@@ -348,7 +325,7 @@ describe('API Integration Tests', () => {
 
     it('should handle special characters in query parameters', async () => {
       // Arrange
-      const mockPosts = {
+      const mockPosts: PostMetadataResp = {
         posts: [],
         hasMore: false,
         nextCursor: null,

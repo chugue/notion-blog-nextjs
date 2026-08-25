@@ -1,27 +1,36 @@
 import React from 'react';
+import { jest } from '@jest/globals';
 import { render, screen } from '../../../utils/test-utils';
-import CustomCodeBlock from '../../../../app/(blog)/_components/CustomCodeBlock';
-import { CodeBlock } from 'notion-types';
+import { HighlightedCodeProvider } from '../../../../app/(blog)/_components/HighlightedCodeContext';
+import { CodeBlock, Decoration } from 'notion-types';
 
-// Mock react-notion-x-code-block
-jest.mock('react-notion-x-code-block', () => ({
-  Code: ({ block, defaultLanguage, showLangLabel, themes }: any) => (
-    <div data-testid="code-component">
-      <div data-testid="block-data">{JSON.stringify(block)}</div>
-      <div data-testid="default-language">{defaultLanguage}</div>
-      <div data-testid="show-lang-label">{String(showLangLabel)}</div>
-      <div data-testid="themes">{JSON.stringify(themes)}</div>
-    </div>
-  ),
+// gsap은 ESM 원본이 변환되지 않아 jest에서 로드되지 않으므로 애니메이션 계층 전체를 모킹한다
+jest.unstable_mockModule('gsap', () => ({
+  default: { registerPlugin: jest.fn(), fromTo: jest.fn() },
 }));
+jest.unstable_mockModule('gsap/ScrollTrigger', () => ({ default: {} }));
+jest.unstable_mockModule('@gsap/react', () => ({ useGSAP: jest.fn() }));
+
+type CustomCodeBlockComponent =
+  typeof import('../../../../app/(blog)/_components/CustomCodeBlock')['default'];
+
+let CustomCodeBlock: CustomCodeBlockComponent;
+
+beforeAll(async () => {
+  ({ default: CustomCodeBlock } = await import(
+    '../../../../app/(blog)/_components/CustomCodeBlock'
+  ));
+});
 
 describe('CustomCodeBlock', () => {
   const createMockCodeBlock = (language?: string): CodeBlock => ({
     id: 'test-code-block',
+    version: 1,
     type: 'code',
     properties: {
-      language: language ? [[language]] : undefined,
+      language: language ? [[language]] : [],
       title: [['console.log("Hello World");']],
+      caption: [],
     },
     content: [],
     parent_id: 'parent-block',
@@ -35,93 +44,101 @@ describe('CustomCodeBlock', () => {
     last_edited_time: 1234567890,
   });
 
+  const getLanguageLabel = () => screen.getByText((_, element) => {
+    return element?.tagName === 'DIV' && element.className.includes('text-gray-400');
+  });
+
   it('should render without crashing', () => {
     const mockBlock = createMockCodeBlock('javascript');
-    render(<CustomCodeBlock block={mockBlock} />);
-    expect(screen.getByTestId('code-component')).toBeInTheDocument();
+    const { container } = render(<CustomCodeBlock block={mockBlock} />);
+    expect(container.querySelector('.code-block')).toBeInTheDocument();
   });
 
-  it('should pass block data to Code component', () => {
+  it('should render block title as fallback code when no highlighted html exists', () => {
+    const mockBlock = createMockCodeBlock('javascript');
+    const { container } = render(<CustomCodeBlock block={mockBlock} />);
+
+    const codeElement = container.querySelector('pre > code');
+    expect(codeElement).toHaveTextContent('console.log("Hello World");');
+  });
+
+  it('should render the language label for JavaScript', () => {
     const mockBlock = createMockCodeBlock('javascript');
     render(<CustomCodeBlock block={mockBlock} />);
 
-    const blockDataElement = screen.getByTestId('block-data');
-    expect(blockDataElement).toHaveTextContent('test-code-block');
+    expect(getLanguageLabel()).toHaveTextContent('javascript');
   });
 
-  it('should set correct default language for JavaScript', () => {
-    const mockBlock = createMockCodeBlock('javascript');
-    render(<CustomCodeBlock block={mockBlock} />);
-
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('javascript');
-  });
-
-  it('should set correct default language for TypeScript', () => {
+  it('should render the language label for TypeScript', () => {
     const mockBlock = createMockCodeBlock('typescript');
     render(<CustomCodeBlock block={mockBlock} />);
 
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('typescript');
+    expect(getLanguageLabel()).toHaveTextContent('typescript');
   });
 
   it('should handle plain_text language and convert to plaintext', () => {
     const mockBlock = createMockCodeBlock('plain_text');
     render(<CustomCodeBlock block={mockBlock} />);
 
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('plaintext');
+    expect(getLanguageLabel()).toHaveTextContent('plaintext');
   });
 
   it('should handle plain text language and convert to plaintext', () => {
     const mockBlock = createMockCodeBlock('plain text');
     render(<CustomCodeBlock block={mockBlock} />);
 
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('plaintext');
-  });
-
-  it('should handle undefined language and convert to plaintext', () => {
-    const mockBlock = createMockCodeBlock();
-    render(<CustomCodeBlock block={mockBlock} />);
-
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('plaintext');
+    expect(getLanguageLabel()).toHaveTextContent('plaintext');
   });
 
   it('should handle empty language array and convert to plaintext', () => {
+    const mockBlock = createMockCodeBlock();
+    render(<CustomCodeBlock block={mockBlock} />);
+
+    expect(getLanguageLabel()).toHaveTextContent('plaintext');
+  });
+
+  it('should handle empty language string and convert to plaintext', () => {
+    const emptyLanguage: Decoration[] = [['']];
     const mockBlock: CodeBlock = {
       ...createMockCodeBlock(),
       properties: {
         ...createMockCodeBlock().properties,
-        language: [[]],
+        language: emptyLanguage,
       },
     };
     render(<CustomCodeBlock block={mockBlock} />);
 
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('plaintext');
+    expect(getLanguageLabel()).toHaveTextContent('plaintext');
   });
 
-  it('should set showLangLabel to true', () => {
-    const mockBlock = createMockCodeBlock('python');
-    render(<CustomCodeBlock block={mockBlock} />);
-
-    const showLangLabelElement = screen.getByTestId('show-lang-label');
-    expect(showLangLabelElement).toHaveTextContent('true');
-  });
-
-  it('should configure themes correctly', () => {
+  it('should render server-highlighted html when provided via context', () => {
     const mockBlock = createMockCodeBlock('css');
-    render(<CustomCodeBlock block={mockBlock} />);
+    const highlightedCode = {
+      [mockBlock.id]: '<pre class="shiki"><code data-testid="shiki-code">.a{}</code></pre>',
+    };
 
-    const themesElement = screen.getByTestId('themes');
-    const themes = JSON.parse(themesElement.textContent || '{}');
+    const { container } = render(
+      <HighlightedCodeProvider highlightedCode={highlightedCode}>
+        <CustomCodeBlock block={mockBlock} />
+      </HighlightedCodeProvider>
+    );
 
-    expect(themes).toEqual({
-      light: 'catppuccin-mocha',
-      dark: 'catppuccin-mocha',
-    });
+    expect(container.querySelector('.shiki-code-block')).toBeInTheDocument();
+    expect(screen.getByTestId('shiki-code')).toHaveTextContent('.a{}');
+    expect(container.querySelector('pre.bg-\\[\\#1e1e2e\\]')).not.toBeInTheDocument();
+  });
+
+  it('should fall back to plain code when context has no entry for this block', () => {
+    const mockBlock = createMockCodeBlock('css');
+
+    const { container } = render(
+      <HighlightedCodeProvider highlightedCode={{ 'other-block': '<b>x</b>' }}>
+        <CustomCodeBlock block={mockBlock} />
+      </HighlightedCodeProvider>
+    );
+
+    expect(container.querySelector('.shiki-code-block')).not.toBeInTheDocument();
+    expect(container.querySelector('pre > code')).toHaveTextContent('console.log("Hello World");');
   });
 
   it('should handle various programming languages correctly', () => {
@@ -142,8 +159,7 @@ describe('CustomCodeBlock', () => {
       const mockBlock = createMockCodeBlock(lang);
       const { unmount } = render(<CustomCodeBlock block={mockBlock} />);
 
-      const languageElement = screen.getByTestId('default-language');
-      expect(languageElement).toHaveTextContent(lang);
+      expect(getLanguageLabel()).toHaveTextContent(lang);
 
       unmount();
     });
@@ -152,13 +168,14 @@ describe('CustomCodeBlock', () => {
   it('should handle complex code block with multiple properties', () => {
     const mockBlock: CodeBlock = {
       id: 'complex-code-block',
+      version: 3,
       type: 'code',
       properties: {
         language: [['javascript']],
         title: [
-          ['function fibonacci(n) {'],
-          ['  if (n <= 1) return n;'],
-          ['  return fibonacci(n - 1) + fibonacci(n - 2);'],
+          ['function fibonacci(n) {\n'],
+          ['  if (n <= 1) return n;\n'],
+          ['  return fibonacci(n - 1) + fibonacci(n - 2);\n'],
           ['}'],
         ],
         caption: [['A recursive Fibonacci function']],
@@ -175,21 +192,10 @@ describe('CustomCodeBlock', () => {
       last_edited_time: 1234567890,
     };
 
-    render(<CustomCodeBlock block={mockBlock} />);
+    const { container } = render(<CustomCodeBlock block={mockBlock} />);
 
-    expect(screen.getByTestId('code-component')).toBeInTheDocument();
-    expect(screen.getByTestId('default-language')).toHaveTextContent('javascript');
-  });
-
-  it('should handle edge case with null properties', () => {
-    const mockBlock: CodeBlock = {
-      ...createMockCodeBlock(),
-      properties: null,
-    };
-
-    render(<CustomCodeBlock block={mockBlock} />);
-
-    const languageElement = screen.getByTestId('default-language');
-    expect(languageElement).toHaveTextContent('plaintext');
+    expect(getLanguageLabel()).toHaveTextContent('javascript');
+    expect(container.querySelector('pre > code')).toHaveTextContent('function fibonacci(n)');
+    expect(container.querySelector('pre > code')).toHaveTextContent('fibonacci(n - 2);');
   });
 });

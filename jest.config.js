@@ -17,6 +17,8 @@ const customJestConfig = {
     '^../../../app/api/search/route$': '<rootDir>/app/api/search/route.ts',
     '^../../../app/(blog)/_components/NotionPageContent$':
       '<rootDir>/app/(blog)/_components/NotionPageContent.tsx',
+    // gsap/ScrollTrigger 루트 파일은 ESM이라 jest가 파싱하지 못함 → UMD 빌드로 매핑
+    '^gsap/ScrollTrigger$': '<rootDir>/node_modules/gsap/dist/ScrollTrigger.js',
     '^react-notion-x-code-block$': '<rootDir>/node_modules/react-notion-x-code-block/dist/index.js',
   },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],

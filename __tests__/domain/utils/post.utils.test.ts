@@ -1,14 +1,74 @@
+import { jest } from '@jest/globals';
 import * as postUtils from '@/domain/utils/post.utils';
-import { NotionPost } from '@/domain/entities/notion.entity';
 import { PostMetadata } from '@/domain/entities/post.entity';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
-const mockNotionPost: NotionPost = {
+type TitleProperty = Extract<PageObjectResponse['properties'][string], { type: 'title' }>;
+
+const createTitleProperty = (content: string): TitleProperty => ({
+  id: 'title',
+  type: 'title',
+  title: [
+    {
+      type: 'text',
+      text: { content, link: null },
+      plain_text: content,
+      href: null,
+      annotations: {
+        bold: false,
+        italic: false,
+        strikethrough: false,
+        underline: false,
+        code: false,
+        color: 'default',
+      },
+    },
+  ],
+});
+
+const mockPage: PageObjectResponse = {
+  object: 'page',
   id: '1',
+  created_time: '2024-01-01T00:00:00.000Z',
+  last_edited_time: '2024-01-01T00:00:00.000Z',
+  created_by: { object: 'user', id: 'user-1' },
+  last_edited_by: { object: 'user', id: 'user-1' },
+  parent: { type: 'database_id', database_id: 'db-1' },
+  archived: false,
+  in_trash: false,
+  icon: null,
+  cover: null,
+  url: 'https://www.notion.so/1',
+  public_url: null,
   properties: {
-    title: { title: [{ plain_text: 'Test Post' }] },
-    author: { rich_text: [{ plain_text: 'Test Author' }] },
-    date: { date: { start: '2024-01-01' } },
-    tag: { multi_select: [{ name: 'React' }, { name: 'TypeScript' }] },
+    title: createTitleProperty('Test Post'),
+    author: {
+      id: 'author',
+      type: 'people',
+      people: [
+        {
+          object: 'user',
+          id: 'user-1',
+          type: 'person',
+          name: 'Test Author',
+          avatar_url: null,
+          person: {},
+        },
+      ],
+    },
+    createdAt: {
+      id: 'createdAt',
+      type: 'created_time',
+      created_time: '2024-01-01T00:00:00.000Z',
+    },
+    tag: {
+      id: 'tag',
+      type: 'multi_select',
+      multi_select: [
+        { id: 't1', name: 'React', color: 'blue' },
+        { id: 't2', name: 'TypeScript', color: 'green' },
+      ],
+    },
   },
 };
 
@@ -25,32 +85,45 @@ const mockPostMetadata: PostMetadata[] = [
 ];
 
 describe('Domain Utils - Post Utils', () => {
-  describe('toPost', () => {
-    it('NotionPost를 Post 형식으로 변환해야 한다', () => {
-      const post = postUtils.toPost(mockNotionPost);
-      expect(post).toEqual({
-        metadata: {
-          id: '1',
-          title: 'Test Post',
-          author: 'Test Author',
-          date: '2024-01-01',
-          tag: ['React', 'TypeScript'],
-        },
-        content: '',
-      });
-    });
-  });
-
-  describe('toPostMetadata', () => {
-    it('NotionPost를 PostMetadata 형식으로 변환해야 한다', () => {
-      const metadata = postUtils.toPostMetadata(mockNotionPost);
+  describe('getPostMetadata', () => {
+    it('PageObjectResponse를 PostMetadata 형식으로 변환해야 한다', () => {
+      const metadata = postUtils.getPostMetadata(mockPage);
       expect(metadata).toEqual({
         id: '1',
         title: 'Test Post',
         author: 'Test Author',
-        date: '2024-01-01',
+        date: '2024-01-01T00:00:00.000Z',
         tag: ['React', 'TypeScript'],
+        coverImage: '',
       });
+    });
+
+    it('커버 이미지의 S3 URL을 Notion 영구 URL로 변환해야 한다', () => {
+      const pageWithCover: PageObjectResponse = {
+        ...mockPage,
+        cover: {
+          type: 'file',
+          file: {
+            url: 'https://prod-files-secure.s3.us-west-2.amazonaws.com/space-1/file-1/cover.png?X-Amz-Signature=abc',
+            expiry_time: '2024-01-02T00:00:00.000Z',
+          },
+        },
+      };
+
+      const metadata = postUtils.getPostMetadata(pageWithCover);
+      expect(metadata.coverImage).toBe(
+        'https://www.notion.so/image/attachment%3Afile-1%3Acover.png?table=block&id=1&spaceId=space-1'
+      );
+    });
+  });
+
+  describe('convertS3UrlToNotionUrl', () => {
+    it('유효하지 않은 URL이 주어지면 null을 반환해야 한다', () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      expect(postUtils.convertS3UrlToNotionUrl('not a url', '1')).toBeNull();
+
+      consoleSpy.mockRestore();
     });
   });
 
