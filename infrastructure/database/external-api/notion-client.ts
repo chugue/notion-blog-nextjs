@@ -6,11 +6,19 @@ import { NotionToMarkdown } from 'notion-to-md';
 import { normalizeRecordMap } from './normalize-record-map';
 
 export const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
-  notionVersion: '2022-06-28',
+    auth: process.env.NOTION_TOKEN,
+    notionVersion: '2022-06-28',
 });
 
-export const notionAPI = new NotionAPI();
+// Notion 비공개 API 앞의 Cloudflare는 Node 기본 UA("node") 요청을 403 HTML로 차단한다.
+// 캐시 미스 글(신규 발행)은 이 경로로만 페치되므로 식별 가능한 UA를 명시해 차단을 피한다.
+const NOTION_PRIVATE_API_USER_AGENT =
+    process.env.NOTION_PRIVATE_API_USER_AGENT ??
+    'Mozilla/5.0 (compatible; stephen-dev-blog/1.0; +https://www.stephen-dev.blog)';
+
+export const notionAPI = new NotionAPI({
+    kyOptions: { headers: { 'user-agent': NOTION_PRIVATE_API_USER_AGENT } },
+});
 
 export const n2m = new NotionToMarkdown({ notionClient: notion });
 
@@ -27,8 +35,13 @@ const NOTION_PAGE_BASE_DELAY_MS = 500;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const isHtmlBlockError = (error: unknown): boolean => {
-  const message = (error as Error)?.message ?? '';
-  return message.includes('not valid JSON') || message.includes('<!doctype') || message.includes('<html');
+    const message = (error as Error)?.message ?? '';
+
+    return (
+        message.includes('not valid JSON') ||
+        message.includes('<!doctype') ||
+        message.includes('<html')
+    );
 };
 
 // 프로세스 단위 동시성 게이트: 진행 중 호출 수를 한도 아래로 유지한다.
@@ -37,55 +50,55 @@ const waiters: Array<() => void> = [];
 let lastDispatchAt = 0;
 
 const acquireSlot = async (): Promise<void> => {
-  if (activeCalls >= NOTION_PAGE_MAX_CONCURRENCY) {
-    await new Promise<void>((resolve) => waiters.push(resolve));
-  }
-  activeCalls++;
+    if (activeCalls >= NOTION_PAGE_MAX_CONCURRENCY) {
+        await new Promise<void>((resolve) => waiters.push(resolve));
+    }
+    activeCalls++;
 
-  const sinceLast = Date.now() - lastDispatchAt;
-  if (sinceLast < NOTION_PAGE_MIN_SPACING_MS) {
-    await wait(NOTION_PAGE_MIN_SPACING_MS - sinceLast);
-  }
-  lastDispatchAt = Date.now();
+    const sinceLast = Date.now() - lastDispatchAt;
+    if (sinceLast < NOTION_PAGE_MIN_SPACING_MS) {
+        await wait(NOTION_PAGE_MIN_SPACING_MS - sinceLast);
+    }
+    lastDispatchAt = Date.now();
 };
 
 const releaseSlot = (): void => {
-  activeCalls--;
-  waiters.shift()?.();
+    activeCalls--;
+    waiters.shift()?.();
 };
 
 export async function getNotionPageWithRetry(id: string): Promise<ExtendedRecordMap> {
-  let lastError: unknown;
+    let lastError: unknown;
 
-  for (let attempt = 0; attempt <= NOTION_PAGE_MAX_RETRIES; attempt++) {
-    await acquireSlot();
-    try {
-      const recordMap = await notionAPI.getPage(id);
+    for (let attempt = 0; attempt <= NOTION_PAGE_MAX_RETRIES; attempt++) {
+        await acquireSlot();
+        try {
+            const recordMap = await notionAPI.getPage(id);
 
-      if (!recordMap?.block || Object.keys(recordMap.block).length === 0) {
-        throw new Error(`Empty recordMap for ${id}`);
-      }
+            if (!recordMap?.block || Object.keys(recordMap.block).length === 0) {
+                throw new Error(`Empty recordMap for ${id}`);
+            }
 
-      return recordMap;
-    } catch (error) {
-      lastError = error;
-    } finally {
-      releaseSlot();
+            return recordMap;
+        } catch (error) {
+            lastError = error;
+        } finally {
+            releaseSlot();
+        }
+
+        if (attempt === NOTION_PAGE_MAX_RETRIES) break;
+
+        // HTML 차단 페이지는 더 길게 쉬어준다(레이트리밋 회복 대기).
+        const penalty = isHtmlBlockError(lastError) ? 2 : 1;
+        const backoff = NOTION_PAGE_BASE_DELAY_MS * 2 ** attempt * penalty;
+        const jitter = backoff * (0.25 + (attempt % 3) * 0.25);
+        await wait(backoff + jitter);
     }
 
-    if (attempt === NOTION_PAGE_MAX_RETRIES) break;
-
-    // HTML 차단 페이지는 더 길게 쉬어준다(레이트리밋 회복 대기).
-    const penalty = isHtmlBlockError(lastError) ? 2 : 1;
-    const backoff = NOTION_PAGE_BASE_DELAY_MS * 2 ** attempt * penalty;
-    const jitter = backoff * (0.25 + (attempt % 3) * 0.25);
-    await wait(backoff + jitter);
-  }
-
-  throw lastError;
+    throw lastError;
 }
 
 export async function getNotionPage(id: string): Promise<ExtendedRecordMap> {
-  const recordMap = await getNotionPageWithRetry(id);
-  return normalizeRecordMap(recordMap);
+    const recordMap = await getNotionPageWithRetry(id);
+    return normalizeRecordMap(recordMap);
 }
