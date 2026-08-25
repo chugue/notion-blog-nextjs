@@ -82,6 +82,12 @@ None yet.
 - 7.10 404 regression root cause unknown — Phase 2 must investigate before bumping packages.
 - `patch-package` patches target 7.4.3 compiled output; they will need removal or replacement after the upgrade (Phase 2 concern).
 
+## Quick Tasks Completed
+
+| ID | Description | Date | Directory |
+|----|-------------|------|-----------|
+| 260825-wl1 | notion-client 요청에 User-Agent 헤더 추가 (Notion Cloudflare 403 차단 회피) | 2026-08-25 | .planning/quick/260825-wl1-notion-client-user-agent-notion-cloudfla |
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
