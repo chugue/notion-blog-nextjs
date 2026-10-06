@@ -1,6 +1,7 @@
 import { Client } from '@notionhq/client';
 import { NotionAPI } from 'notion-client';
 import { ExtendedRecordMap } from 'notion-types';
+import { getPageContentBlockIds } from 'notion-utils';
 import { NotionToMarkdown } from 'notion-to-md';
 
 import { normalizeRecordMap } from './normalize-record-map';
@@ -67,6 +68,32 @@ const releaseSlot = (): void => {
     waiters.shift()?.();
 };
 
+// getPage는 첫 청크(100블록)만 받고 나머지는 fetchMissingBlocks로 채우는데, 비공개 API가
+// 블록을 { value: { value, role } } 로 중첩해 내려주면서 notion-utils가 content를 못 읽어
+// 그 단계가 조용히 건너뛰어진다 → 100블록 넘는 글의 뒷부분이 통째로 빠진다.
+// 정규화된 recordMap 기준으로 누락 블록을 직접 채운다.
+const MAX_MISSING_BLOCK_ROUNDS = 10;
+
+const fillMissingBlocks = async (
+    recordMap: ExtendedRecordMap,
+    rootId: string
+): Promise<ExtendedRecordMap> => {
+    for (let round = 0; round < MAX_MISSING_BLOCK_ROUNDS; round++) {
+        const missingIds = getPageContentBlockIds(recordMap, rootId).filter(
+            (blockId) => !recordMap.block[blockId]
+        );
+        if (missingIds.length === 0) break;
+
+        const response = await notionAPI.getBlocks(missingIds);
+        const fetched = normalizeRecordMap(response.recordMap as ExtendedRecordMap).block ?? {};
+        if (Object.keys(fetched).length === 0) break;
+
+        recordMap.block = { ...recordMap.block, ...fetched };
+    }
+
+    return recordMap;
+};
+
 export async function getNotionPageWithRetry(id: string): Promise<ExtendedRecordMap> {
     let lastError: unknown;
 
@@ -79,7 +106,7 @@ export async function getNotionPageWithRetry(id: string): Promise<ExtendedRecord
                 throw new Error(`Empty recordMap for ${id}`);
             }
 
-            return recordMap;
+            return await fillMissingBlocks(normalizeRecordMap(recordMap), id);
         } catch (error) {
             lastError = error;
         } finally {
