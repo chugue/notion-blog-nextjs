@@ -46,3 +46,6 @@ next-env.d.ts
 docs/
 # GSD planning artifacts (local only)
 .planning/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
